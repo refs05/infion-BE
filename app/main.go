@@ -9,6 +9,7 @@ import (
 
 	_dbDriver "infion-BE/drivers/mysql"
 
+	_middleware "infion-BE/app/middleware"
 	_routes "infion-BE/app/routes"
 
 	"log"
@@ -62,5 +63,6 @@ func main() {
 	}
 	routesInit.RouteRegister(e)
 
+	_middleware.LogMiddlewareInit(e)
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }
