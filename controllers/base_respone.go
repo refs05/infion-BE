@@ -15,7 +15,7 @@ type BaseResponse struct {
 	Data interface{} `json:"data"`
 }
 
-func ThreadsuccessResponse(c echo.Context, param interface{}) error {
+func NewSuccessResponse(c echo.Context, param interface{}) error {
 	response := BaseResponse{}
 	response.Meta.Status = http.StatusOK
 	response.Meta.Message = "Success"
@@ -27,8 +27,17 @@ func ThreadsuccessResponse(c echo.Context, param interface{}) error {
 func NewErrorResponse(c echo.Context, status int, err error) error {
 	response := BaseResponse{}
 	response.Meta.Status = status
-	response.Meta.Message = "Something not right"
+	response.Meta.Message = "Something's not right"
 	response.Meta.Messages = []string{err.Error()}
 
 	return c.JSON(status, response)
+}
+
+func NewDeleteResponse(c echo.Context, param interface{}) error {
+	response := BaseResponse{}
+	response.Meta.Status = http.StatusOK
+	response.Meta.Message = "Data Deleted"
+	response.Data = param
+
+	return c.JSON(http.StatusOK, response)
 }

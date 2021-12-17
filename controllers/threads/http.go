@@ -36,7 +36,7 @@ func (ctrl *ThreadsController) Create(c echo.Context) error {
 		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
 
-	return controller.ThreadsuccessResponse(c, response.FromDomain(resp))
+	return controller.NewSuccessResponse(c, response.FromDomain(resp))
 }
 
 func (ctrl *ThreadsController) ReadID(c echo.Context) error {
@@ -47,14 +47,14 @@ func (ctrl *ThreadsController) ReadID(c echo.Context) error {
 		return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
 	}
 
-	id, err := strconv.Atoi(idstr)
+	id, _ := strconv.Atoi(idstr)
 
 	resp, err := ctrl.threadsUseCase.GetByID(ctx, id)
 	if err != nil {
 		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
 
-	return controller.ThreadsuccessResponse(c, response.FromDomain(resp))
+	return controller.NewSuccessResponse(c, response.FromDomain(resp))
 }
 
 func (ctrl *ThreadsController) Update(c echo.Context) error {
@@ -65,7 +65,7 @@ func (ctrl *ThreadsController) Update(c echo.Context) error {
 		return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
 	}
 
-	id, err := strconv.Atoi(idstr)
+	id, _ := strconv.Atoi(idstr)
 
 	req := request.Threads{}
 	if err := c.Bind(&req); err != nil {
@@ -79,5 +79,30 @@ func (ctrl *ThreadsController) Update(c echo.Context) error {
 		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
 
-	return controller.ThreadsuccessResponse(c, response.FromDomain(*resp))
+	return controller.NewSuccessResponse(c, response.FromDomain(*resp))
+}
+
+func (ctrl *ThreadsController) Delete(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	idstr := c.Param("id")
+	if strings.TrimSpace(idstr) == "" {
+		return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
+	}
+
+	id, _ := strconv.Atoi(idstr)
+
+	req := request.Threads{}
+	if err := c.Bind(&req); err != nil {
+		return controller.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	domainReq := req.ToDomain()
+	domainReq.ID = id
+	resp, err := ctrl.threadsUseCase.Delete(ctx, domainReq)
+	if err != nil {
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+
+	return controller.NewDeleteResponse(c, response.FromDomain(*resp))
 }

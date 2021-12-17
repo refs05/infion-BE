@@ -3,7 +3,7 @@ package businesses
 import "errors"
 
 var (
-	ErrInternalServer = errors.New("something gone wrong, contact administrator")
+	ErrInternalServer = errors.New("something's gone wrong, contact administrator")
 
 	ErrNotFound = errors.New("data not found")
 

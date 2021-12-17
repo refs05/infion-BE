@@ -102,3 +102,18 @@ func (tu *threadsUsecase) Update(ctx context.Context, threadsDomain *Domain) (*D
 
 	return &result, nil
 }
+
+func (tu *threadsUsecase) Delete(ctx context.Context, threadsDomain *Domain) (*Domain, error) {
+	existedThreads, err := tu.threadsRepository.GetByID(ctx, threadsDomain.ID)
+	if err != nil {
+		return &Domain{}, err
+	}
+	threadsDomain.ID = existedThreads.ID
+
+	result, err := tu.threadsRepository.Delete(ctx, threadsDomain)
+	if err != nil {
+		return &Domain{}, err
+	}
+
+	return &result, nil
+}

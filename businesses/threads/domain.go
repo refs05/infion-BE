@@ -25,12 +25,14 @@ type Usecase interface {
 	// GetByTitle(ctx context.Context, threadsTitle string) (Domain, error)
 	// Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error)
 	Update(ctx context.Context, threadsDomain *Domain) (*Domain, error)
+	Delete(ctx context.Context, threadsDomain *Domain) (*Domain, error)
 }
 
 type Repository interface {
-	GetByID(ctx context.Context, threadsId int) (Domain, error)
 	Store(ctx context.Context, threadsDomain *Domain) (Domain, error)
+	GetByID(ctx context.Context, threadsId int) (Domain, error)
 	// GetByTitle(ctx context.Context, threadsTitle string) (Domain, error)
 	// Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error)
 	Update(ctx context.Context, threadsDomain *Domain) (Domain, error)
+	Delete(ctx context.Context, threadsDomain *Domain) (Domain, error)
 }

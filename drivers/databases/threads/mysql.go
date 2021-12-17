@@ -76,10 +76,16 @@ func (nr *mysqlThreadsRepository) Update(ctx context.Context, threadsDomain *thr
 		return threads.Domain{}, result.Error
 	}
 
-	// err := nr.Conn.Preload("Category").First(&rec, rec.ID).Error
-	// if err != nil {
-	// 	return threads.Domain{}, result.Error
-	// }
+	return rec.toDomain(), nil
+}
+
+func (nr *mysqlThreadsRepository) Delete(ctx context.Context, threadsDomain *threads.Domain) (threads.Domain, error) {
+	rec := fromDomain(threadsDomain)
+
+	result := nr.Conn.Delete(&rec)
+	if result.Error != nil {
+		return threads.Domain{}, result.Error
+	}
 
 	return rec.toDomain(), nil
 }
