@@ -1,0 +1,20 @@
+{
+    "debug": true,
+    "server": {
+        "address": ""
+    },
+    "context": {
+        "timeout": 2
+    },
+    "database": {
+        "host": "",
+        "port": "",
+        "user": "",
+        "pass": "",
+        "name": ""
+    },
+    "jwt": {
+        "secret": "",
+        "expired": 72
+    }
+}
