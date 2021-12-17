@@ -88,17 +88,17 @@ func (tu *threadsUsecase) GetByID(ctx context.Context, threadsId int) (Domain, e
 // 	return res, total, nil
 // }
 
-// func (tu *threadsUsecase) Update(ctx context.Context, threadsDomain *Domain) (*Domain, error) {
-// 	existedThreads, err := tu.threadsRepository.GetByID(ctx, threadsDomain.ID)
-// 	if err != nil {
-// 		return &Domain{}, err
-// 	}
-// 	threadsDomain.ID = existedThreads.ID
+func (tu *threadsUsecase) Update(ctx context.Context, threadsDomain *Domain) (*Domain, error) {
+	existedThreads, err := tu.threadsRepository.GetByID(ctx, threadsDomain.ID)
+	if err != nil {
+		return &Domain{}, err
+	}
+	threadsDomain.ID = existedThreads.ID
 
-// 	result, err := tu.threadsRepository.Update(ctx, threadsDomain)
-// 	if err != nil {
-// 		return &Domain{}, err
-// 	}
+	result, err := tu.threadsRepository.Update(ctx, threadsDomain)
+	if err != nil {
+		return &Domain{}, err
+	}
 
-// 	return &result, nil
-// }
+	return &result, nil
+}

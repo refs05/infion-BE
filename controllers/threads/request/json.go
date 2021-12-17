@@ -7,9 +7,9 @@ type Threads struct {
 	Img				string `json:"img"`
 	Content      	string `json:"content"`
 	Category   		string `json:"category"`
-	UserID			int `json:"userID"`
-	LikeCount		int `json:"likeCount"`
-	CommentCount	int `json:"commentCount"`
+	UserID			int `json:"user_id"`
+	LikeCount		int `json:"like_count"`
+	CommentCount	int `json:"comment_count"`
 }
 
 func (req *Threads) ToDomain() *threads.Domain {

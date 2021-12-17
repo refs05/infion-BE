@@ -57,26 +57,27 @@ func (ctrl *ThreadsController) ReadID(c echo.Context) error {
 	return controller.ThreadsuccessResponse(c, response.FromDomain(resp))
 }
 
-// func (ctrl *ThreadsController) Update(c echo.Context) error {
-// 	ctx := c.Request().Context()
+func (ctrl *ThreadsController) Update(c echo.Context) error {
+	ctx := c.Request().Context()
 
-// 	id := c.QueryParam("id")
-// 	if strings.TrimSpace(id) == "" {
-// 		return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
-// 	}
+	idstr := c.Param("id")
+	if strings.TrimSpace(idstr) == "" {
+		return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
+	}
 
-// 	req := request.Threads{}
-// 	if err := c.Bind(&req); err != nil {
-// 		return controller.NewErrorResponse(c, http.StatusBadRequest, err)
-// 	}
+	id, err := strconv.Atoi(idstr)
 
-// 	domainReq := req.ToDomain()
-// 	idInt, _ := strconv.Atoi(id)
-// 	domainReq.ID = idInt
-// 	resp, err := ctrl.threadsUseCase.Update(ctx, domainReq)
-// 	if err != nil {
-// 		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
-// 	}
+	req := request.Threads{}
+	if err := c.Bind(&req); err != nil {
+		return controller.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
 
-// 	return controller.ThreadsuccessResponse(c, response.FromDomain(*resp))
-// }
+	domainReq := req.ToDomain()
+	domainReq.ID = id
+	resp, err := ctrl.threadsUseCase.Update(ctx, domainReq)
+	if err != nil {
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+
+	return controller.ThreadsuccessResponse(c, response.FromDomain(*resp))
+}
