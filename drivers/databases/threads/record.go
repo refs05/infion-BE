@@ -12,6 +12,7 @@ type Threads struct {
 	Content      	string
 	Category   		string
 	UserID			int
+	// User.user
 	LikeCount		int
 	CommentCount	int
 	CreatedAt    	time.Time
