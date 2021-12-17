@@ -2,6 +2,7 @@ package threads
 
 import (
 	"context"
+	"infion-BE/businesses"
 	"time"
 )
 
@@ -17,52 +18,6 @@ func NewThreadsUsecase(tr Repository, timeout time.Duration) Usecase {
 	}
 }
 
-// func (tu *threadsUsecase) Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error) {
-// 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
-// 	defer cancel()
-
-// 	if page <= 0 {
-// 		page = 1
-// 	}
-// 	if perpage <= 0 {
-// 		perpage = 25
-// 	}
-
-// 	res, total, err := tu.threadsRepository.Fetch(ctx, page, perpage)
-// 	if err != nil {
-// 		return []Domain{}, 0, err
-// 	}
-
-// 	return res, total, nil
-// }
-// func (tu *threadsUsecase) GetByID(ctx context.Context, threadsId int) (Domain, error) {
-// 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
-// 	defer cancel()
-
-// 	if threadsId <= 0 {
-// 		return Domain{}, businesses.ErrThreadsIDResource
-// 	}
-// 	res, err := tu.threadsRepository.GetByID(ctx, threadsId)
-// 	if err != nil {
-// 		return Domain{}, err
-// 	}
-
-// 	return res, nil
-// }
-// func (tu *threadsUsecase) GetByTitle(ctx context.Context, threadsTitle string) (Domain, error) {
-// 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
-// 	defer cancel()
-
-// 	if strings.TrimSpace(threadsTitle) == "" {
-// 		return Domain{}, businesses.ErrThreadsTitleResource
-// 	}
-// 	res, err := tu.threadsRepository.GetByTitle(ctx, threadsTitle)
-// 	if err != nil {
-// 		return Domain{}, err
-// 	}
-
-// 	return res, nil
-// }
 func (tu *threadsUsecase) Store(ctx context.Context, threadsDomain *Domain) (Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
 	defer cancel()
@@ -84,6 +39,55 @@ func (tu *threadsUsecase) Store(ctx context.Context, threadsDomain *Domain) (Dom
 
 	return result, nil
 }
+
+func (tu *threadsUsecase) GetByID(ctx context.Context, threadsId int) (Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
+	defer cancel()
+
+	if threadsId <= 0 {
+		return Domain{}, businesses.ErrThreadsIDResource
+	}
+	res, err := tu.threadsRepository.GetByID(ctx, threadsId)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return res, nil
+}
+
+// func (tu *threadsUsecase) GetByTitle(ctx context.Context, threadsTitle string) (Domain, error) {
+// 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
+// 	defer cancel()
+
+// 	if strings.TrimSpace(threadsTitle) == "" {
+// 		return Domain{}, businesses.ErrThreadsTitleResource
+// 	}
+// 	res, err := tu.threadsRepository.GetByTitle(ctx, threadsTitle)
+// 	if err != nil {
+// 		return Domain{}, err
+// 	}
+
+// 	return res, nil
+// }
+// func (tu *threadsUsecase) Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error) {
+// 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
+// 	defer cancel()
+
+// 	if page <= 0 {
+// 		page = 1
+// 	}
+// 	if perpage <= 0 {
+// 		perpage = 25
+// 	}
+
+// 	res, total, err := tu.threadsRepository.Fetch(ctx, page, perpage)
+// 	if err != nil {
+// 		return []Domain{}, 0, err
+// 	}
+
+// 	return res, total, nil
+// }
+
 // func (tu *threadsUsecase) Update(ctx context.Context, threadsDomain *Domain) (*Domain, error) {
 // 	existedThreads, err := tu.threadsRepository.GetByID(ctx, threadsDomain.ID)
 // 	if err != nil {

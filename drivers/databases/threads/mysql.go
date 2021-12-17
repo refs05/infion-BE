@@ -17,6 +17,35 @@ func NewMySQLRepository(conn *gorm.DB) threads.Repository {
 	}
 }
 
+func (nr *mysqlThreadsRepository) Store(ctx context.Context, threadsDomain *threads.Domain) (threads.Domain, error) {
+	rec := fromDomain(threadsDomain)
+
+	result := nr.Conn.Create(&rec)
+	if result.Error != nil {
+		return threads.Domain{}, result.Error
+	}
+
+	return rec.toDomain(), nil
+}
+
+func (nr *mysqlThreadsRepository) GetByID(ctx context.Context, threadsId int) (threads.Domain, error) {
+	rec := Threads{}
+	err := nr.Conn.Where("id = ?", threadsId).First(&rec).Error
+	if err != nil {
+		return threads.Domain{}, err
+	}
+	return rec.toDomain(), nil
+}
+
+// func (nr *mysqlThreadsRepository) GetByTitle(ctx context.Context, threadsTitle string) (threads.Domain, error) {
+// 	rec := Threads{}
+// 	err := nr.Conn.Where("title = ?", threadsTitle).First(&rec).Error
+// 	if err != nil {
+// 		return threads.Domain{}, err
+// 	}
+// 	return rec.toDomain(), nil
+// }
+
 // func (nr *mysqlThreadsRepository) Fetch(ctx context.Context, page, perpage int) ([]threads.Domain, int, error) {
 // 	rec := []Threads{}
 
@@ -38,35 +67,6 @@ func NewMySQLRepository(conn *gorm.DB) threads.Repository {
 // 	}
 // 	return domainThreads, int(totalData), nil
 // }
-
-// func (nr *mysqlThreadsRepository) GetByID(ctx context.Context, threadsId int) (threads.Domain, error) {
-// 	rec := Threads{}
-// 	err := nr.Conn.Where("id = ?", threadsId).First(&rec).Error
-// 	if err != nil {
-// 		return threads.Domain{}, err
-// 	}
-// 	return rec.toDomain(), nil
-// }
-
-// func (nr *mysqlThreadsRepository) GetByTitle(ctx context.Context, threadsTitle string) (threads.Domain, error) {
-// 	rec := Threads{}
-// 	err := nr.Conn.Where("title = ?", threadsTitle).First(&rec).Error
-// 	if err != nil {
-// 		return threads.Domain{}, err
-// 	}
-// 	return rec.toDomain(), nil
-// }
-
-func (nr *mysqlThreadsRepository) Store(ctx context.Context, threadsDomain *threads.Domain) (threads.Domain, error) {
-	rec := fromDomain(threadsDomain)
-
-	result := nr.Conn.Create(&rec)
-	if result.Error != nil {
-		return threads.Domain{}, result.Error
-	}
-
-	return rec.toDomain(), nil
-}
 
 // func (nr *mysqlThreadsRepository) Update(ctx context.Context, threadsDomain *threads.Domain) (threads.Domain, error) {
 // 	rec := fromDomain(threadsDomain)
