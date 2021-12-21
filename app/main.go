@@ -1,8 +1,6 @@
 package main
 
 import (
-	_driverFactory "infion-BE/drivers"
-
 	_threadsUsecase "infion-BE/businesses/threads"
 	_threadsController "infion-BE/controllers/threads"
 	_threadsRepo "infion-BE/drivers/databases/threads"
@@ -53,7 +51,7 @@ func main() {
 
 	e := echo.New()
 
-	threadsRepo := _driverFactory.NewThreadsRepository(db)
+	threadsRepo := _threadsRepo.NewThreadsRepository(db)
 	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext)
 	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
 
