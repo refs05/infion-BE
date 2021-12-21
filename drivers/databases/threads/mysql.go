@@ -11,7 +11,7 @@ type mysqlThreadsRepository struct {
 	Conn *gorm.DB
 }
 
-func NewMySQLRepository(conn *gorm.DB) threads.Repository {
+func NewThreadsRepository(conn *gorm.DB) threads.Repository {
 	return &mysqlThreadsRepository{
 		Conn: conn,
 	}
