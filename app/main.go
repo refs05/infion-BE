@@ -5,6 +5,10 @@ import (
 	_threadsController "infion-BE/controllers/threads"
 	_threadsRepo "infion-BE/drivers/databases/threads"
 
+	_rolesUsecase "infion-BE/businesses/roles"
+	_rolesController "infion-BE/controllers/roles"
+	_rolesRepo "infion-BE/drivers/databases/roles"
+
 	_dbDriver "infion-BE/drivers/mysql"
 
 	_middleware "infion-BE/app/middleware"
@@ -33,6 +37,7 @@ func init() {
 func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&_threadsRepo.Threads{},
+		&_rolesRepo.Roles{},
 	)
 }
 
@@ -55,9 +60,14 @@ func main() {
 	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext)
 	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
 
+	rolesRepo := _rolesRepo.NewRolesRepository(db)
+	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
+	rolesCtrl := _rolesController.NewRolesController(rolesUsecase)
+
 
 	routesInit := _routes.ControllerList{
-		ThreadsController:     *threadsCtrl,
+		ThreadsController:		*threadsCtrl,
+		RolesController:		*rolesCtrl,
 	}
 	routesInit.RouteRegister(e)
 
