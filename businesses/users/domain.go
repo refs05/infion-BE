@@ -24,12 +24,12 @@ type DomainUser struct{
 }
 
 
-type UserUseCaseInterface interface {
+type UseCase interface {
 	Login(domain DomainUser, ctx context.Context )(DomainUser,error)
 	CreateNewUser(domain DomainUser, ctx context.Context)(DomainUser,error)
 }
 
-type UserRepoInterface interface{
+type Repository interface{
 	Login(domain DomainUser, ctx context.Context )(DomainUser,error)
 	GetUsername(domain DomainUser,ctx context.Context)(DomainUser,error)
 	CreateNewUser(domain DomainUser, ctx context.Context)(DomainUser,error)

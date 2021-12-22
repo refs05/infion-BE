@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"infion-BE/bussiness/users"
+	"infion-BE/businesses/users"
 	"infion-BE/controllers"
 	"infion-BE/controllers/users/request"
 	"infion-BE/controllers/users/response"
@@ -11,9 +11,9 @@ import (
 )
 
 type UserController struct {
-	usecase users.UserUseCaseInterface
+	usecase users.UseCase
 }
-func NewUserController(uc users.UserUseCaseInterface)*UserController{
+func NewUserController(uc users.UseCase)*UserController{
 	return &UserController{
 		usecase: uc,
 	}
@@ -24,11 +24,11 @@ func (controller *UserController) Login(c echo.Context)error{
 	err := c.Bind(&userLogin)
 
 	if err != nil{
-		return controllers.ErrorResponse(c,http.StatusInternalServerError,"error binding",err)
+		return controllers.NewErrorResponse(c,http.StatusInternalServerError,err)
 
 	}
 	user,err := controller.usecase.Login(*userLogin.ToDomain(),ctx)
-	return controllers.SuccessResponse(c,response.FromDomain(user))
+	return controllers.NewSuccessResponse(c,response.FromDomain(user))
 }
 
 func (controller *UserController) CreateNewUser(c echo.Context)error{
@@ -43,9 +43,9 @@ func (controller *UserController) CreateNewUser(c echo.Context)error{
 	// err := c.Bind(&createUser)
 
 	if err != nil{
-		return controllers.ErrorResponse(c,http.StatusInternalServerError,"error binding",err)
+		return controllers.NewErrorResponse(c,http.StatusInternalServerError,err)
 
 	}
 	user,err := controller.usecase.CreateNewUser(*createUser.ToDomain(),ctx)
-	return controllers.SuccessResponse(c,response.FromDomain(user))
+	return controllers.NewSuccessResponse(c,response.FromDomain(user))
 }

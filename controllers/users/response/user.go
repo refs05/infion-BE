@@ -1,7 +1,7 @@
 package response
 
 import (
-	"infion-BE/bussiness/users"
+	"infion-BE/businesses/users"
 	"time"
 
 	"gorm.io/gorm"

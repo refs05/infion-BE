@@ -1,61 +1,93 @@
 package main
 
 import (
+
+	_threadsUsecase "infion-BE/businesses/threads"
+	_threadsController "infion-BE/controllers/threads"
+	_threadsRepo "infion-BE/drivers/databases/threads"
+
+	_rolesUsecase "infion-BE/businesses/roles"
+	_rolesController "infion-BE/controllers/roles"
+	_rolesRepo "infion-BE/drivers/databases/roles"
+
+	_userUseCase "infion-BE/businesses/users"
+	_userController "infion-BE/controllers/users"
+	_userRepo "infion-BE/drivers/databases/users"
+
+	_dbDriver "infion-BE/drivers/mysql"
+
+	_middleware "infion-BE/app/middleware"
+	_routes "infion-BE/app/routes"
+
 	"log"
 	"time"
 
-	"infion-BE/app/routes"
-	userUseCase "infion-BE/bussiness/users"
-	userController "infion-BE/controllers/users"
-	userRepo "infion-BE/drivers/databases/users"
-
-	"github.com/labstack/echo/v4"
+	echo "github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
-	"infion-BE/drivers/mysql"
+
 	"gorm.io/gorm"
 )
 
 func init() {
-	viper.SetConfigFile("config/config.json")
-	err:= viper.ReadInConfig()
 
-	if err != nil{
+	viper.SetConfigFile(`config/config.json`)
+	err := viper.ReadInConfig()
+	if err != nil {
 		panic(err)
 	}
 
-	if viper.GetBool(`debug`){
+	if viper.GetBool(`debug`) {
+
 		log.Println("Service RUN on DEBUG mode")
 	}
 }
 
-func dbMigrate(db *gorm.DB){
-	db.AutoMigrate(&userRepo.User{})
+
+func dbMigrate(db *gorm.DB) {
+	db.AutoMigrate(
+		&_threadsRepo.Threads{},
+		&_rolesRepo.Roles{},
+		&_userRepo.User{},
+		
+	)
 }
 
-func main(){
-	configDb := mysql.ConfigDB{
+func main() {
+	configDB := _dbDriver.ConfigDB{
 		DB_Username: viper.GetString(`database.user`),
 		DB_Password: viper.GetString(`database.pass`),
-		DB_Host: viper.GetString(`database.host`),
-		DB_Port: viper.GetString(`database.port`),
+		DB_Host:     viper.GetString(`database.host`),
+		DB_Port:     viper.GetString(`database.port`),
 		DB_Database: viper.GetString(`database.name`),
 	}
-	db:= configDb.InitialDb()
+	db := configDB.InitialDB()
 	dbMigrate(db)
 
-	timeoutContext := time.Duration(viper.GetInt("context.timeout"))*time.Second
+	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
 	e := echo.New()
 
-	userRepoInterface := userRepo.NewUserRepository(db)
-	userUseCaseInterface := userUseCase.NewUseCase(userRepoInterface,timeoutContext)
-	userControllerInterface := userController.NewUserController(userUseCaseInterface)
+	threadsRepo := _threadsRepo.NewThreadsRepository(db)
+	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext)
+	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
+
+	rolesRepo := _rolesRepo.NewRolesRepository(db)
+	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
+	rolesCtrl := _rolesController.NewRolesController(rolesUsecase)
+
+	userRepo := _userRepo.NewUserRepository(db)
+	userUsecase := _userUseCase.NewUseCase(userRepo,timeoutContext)
+	userCtrl := _userController.NewUserController(userUsecase)
 
 
-	routesInit := routes.RouteControllerList{
-		UserController: *userControllerInterface,
-		
+
+	routesInit := _routes.ControllerList{
+		ThreadsController:		*threadsCtrl,
+		RolesController:		*rolesCtrl,
+		UserController: 		*userCtrl,
 	}
 	routesInit.RouteRegister(e)
+
+	_middleware.LogMiddlewareInit(e)
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }

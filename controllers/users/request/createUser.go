@@ -1,6 +1,6 @@
 package request
 
-import "infion-BE/bussiness/users"
+import "infion-BE/businesses/users"
 
 type CreateUser struct {
 	Username string `json:"username"`
