@@ -13,6 +13,8 @@ var (
 
 	ErrThreadsTitleResource = errors.New("(ThreadsTitle) not found or empty")
 
+	ErrRolesIDResource = errors.New("(RolesID) not found or empty")
+
 	ErrCategoryNotFound = errors.New("category not found")
 
 	ErrDuplicateData = errors.New("duplicate data")
