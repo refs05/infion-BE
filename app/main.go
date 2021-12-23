@@ -1,7 +1,6 @@
 package main
 
 import (
-
 	_threadsUsecase "infion-BE/businesses/threads"
 	_threadsController "infion-BE/controllers/threads"
 	_threadsRepo "infion-BE/drivers/databases/threads"
@@ -24,7 +23,6 @@ import (
 
 	echo "github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
-
 	"gorm.io/gorm"
 )
 
@@ -37,11 +35,9 @@ func init() {
 	}
 
 	if viper.GetBool(`debug`) {
-
 		log.Println("Service RUN on DEBUG mode")
 	}
 }
-
 
 func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(
@@ -78,8 +74,6 @@ func main() {
 	userRepo := _userRepo.NewUserRepository(db)
 	userUsecase := _userUseCase.NewUseCase(userRepo,timeoutContext)
 	userCtrl := _userController.NewUserController(userUsecase)
-
-
 
 	routesInit := _routes.ControllerList{
 		ThreadsController:		*threadsCtrl,

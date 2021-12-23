@@ -1,4 +1,3 @@
-
 package mysql_driver
 
 import (
@@ -16,7 +15,6 @@ type ConfigDB struct {
 	DB_Port     string
 	DB_Database string
 }
-
 
 func (config *ConfigDB) InitialDB() *gorm.DB {
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",

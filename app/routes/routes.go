@@ -12,6 +12,11 @@ type ControllerList struct {
 	ThreadsController    threads.ThreadsController
 	RolesController     roles.RolesController
 	UserController 		userController.UserController
+)
+
+type ControllerList struct {
+	ThreadsController     threads.ThreadsController
+	RolesController     roles.RolesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -30,5 +35,4 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	roles.GET("/:id", cl.RolesController.ReadID)
 	roles.PUT("/:id", cl.RolesController.Update)
 	roles.DELETE("/:id", cl.RolesController.Delete)
-
 }

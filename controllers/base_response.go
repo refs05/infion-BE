@@ -1,10 +1,10 @@
+
 package controllers
 
 import (
 	"net/http"
 
 	echo "github.com/labstack/echo/v4"
-
 )
 
 type BaseResponse struct {
@@ -41,5 +41,4 @@ func NewDeleteResponse(c echo.Context, param interface{}) error {
 	response.Data = param
 
 	return c.JSON(http.StatusOK, response)
-
 }
