@@ -62,6 +62,13 @@ func TestGetByID(t *testing.T){
 		assert.Equal(t, rolesDomain, result)
 	})
 
+	t.Run("GetByID | InValid rolesId <= 0", func(t *testing.T) {
+		ctx := context.Background()
+		_, err := rolesUsecase.GetByID(ctx, 0)
+
+		assert.NotNil(t, err)
+	})
+
 	t.Run("GetByID | InValid", func(t *testing.T) {
 		rolesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(rolesDomain, businesses.ErrInternalServer).Once()
 
@@ -84,7 +91,16 @@ func TestUpdate(t *testing.T){
 		assert.Equal(t, &rolesDomain, result)
 	})
 
-	t.Run("Update | InValid", func(t *testing.T) {
+	t.Run("Update | InValid 1", func(t *testing.T) {
+		rolesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(rolesDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := rolesUsecase.Update(ctx, &rolesDomain)
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("Update | InValid 2", func(t *testing.T) {
 		rolesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(rolesDomain, nil).Once()
 		rolesRepository.On("Update", mock.Anything, mock.AnythingOfType("*roles.Domain")).Return(rolesDomain, businesses.ErrInternalServer).Once()
 
@@ -107,7 +123,16 @@ func TestDelete(t *testing.T){
 		assert.Equal(t, &rolesDomain, result)
 	})
 
-	t.Run("Delete | InValid", func(t *testing.T) {
+	t.Run("Delete | InValid 1", func(t *testing.T) {
+		rolesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(rolesDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := rolesUsecase.Delete(ctx, &rolesDomain)
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("Delete | InValid 2", func(t *testing.T) {
 		rolesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(rolesDomain, nil).Once()
 		rolesRepository.On("Delete", mock.Anything, mock.AnythingOfType("*roles.Domain")).Return(rolesDomain, businesses.ErrInternalServer).Once()
 
