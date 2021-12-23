@@ -5,6 +5,13 @@ import (
 	"infion-BE/controllers/threads"
 
 	echo "github.com/labstack/echo/v4"
+	userController "infion-BE/controllers/users"
+)
+
+type ControllerList struct {
+	ThreadsController    threads.ThreadsController
+	RolesController     roles.RolesController
+	UserController 		userController.UserController
 )
 
 type ControllerList struct {
@@ -18,6 +25,10 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	threads.GET("/:id", cl.ThreadsController.ReadID)
 	threads.PUT("/:id", cl.ThreadsController.Update)
 	threads.DELETE("/:id", cl.ThreadsController.Delete)
+
+	users := e.Group("/user")
+	users.POST("/login",cl.UserController.Login)
+	users.POST("/create",cl.UserController.CreateNewUser)
 
 	roles := e.Group("roles")
 	roles.POST("/create", cl.RolesController.Create)

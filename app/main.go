@@ -9,6 +9,10 @@ import (
 	_rolesController "infion-BE/controllers/roles"
 	_rolesRepo "infion-BE/drivers/databases/roles"
 
+	_userUseCase "infion-BE/businesses/users"
+	_userController "infion-BE/controllers/users"
+	_userRepo "infion-BE/drivers/databases/users"
+
 	_dbDriver "infion-BE/drivers/mysql"
 
 	_middleware "infion-BE/app/middleware"
@@ -23,6 +27,7 @@ import (
 )
 
 func init() {
+
 	viper.SetConfigFile(`config/config.json`)
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -38,6 +43,8 @@ func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&_threadsRepo.Threads{},
 		&_rolesRepo.Roles{},
+		&_userRepo.User{},
+		
 	)
 }
 
@@ -64,10 +71,14 @@ func main() {
 	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
 	rolesCtrl := _rolesController.NewRolesController(rolesUsecase)
 
+	userRepo := _userRepo.NewUserRepository(db)
+	userUsecase := _userUseCase.NewUseCase(userRepo,timeoutContext)
+	userCtrl := _userController.NewUserController(userUsecase)
 
 	routesInit := _routes.ControllerList{
 		ThreadsController:		*threadsCtrl,
 		RolesController:		*rolesCtrl,
+		UserController: 		*userCtrl,
 	}
 	routesInit.RouteRegister(e)
 

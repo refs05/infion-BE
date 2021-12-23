@@ -20,4 +20,9 @@ var (
 	ErrDuplicateData = errors.New("duplicate data")
 
 	ErrUsernamePasswordNotFound = errors.New("(Username) or (Password) empty")
+
+	ErrWrongFormat = errors.New("Wrong Email Format")
+
+	ErrWrongPass = errors.New("Wrong Password")
+
 )
