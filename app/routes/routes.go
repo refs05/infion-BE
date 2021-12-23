@@ -4,8 +4,9 @@ import (
 	"infion-BE/controllers/roles"
 	"infion-BE/controllers/threads"
 
-	echo "github.com/labstack/echo/v4"
 	userController "infion-BE/controllers/users"
+
+	echo "github.com/labstack/echo/v4"
 )
 
 type ControllerList struct {

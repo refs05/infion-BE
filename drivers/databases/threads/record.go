@@ -2,17 +2,18 @@ package threads
 
 import (
 	threadsUsecase "infion-BE/businesses/threads"
+	"infion-BE/drivers/databases/users"
 	"time"
 )
 
 type Threads struct {
-	ID           	int
+	ID           	int `gorm:"primaryKey"`
 	Title      		string 
 	Img				string
 	Content      	string
 	Category   		string
 	UserID			int
-	// User.user
+	User			users.User
 	LikeCount		int
 	CommentCount	int
 	CreatedAt    	time.Time
@@ -40,6 +41,7 @@ func (rec *Threads) toDomain() threadsUsecase.Domain {
 		Content:    	rec.Content,
 		Category:   	rec.Category,
 		UserID: 		rec.UserID,
+		User:			rec.User.Username,
 		LikeCount:  	rec.LikeCount,
 		CommentCount: 	rec.CommentCount,
 		CreatedAt:    	rec.CreatedAt,
