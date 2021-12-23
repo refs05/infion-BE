@@ -32,3 +32,13 @@ func FromDomain(domain threads.Domain) Threads {
 		UpdatedAt:    	domain.UpdatedAt,
 	}
 }
+
+func NewResponseArray(domainThreads []threads.Domain) []Threads {
+	var resp []Threads
+
+	for _, value := range domainThreads {
+		resp = append(resp, FromDomain(value))
+	}
+
+	return resp
+}

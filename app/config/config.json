@@ -10,11 +10,11 @@
         "host": "localhost",
         "port": "3306",
         "user": "root",
-        "pass": "",
+        "pass": "BavarianRestu2002",
         "name": "infion"
     },
     "jwt":{
         "secret":"supersecret12345!@#$%",
         "expired": 72
     }
-}
+}   

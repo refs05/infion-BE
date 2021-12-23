@@ -18,6 +18,14 @@ func NewThreadsUsecase(tr Repository, timeout time.Duration) Usecase {
 	}
 }
 
+func (tu *threadsUsecase) GetThreads(ctx context.Context) ([]Domain, error) {
+	result, err := tu.threadsRepository.GetThreads(ctx)
+	if err != nil {
+		return []Domain{}, err
+	}
+	return result, nil
+}
+
 func (tu *threadsUsecase) Store(ctx context.Context, threadsDomain *Domain) (Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
 	defer cancel()
