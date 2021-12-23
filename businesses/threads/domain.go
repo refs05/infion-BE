@@ -26,6 +26,7 @@ type Usecase interface {
 	// Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error)
 	Update(ctx context.Context, threadsDomain *Domain) (*Domain, error)
 	Delete(ctx context.Context, threadsDomain *Domain) (*Domain, error)
+	GetThreads(ctx context.Context) ([]Domain, error)
 }
 
 type Repository interface {
@@ -35,4 +36,5 @@ type Repository interface {
 	// Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error)
 	Update(ctx context.Context, threadsDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, threadsDomain *Domain) (Domain, error)
+	GetThreads(ctx context.Context) ([]Domain, error)
 }

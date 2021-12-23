@@ -12,11 +12,6 @@ type ControllerList struct {
 	ThreadsController    threads.ThreadsController
 	RolesController     roles.RolesController
 	UserController 		userController.UserController
-)
-
-type ControllerList struct {
-	ThreadsController     threads.ThreadsController
-	RolesController     roles.RolesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -25,8 +20,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	threads.GET("/:id", cl.ThreadsController.ReadID)
 	threads.PUT("/:id", cl.ThreadsController.Update)
 	threads.DELETE("/:id", cl.ThreadsController.Delete)
+	threads.GET("/list", cl.ThreadsController.GetThreads)
 
-	users := e.Group("/user")
+	users := e.Group("user")
 	users.POST("/login",cl.UserController.Login)
 	users.POST("/create",cl.UserController.CreateNewUser)
 

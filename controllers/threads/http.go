@@ -106,3 +106,14 @@ func (ctrl *ThreadsController) Delete(c echo.Context) error {
 
 	return controller.NewDeleteResponse(c, response.FromDomain(*resp))
 }
+
+func (ctrl *ThreadsController) GetThreads(c echo.Context) error {
+	ctx := c.Request().Context()
+	
+	threads, err := ctrl.threadsUseCase.GetThreads(ctx)
+	if err != nil {
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+
+	return controller.NewSuccessResponse(c, response.NewResponseArray(threads))
+}
