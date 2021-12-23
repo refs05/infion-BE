@@ -27,10 +27,12 @@ type DomainUser struct{
 type UseCase interface {
 	Login(domain DomainUser, ctx context.Context )(DomainUser,error)
 	CreateNewUser(domain DomainUser, ctx context.Context)(DomainUser,error)
+	FindById(userId int,ctx context.Context)(DomainUser,error)
 }
 
 type Repository interface{
 	Login(domain DomainUser, ctx context.Context )(DomainUser,error)
 	GetUsername(domain DomainUser,ctx context.Context)(DomainUser,error)
 	CreateNewUser(domain DomainUser, ctx context.Context)(DomainUser,error)
+	FindById(userId int,ctx context.Context)(DomainUser,error)
 }

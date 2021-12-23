@@ -59,6 +59,16 @@ func (repo *UserRepository) CreateNewUser(domain users.DomainUser,ctx context.Co
 	return userDb.ToDomain(),nil
 }
 
+func (repo *UserRepository) FindById(userId int,ctx context.Context)(users.DomainUser,error){
+	user := User{}
+	err := repo.db.First(&user, userId).Error
+
+	if err != nil{
+		return users.DomainUser{},err
+	}
+	return user.ToDomain(),nil
+}
+
 // func (repo *UserRepository) GetEmail(ctx context.Context,email string)(users.DomainUser,error){
 // 	data := User{}
 
