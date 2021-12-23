@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"infion-BE/businesses"
-	
+
 	"infion-BE/drivers/helpers/encrypt"
 
 	"regexp"
@@ -90,5 +90,12 @@ return existedUser,businesses.ErrDuplicateData
 }
 }
 
+func (usecase *UserUseCase)FindById(userId int,ctx context.Context)(DomainUser,error){
+	rec,err := usecase.repo.FindById(userId,ctx)
+ if err != nil{
+	 return DomainUser{},err
+ }
+ return rec, nil
+}
 
 
