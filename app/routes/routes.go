@@ -4,19 +4,15 @@ import (
 	"infion-BE/controllers/roles"
 	"infion-BE/controllers/threads"
 
-	echo "github.com/labstack/echo/v4"
 	userController "infion-BE/controllers/users"
+
+	echo "github.com/labstack/echo/v4"
 )
 
 type ControllerList struct {
 	ThreadsController    threads.ThreadsController
 	RolesController     roles.RolesController
 	UserController 		userController.UserController
-)
-
-type ControllerList struct {
-	ThreadsController     threads.ThreadsController
-	RolesController     roles.RolesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
