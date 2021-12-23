@@ -22,7 +22,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	threads.PUT("/:id", cl.ThreadsController.Update)
 	threads.DELETE("/:id", cl.ThreadsController.Delete)
 
-	users := e.Group("/user")
+	users := e.Group("user")
 	users.POST("/login",cl.UserController.Login)
 	users.POST("/create",cl.UserController.CreateNewUser)
 	users.GET("/:id",cl.UserController.FindById)
