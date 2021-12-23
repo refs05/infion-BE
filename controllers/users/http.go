@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	
 	"infion-BE/businesses/users"
 	"infion-BE/controllers"
 	"infion-BE/controllers/users/request"
 	"infion-BE/controllers/users/response"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -48,4 +50,18 @@ func (controller *UserController) CreateNewUser(c echo.Context)error{
 	}
 	user,err := controller.usecase.CreateNewUser(*createUser.ToDomain(),ctx)
 	return controllers.NewSuccessResponse(c,response.FromDomain(user))
+}
+
+func (controller *UserController) FindById(c echo.Context)error{
+	ctx := c.Request().Context()
+	id,_:=strconv.Atoi(c.Param("id"))
+	
+	user,err := controller.usecase.FindById(id,ctx)
+
+	if err != nil{
+		return controllers.NewErrorResponse(c,http.StatusBadGateway,err)
+	}
+	return controllers.NewSuccessResponse(c,response.FromDomain(user))
+
+
 }
