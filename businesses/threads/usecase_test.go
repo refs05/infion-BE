@@ -56,6 +56,7 @@ func TestStore(t *testing.T){
 		_, err := threadsUsecase.Store(ctx, &threadsDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
 
@@ -75,6 +76,7 @@ func TestGetByID(t *testing.T){
 		_, err := threadsUsecase.GetByID(ctx, 0)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrThreadsIDResource, err)
 	})
 
 	t.Run("GetByID | InValid", func(t *testing.T) {
@@ -84,6 +86,7 @@ func TestGetByID(t *testing.T){
 		_, err := threadsUsecase.GetByID(ctx, threadsDomain.ID)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
 
@@ -105,6 +108,7 @@ func TestGetThreads(t *testing.T){
 		_, err := threadsUsecase.GetThreads(ctx)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrNotFound, err)
 	})
 }
 
@@ -127,6 +131,7 @@ func TestUpdate(t *testing.T){
 		_, err := threadsUsecase.Update(ctx, &threadsDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 
 	t.Run("Update | InValid 2", func(t *testing.T) {
@@ -137,6 +142,7 @@ func TestUpdate(t *testing.T){
 		_, err := threadsUsecase.Update(ctx, &threadsDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
 
@@ -159,6 +165,7 @@ func TestDelete(t *testing.T){
 		_, err := threadsUsecase.Delete(ctx, &threadsDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 
 	t.Run("Delete | InValid 2", func(t *testing.T) {
@@ -169,5 +176,6 @@ func TestDelete(t *testing.T){
 		_, err := threadsUsecase.Delete(ctx, &threadsDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }

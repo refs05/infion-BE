@@ -48,6 +48,7 @@ func TestStore(t *testing.T){
 		_, err := rolesUsecase.Store(ctx, &rolesDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
 
@@ -67,6 +68,7 @@ func TestGetByID(t *testing.T){
 		_, err := rolesUsecase.GetByID(ctx, 0)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrRolesIDResource, err)
 	})
 
 	t.Run("GetByID | InValid", func(t *testing.T) {
@@ -76,6 +78,7 @@ func TestGetByID(t *testing.T){
 		_, err := rolesUsecase.GetByID(ctx, rolesDomain.ID)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
 
@@ -98,6 +101,7 @@ func TestUpdate(t *testing.T){
 		_, err := rolesUsecase.Update(ctx, &rolesDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 
 	t.Run("Update | InValid 2", func(t *testing.T) {
@@ -108,6 +112,7 @@ func TestUpdate(t *testing.T){
 		_, err := rolesUsecase.Update(ctx, &rolesDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
 
@@ -130,6 +135,7 @@ func TestDelete(t *testing.T){
 		_, err := rolesUsecase.Delete(ctx, &rolesDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 
 	t.Run("Delete | InValid 2", func(t *testing.T) {
@@ -140,5 +146,6 @@ func TestDelete(t *testing.T){
 		_, err := rolesUsecase.Delete(ctx, &rolesDomain)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
