@@ -15,6 +15,8 @@ var (
 
 	ErrRolesIDResource = errors.New("(RolesID) not found or empty")
 
+	ErrIDResource = errors.New("(ID) not found or empty")
+
 	ErrCategoryNotFound = errors.New("category not found")
 
 	ErrDuplicateData = errors.New("duplicate data")
