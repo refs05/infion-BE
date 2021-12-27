@@ -1,17 +1,25 @@
 package main
 
 import (
-	_threadsUsecase "infion-BE/businesses/threads"
-	_threadsController "infion-BE/controllers/threads"
-	_threadsRepo "infion-BE/drivers/databases/threads"
+	_userUseCase "infion-BE/businesses/users"
+	_userController "infion-BE/controllers/users"
+	_userRepo "infion-BE/drivers/databases/users"
 
 	_rolesUsecase "infion-BE/businesses/roles"
 	_rolesController "infion-BE/controllers/roles"
 	_rolesRepo "infion-BE/drivers/databases/roles"
 
-	_userUseCase "infion-BE/businesses/users"
-	_userController "infion-BE/controllers/users"
-	_userRepo "infion-BE/drivers/databases/users"
+	_threadsUsecase "infion-BE/businesses/threads"
+	_threadsController "infion-BE/controllers/threads"
+	_threadsRepo "infion-BE/drivers/databases/threads"
+
+	_followThreadsUsecase "infion-BE/businesses/followThreads"
+	_followThreadsController "infion-BE/controllers/followThreads"
+	_followThreadsRepo "infion-BE/drivers/databases/followThreads"
+
+	_likeThreadsUsecase "infion-BE/businesses/likeThreads"
+	_likeThreadsController "infion-BE/controllers/likeThreads"
+	_likeThreadsRepo "infion-BE/drivers/databases/likeThreads"
 
 	_dbDriver "infion-BE/drivers/mysql"
 
@@ -41,9 +49,11 @@ func init() {
 
 func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(
-		&_threadsRepo.Threads{},
-		&_rolesRepo.Roles{},
 		&_userRepo.User{},
+		&_rolesRepo.Roles{},
+		&_threadsRepo.Threads{},
+		&_followThreadsRepo.FollowThreads{},
+		&_likeThreadsRepo.LikeThreads{},
 		
 	)
 }
@@ -63,22 +73,33 @@ func main() {
 
 	e := echo.New()
 
-	threadsRepo := _threadsRepo.NewThreadsRepository(db)
-	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext)
-	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
+	userRepo := _userRepo.NewUserRepository(db)
+	userUsecase := _userUseCase.NewUseCase(userRepo,timeoutContext)
+	userCtrl := _userController.NewUserController(userUsecase)
 
 	rolesRepo := _rolesRepo.NewRolesRepository(db)
 	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
 	rolesCtrl := _rolesController.NewRolesController(rolesUsecase)
 
-	userRepo := _userRepo.NewUserRepository(db)
-	userUsecase := _userUseCase.NewUseCase(userRepo,timeoutContext)
-	userCtrl := _userController.NewUserController(userUsecase)
+	threadsRepo := _threadsRepo.NewThreadsRepository(db)
+	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext)
+	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
+
+	followThreadsRepo := _followThreadsRepo.NewFollowThreadsRepository(db)
+	followThreadsUsecase := _followThreadsUsecase.NewFollowThreadsUsecase(followThreadsRepo, timeoutContext)
+	followThreadsCtrl := _followThreadsController.NewFollowThreadsController(followThreadsUsecase)
+
+	
+	likeThreadsRepo := _likeThreadsRepo.NewLikeThreadsRepository(db)
+	likeThreadsUsecase := _likeThreadsUsecase.NewLikeThreadsUsecase(likeThreadsRepo, timeoutContext)
+	likeThreadsCtrl := _likeThreadsController.NewLikeThreadsController(likeThreadsUsecase)
 
 	routesInit := _routes.ControllerList{
-		ThreadsController:		*threadsCtrl,
-		RolesController:		*rolesCtrl,
 		UserController: 		*userCtrl,
+		RolesController:		*rolesCtrl,
+		ThreadsController:		*threadsCtrl,
+		FollowThreadsController:	*followThreadsCtrl,
+		LikeThreadsController:		*likeThreadsCtrl,
 	}
 	routesInit.RouteRegister(e)
 
