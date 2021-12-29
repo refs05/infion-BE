@@ -49,26 +49,11 @@ func (rec *Threads) toDomain() threadsUsecase.Domain {
 	}
 }
 
-func ToDomain(rec Threads) threadsUsecase.Domain {
-	return threadsUsecase.Domain{
-		ID:           	rec.ID,
-		Title:      	rec.Title,
-		Img: 			rec.Img,
-		Content:    	rec.Content,
-		Category:   	rec.Category,
-		UserID: 		rec.UserID,
-		LikeCount:  	rec.LikeCount,
-		CommentCount: 	rec.CommentCount,
-		CreatedAt:    	rec.CreatedAt,
-		UpdatedAt:    	rec.UpdatedAt,
-	}
-}
-
 func ToDomainArray(modelThreads []Threads) []threadsUsecase.Domain {
 	var response []threadsUsecase.Domain
 
 	for _, val := range modelThreads{
-		response = append(response, ToDomain(val))
+		response = append(response, val.toDomain())
 	}
 	return response
 }

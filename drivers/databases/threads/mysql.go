@@ -72,7 +72,7 @@ func (nr *mysqlThreadsRepository) Delete(ctx context.Context, threadsDomain *thr
 func (nr *mysqlThreadsRepository) GetThreads(ctx context.Context) ([]threads.Domain, error) {
 	var recordThread []Threads
 	
-	result := nr.Conn.Unscoped().Find(&recordThread)
+	result := nr.Conn.Unscoped().Joins("User").Find(&recordThread)
 	if result.Error != nil {
 		return []threads.Domain{}, result.Error
 	}

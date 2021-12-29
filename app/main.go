@@ -21,6 +21,10 @@ import (
 	_likeThreadsController "infion-BE/controllers/likeThreads"
 	_likeThreadsRepo "infion-BE/drivers/databases/likeThreads"
 
+	_reportsUsecase "infion-BE/businesses/reports"
+	_reportsController "infion-BE/controllers/reports"
+	_reportsRepo "infion-BE/drivers/databases/reports"
+
 	_dbDriver "infion-BE/drivers/mysql"
 
 	_middleware "infion-BE/app/middleware"
@@ -54,6 +58,7 @@ func dbMigrate(db *gorm.DB) {
 		&_threadsRepo.Threads{},
 		&_followThreadsRepo.FollowThreads{},
 		&_likeThreadsRepo.LikeThreads{},
+		&_reportsRepo.Reports{},
 		
 	)
 }
@@ -94,12 +99,17 @@ func main() {
 	likeThreadsUsecase := _likeThreadsUsecase.NewLikeThreadsUsecase(likeThreadsRepo, timeoutContext)
 	likeThreadsCtrl := _likeThreadsController.NewLikeThreadsController(likeThreadsUsecase)
 
+	reportsRepo := _reportsRepo.NewReportsRepository(db)
+	reportsUsecase := _reportsUsecase.NewReportsUsecase(reportsRepo, timeoutContext)
+	reportsCtrl := _reportsController.NewReportsController(reportsUsecase)
+
 	routesInit := _routes.ControllerList{
 		UserController: 		*userCtrl,
 		RolesController:		*rolesCtrl,
 		ThreadsController:		*threadsCtrl,
 		FollowThreadsController:	*followThreadsCtrl,
 		LikeThreadsController:		*likeThreadsCtrl,
+		ReportsController:		*reportsCtrl,
 	}
 	routesInit.RouteRegister(e)
 
