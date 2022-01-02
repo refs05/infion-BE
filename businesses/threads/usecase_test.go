@@ -30,6 +30,7 @@ func TestMain(m *testing.M) {
 		Category:		"test",
 		UserID:			1,
 		User:			"user1",
+		UrlImg: 		"placeholder.jpg",
 		LikeCount:		1,
 		CommentCount:	1,
 		CreatedAt: 		time.Now(),
