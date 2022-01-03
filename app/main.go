@@ -21,6 +21,14 @@ import (
 	_likeThreadsController "infion-BE/controllers/likeThreads"
 	_likeThreadsRepo "infion-BE/drivers/databases/likeThreads"
 
+	_commentsUsecase "infion-BE/businesses/comments"
+	_commentsController "infion-BE/controllers/comments"
+	_commentsRepo "infion-BE/drivers/databases/comments"
+
+	_likeCommentsUsecase "infion-BE/businesses/likeComments"
+	_likeCommentsController "infion-BE/controllers/likeComments"
+	_likeCommentsRepo "infion-BE/drivers/databases/likeComments"
+
 	_reportsUsecase "infion-BE/businesses/reports"
 	_reportsController "infion-BE/controllers/reports"
 	_reportsRepo "infion-BE/drivers/databases/reports"
@@ -58,6 +66,8 @@ func dbMigrate(db *gorm.DB) {
 		&_threadsRepo.Threads{},
 		&_followThreadsRepo.FollowThreads{},
 		&_likeThreadsRepo.LikeThreads{},
+		&_commentsRepo.Comments{},
+		&_likeCommentsRepo.LikeComments{},
 		&_reportsRepo.Reports{},
 		
 	)
@@ -99,6 +109,14 @@ func main() {
 	likeThreadsUsecase := _likeThreadsUsecase.NewLikeThreadsUsecase(likeThreadsRepo, timeoutContext)
 	likeThreadsCtrl := _likeThreadsController.NewLikeThreadsController(likeThreadsUsecase)
 
+	commentsRepo := _commentsRepo.NewCommentsRepository(db)
+	commentsUsecase := _commentsUsecase.NewCommentsUsecase(commentsRepo, timeoutContext)
+	commentsCtrl := _commentsController.NewCommentsController(commentsUsecase)
+
+	likeCommentsRepo := _likeCommentsRepo.NewLikeCommentsRepository(db)
+	likeCommentsUsecase := _likeCommentsUsecase.NewLikeCommentsUsecase(likeCommentsRepo, timeoutContext)
+	likeCommentsCtrl := _likeCommentsController.NewLikeCommentsController(likeCommentsUsecase)
+
 	reportsRepo := _reportsRepo.NewReportsRepository(db)
 	reportsUsecase := _reportsUsecase.NewReportsUsecase(reportsRepo, timeoutContext)
 	reportsCtrl := _reportsController.NewReportsController(reportsUsecase)
@@ -109,6 +127,8 @@ func main() {
 		ThreadsController:		*threadsCtrl,
 		FollowThreadsController:	*followThreadsCtrl,
 		LikeThreadsController:		*likeThreadsCtrl,
+		CommentsController:		*commentsCtrl,
+		LikeCommentsController:		*likeCommentsCtrl,
 		ReportsController:		*reportsCtrl,
 	}
 	routesInit.RouteRegister(e)

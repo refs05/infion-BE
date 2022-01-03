@@ -13,6 +13,7 @@ type Domain struct {
 	Category   		string
 	UserID			int
 	User			string
+	UrlImg			string
 	LikeCount		int
 	CommentCount	int
 	CreatedAt    	time.Time
