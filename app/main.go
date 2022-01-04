@@ -25,6 +25,10 @@ import (
 	_commentsController "infion-BE/controllers/comments"
 	_commentsRepo "infion-BE/drivers/databases/comments"
 
+	_repliesUsecase "infion-BE/businesses/replies"
+	_repliesController "infion-BE/controllers/replies"
+	_repliesRepo "infion-BE/drivers/databases/replies"
+
 	_likeCommentsUsecase "infion-BE/businesses/likeComments"
 	_likeCommentsController "infion-BE/controllers/likeComments"
 	_likeCommentsRepo "infion-BE/drivers/databases/likeComments"
@@ -69,7 +73,7 @@ func dbMigrate(db *gorm.DB) {
 		&_commentsRepo.Comments{},
 		&_likeCommentsRepo.LikeComments{},
 		&_reportsRepo.Reports{},
-		
+		&_repliesRepo.Replies{},
 	)
 }
 
@@ -89,7 +93,7 @@ func main() {
 	e := echo.New()
 
 	userRepo := _userRepo.NewUserRepository(db)
-	userUsecase := _userUseCase.NewUseCase(userRepo,timeoutContext)
+	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext)
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	rolesRepo := _rolesRepo.NewRolesRepository(db)
@@ -104,7 +108,6 @@ func main() {
 	followThreadsUsecase := _followThreadsUsecase.NewFollowThreadsUsecase(followThreadsRepo, timeoutContext)
 	followThreadsCtrl := _followThreadsController.NewFollowThreadsController(followThreadsUsecase)
 
-	
 	likeThreadsRepo := _likeThreadsRepo.NewLikeThreadsRepository(db)
 	likeThreadsUsecase := _likeThreadsUsecase.NewLikeThreadsUsecase(likeThreadsRepo, timeoutContext)
 	likeThreadsCtrl := _likeThreadsController.NewLikeThreadsController(likeThreadsUsecase)
@@ -112,6 +115,10 @@ func main() {
 	commentsRepo := _commentsRepo.NewCommentsRepository(db)
 	commentsUsecase := _commentsUsecase.NewCommentsUsecase(commentsRepo, timeoutContext)
 	commentsCtrl := _commentsController.NewCommentsController(commentsUsecase)
+
+	repliesRepo := _repliesRepo.NewRepliesRepository(db)
+	repliesUsecase := _repliesUsecase.NewRepliesUsecase(repliesRepo, timeoutContext)
+	repliesCtrl := _repliesController.NewRepliesController(repliesUsecase)
 
 	likeCommentsRepo := _likeCommentsRepo.NewLikeCommentsRepository(db)
 	likeCommentsUsecase := _likeCommentsUsecase.NewLikeCommentsUsecase(likeCommentsRepo, timeoutContext)
@@ -122,14 +129,15 @@ func main() {
 	reportsCtrl := _reportsController.NewReportsController(reportsUsecase)
 
 	routesInit := _routes.ControllerList{
-		UserController: 		*userCtrl,
-		RolesController:		*rolesCtrl,
-		ThreadsController:		*threadsCtrl,
-		FollowThreadsController:	*followThreadsCtrl,
-		LikeThreadsController:		*likeThreadsCtrl,
-		CommentsController:		*commentsCtrl,
-		LikeCommentsController:		*likeCommentsCtrl,
-		ReportsController:		*reportsCtrl,
+		UserController:          *userCtrl,
+		RolesController:         *rolesCtrl,
+		ThreadsController:       *threadsCtrl,
+		FollowThreadsController: *followThreadsCtrl,
+		LikeThreadsController:   *likeThreadsCtrl,
+		CommentsController:      *commentsCtrl,
+		LikeCommentsController:  *likeCommentsCtrl,
+		ReportsController:       *reportsCtrl,
+		RepliesController:       *repliesCtrl,
 	}
 	routesInit.RouteRegister(e)
 

@@ -5,6 +5,7 @@ import (
 	"infion-BE/controllers/followThreads"
 	"infion-BE/controllers/likeComments"
 	"infion-BE/controllers/likeThreads"
+	"infion-BE/controllers/replies"
 	"infion-BE/controllers/reports"
 	"infion-BE/controllers/roles"
 	"infion-BE/controllers/threads"
@@ -15,21 +16,22 @@ import (
 )
 
 type ControllerList struct {
-	UserController				userController.UserController
-	RolesController				roles.RolesController
-	ThreadsController			threads.ThreadsController
-	FollowThreadsController		followThreads.FollowThreadsController
-	LikeThreadsController		likeThreads.LikeThreadsController
-	CommentsController			comments.CommentsController
-	LikeCommentsController		likeComments.LikeCommentsController
-	ReportsController			reports.ReportsController
+	UserController          userController.UserController
+	RolesController         roles.RolesController
+	ThreadsController       threads.ThreadsController
+	FollowThreadsController followThreads.FollowThreadsController
+	LikeThreadsController   likeThreads.LikeThreadsController
+	CommentsController      comments.CommentsController
+	LikeCommentsController  likeComments.LikeCommentsController
+	ReportsController       reports.ReportsController
+	RepliesController       replies.RepliesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	users := e.Group("user")
-	users.POST("/login",cl.UserController.Login)
-	users.POST("/create",cl.UserController.CreateNewUser)
-	users.GET("/:id",cl.UserController.FindById)
+	users.POST("/login", cl.UserController.Login)
+	users.POST("/create", cl.UserController.CreateNewUser)
+	users.GET("/:id", cl.UserController.FindById)
 
 	roles := e.Group("roles")
 	roles.POST("/create", cl.RolesController.Create)
@@ -62,6 +64,13 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	comments.PUT("/:id", cl.CommentsController.Update)
 	comments.DELETE("/:id", cl.CommentsController.Delete)
 	comments.GET("/list", cl.CommentsController.GetComments)
+
+	replies := e.Group("replies")
+	replies.POST("/create", cl.RepliesController.Create)
+	replies.GET("/:id", cl.RepliesController.ReadID)
+	replies.PUT("/:id", cl.RepliesController.Update)
+	replies.DELETE("/:id", cl.RepliesController.Delete)
+	replies.GET("/list", cl.RepliesController.GetReplies)
 
 	likeComments := e.Group("likeComments")
 	likeComments.POST("/create", cl.LikeCommentsController.Create)
