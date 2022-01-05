@@ -79,6 +79,29 @@ func (_m *Repository) GetReplies(ctx context.Context) ([]replies.Domain, error) 
 	return r0, r1
 }
 
+// GetRepliesByCommentID provides a mock function with given fields: ctx, commentId
+func (_m *Repository) GetRepliesByCommentID(ctx context.Context, commentId int) ([]replies.Domain, error) {
+	ret := _m.Called(ctx, commentId)
+
+	var r0 []replies.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, int) []replies.Domain); ok {
+		r0 = rf(ctx, commentId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]replies.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, commentId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Store provides a mock function with given fields: ctx, repliesDomain
 func (_m *Repository) Store(ctx context.Context, repliesDomain *replies.Domain) (replies.Domain, error) {
 	ret := _m.Called(ctx, repliesDomain)

@@ -70,23 +70,23 @@ func (nr *mysqlCommentsRepository) Delete(ctx context.Context, commentsDomain *c
 }
 
 func (nr *mysqlCommentsRepository) GetComments(ctx context.Context) ([]comments.Domain, error) {
-	var recordThread []Comments
+	var recordComments []Comments
 	
-	result := nr.Conn.Unscoped().Joins("Thread").Joins("User").Find(&recordThread)
+	result := nr.Conn.Unscoped().Joins("Thread").Joins("User").Find(&recordComments)
 	if result.Error != nil {
 		return []comments.Domain{}, result.Error
 	}
 
-	return ToDomainArray(recordThread), nil
+	return ToDomainArray(recordComments), nil
 }
 
 func (nr *mysqlCommentsRepository) GetCommentsByThreadID(ctx context.Context, threadId int) ([]comments.Domain, error) {
-	var recordThread []Comments
+	var recordComments []Comments
 	
-	result := nr.Conn.Where("threads.id = ?", threadId).Joins("Thread").Joins("User").Find(&recordThread)
+	result := nr.Conn.Where("comments.thread_id = ?", threadId).Joins("Thread").Joins("User").Find(&recordComments)
 	if result.Error != nil {
 		return []comments.Domain{}, result.Error
 	}
 
-	return ToDomainArray(recordThread), nil
+	return ToDomainArray(recordComments), nil
 }

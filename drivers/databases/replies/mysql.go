@@ -79,3 +79,14 @@ func (nr mysqlRepliesRepository) GetReplies(ctx context.Context) ([]replies.Doma
 
 	return ToDomainArray(recordReplies), nil
 }
+
+func (nr *mysqlRepliesRepository) GetRepliesByCommentID(ctx context.Context, commentId int) ([]replies.Domain, error) {
+	var recordReplies []Replies
+	
+	result := nr.Conn.Where("replies.comment_id = ?", commentId).Joins("Comment").Joins("User").Find(&recordReplies)
+	if result.Error != nil {
+		return []replies.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordReplies), nil
+}

@@ -109,6 +109,28 @@ func TestGetReplies(t *testing.T) {
 	})
 }
 
+func TestGetRepliesByCommentId(t *testing.T){
+	t.Run("GetRepliesByCommentId | Valid", func(t *testing.T) {
+		repliesRepository.On("GetRepliesByCommentID", mock.Anything, mock.AnythingOfType("int")).Return([]replies.Domain{repliesDomain}, nil).Once()
+
+		ctx := context.Background()
+		result, err := repliesUsecase.GetRepliesByCommentID(ctx, repliesDomain.CommentID)
+
+		assert.Nil(t, err)
+		assert.Equal(t, []replies.Domain{repliesDomain}, result)
+	})
+
+	t.Run("GetRepliesByCommentId | InValid", func(t *testing.T) {
+		repliesRepository.On("GetRepliesByCommentID", mock.Anything, mock.AnythingOfType("int")).Return([]replies.Domain{repliesDomain}, businesses.ErrNotFound).Once()
+
+		ctx := context.Background()
+		_, err := repliesUsecase.GetRepliesByCommentID(ctx, repliesDomain.CommentID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+}
+
 func TestUpdate(t *testing.T) {
 	t.Run("Update | Valid", func(t *testing.T) {
 		repliesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(repliesDomain, nil).Once()
