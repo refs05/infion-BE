@@ -64,7 +64,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	comments.PUT("/:id", cl.CommentsController.Update)
 	comments.DELETE("/:id", cl.CommentsController.Delete)
 	comments.GET("/list", cl.CommentsController.GetComments)
-	comments.GET("/listbythread/:id", cl.CommentsController.GetComments)
+	comments.GET("/listbythread/:id", cl.CommentsController.GetCommentsByThreadID)
 
 	replies := e.Group("replies")
 	replies.POST("/create", cl.RepliesController.Create)
@@ -72,6 +72,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	replies.PUT("/:id", cl.RepliesController.Update)
 	replies.DELETE("/:id", cl.RepliesController.Delete)
 	replies.GET("/list", cl.RepliesController.GetReplies)
+	replies.GET("/listbycomment/:id", cl.RepliesController.GetRepliesByCommentID)
 
 	likeComments := e.Group("likeComments")
 	likeComments.POST("/create", cl.LikeCommentsController.Create)

@@ -117,3 +117,21 @@ func (ctrl *RepliesController) GetReplies(c echo.Context) error {
 
 	return controller.NewSuccessResponse(c, response.NewResponseArray(replies))
 }
+
+func (ctrl *RepliesController) GetRepliesByCommentID(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	idstr := c.Param("id")
+	if strings.TrimSpace(idstr) == "" {
+		return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
+	}
+
+	id, _ := strconv.Atoi(idstr)
+	
+	replies, err := ctrl.repliesUseCase.GetRepliesByCommentID(ctx, id)
+	if err != nil {
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+
+	return controller.NewSuccessResponse(c, response.NewResponseArray(replies))
+}
