@@ -62,6 +62,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	comments.PUT("/:id", cl.CommentsController.Update)
 	comments.DELETE("/:id", cl.CommentsController.Delete)
 	comments.GET("/list", cl.CommentsController.GetComments)
+	comments.GET("/listbythread/:id", cl.CommentsController.GetComments)
 
 	likeComments := e.Group("likeComments")
 	likeComments.POST("/create", cl.LikeCommentsController.Create)

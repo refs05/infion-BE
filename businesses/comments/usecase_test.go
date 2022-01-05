@@ -111,6 +111,28 @@ func TestGetComments(t *testing.T){
 	})
 }
 
+func TestGetCommentsByThreadId(t *testing.T){
+	t.Run("GetCommentsByThreadId | Valid", func(t *testing.T) {
+		commentsRepository.On("GetCommentsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]comments.Domain{commentsDomain}, nil).Once()
+
+		ctx := context.Background()
+		result, err := commentsUsecase.GetCommentsByThreadID(ctx, commentsDomain.ThreadID)
+
+		assert.Nil(t, err)
+		assert.Equal(t, []comments.Domain{commentsDomain}, result)
+	})
+
+	t.Run("GetCommentsByThreadId | InValid", func(t *testing.T) {
+		commentsRepository.On("GetCommentsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]comments.Domain{commentsDomain}, businesses.ErrNotFound).Once()
+
+		ctx := context.Background()
+		_, err := commentsUsecase.GetCommentsByThreadID(ctx, commentsDomain.ThreadID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+}
+
 func TestUpdate(t *testing.T){
 	t.Run("Update | Valid", func(t *testing.T) {
 		commentsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(commentsDomain, nil).Once()

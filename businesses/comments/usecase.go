@@ -53,6 +53,14 @@ func (tu *commentsUsecase) GetComments(ctx context.Context) ([]Domain, error) {
 	return result, nil
 }
 
+func (tu *commentsUsecase) GetCommentsByThreadID(ctx context.Context, threadId int) ([]Domain, error) {
+	result, err := tu.commentsRepository.GetCommentsByThreadID(ctx, threadId)
+	if err != nil {
+		return []Domain{}, err
+	}
+	return result, nil
+}
+
 func (tu *commentsUsecase) Update(ctx context.Context, commentsDomain *Domain) (*Domain, error) {
 	existedComments, err := tu.commentsRepository.GetByID(ctx, commentsDomain.ID)
 	if err != nil {

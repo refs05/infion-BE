@@ -23,6 +23,7 @@ type Usecase interface {
 	Store(ctx context.Context, commentsDomain *Domain) (Domain, error)
 	GetByID(ctx context.Context, commentsId int) (Domain, error)
 	GetComments(ctx context.Context) ([]Domain, error)
+	GetCommentsByThreadID(ctx context.Context, threadId int) ([]Domain, error)
 	Update(ctx context.Context, commentsDomain *Domain) (*Domain, error)
 	Delete(ctx context.Context, commentsDomain *Domain) (*Domain, error)
 }
@@ -31,6 +32,7 @@ type Repository interface {
 	Store(ctx context.Context, commentsDomain *Domain) (Domain, error)
 	GetByID(ctx context.Context, commentsId int) (Domain, error)
 	GetComments(ctx context.Context) ([]Domain, error)
+	GetCommentsByThreadID(ctx context.Context, threadId int) ([]Domain, error)
 	Update(ctx context.Context, commentsDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, commentsDomain *Domain) (Domain, error)
 }
