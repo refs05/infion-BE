@@ -3,18 +3,21 @@ package comments
 import (
 	"context"
 	"infion-BE/businesses"
+	"infion-BE/businesses/replies"
 	"time"
 )
 
 type commentsUsecase struct {
 	commentsRepository  Repository
+	repliesRepository	replies.Repository
 	contextTimeout  time.Duration
 }
 
-func NewCommentsUsecase(tr Repository, timeout time.Duration) Usecase {
+func NewCommentsUsecase(tr Repository, timeout time.Duration, rr replies.Repository) Usecase {
 	return &commentsUsecase{
 		commentsRepository:  tr,
 		contextTimeout:  timeout,
+		repliesRepository: rr,
 	}
 }
 
@@ -41,6 +44,8 @@ func (tu *commentsUsecase) GetByID(ctx context.Context, commentsId int) (Domain,
 	if err != nil {
 		return Domain{}, err
 	}
+
+	res.Replies, _ = tu.repliesRepository.GetRepliesByCommentID(ctx, commentsId)
 
 	return res, nil
 }
