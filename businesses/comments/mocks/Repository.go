@@ -79,6 +79,29 @@ func (_m *Repository) GetComments(ctx context.Context) ([]comments.Domain, error
 	return r0, r1
 }
 
+// GetCommentsByThreadID provides a mock function with given fields: ctx, threadId
+func (_m *Repository) GetCommentsByThreadID(ctx context.Context, threadId int) ([]comments.Domain, error) {
+	ret := _m.Called(ctx, threadId)
+
+	var r0 []comments.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, int) []comments.Domain); ok {
+		r0 = rf(ctx, threadId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]comments.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, threadId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Store provides a mock function with given fields: ctx, commentsDomain
 func (_m *Repository) Store(ctx context.Context, commentsDomain *comments.Domain) (comments.Domain, error) {
 	ret := _m.Called(ctx, commentsDomain)

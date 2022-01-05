@@ -117,3 +117,21 @@ func (ctrl *CommentsController) GetComments(c echo.Context) error {
 
 	return controller.NewSuccessResponse(c, response.NewResponseArray(comments))
 }
+
+func (ctrl *CommentsController) GetCommentsByThreadID(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	idstr := c.Param("id")
+	if strings.TrimSpace(idstr) == "" {
+		return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
+	}
+
+	id, _ := strconv.Atoi(idstr)
+	
+	comments, err := ctrl.commentsUseCase.GetCommentsByThreadID(ctx, id)
+	if err != nil {
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+
+	return controller.NewSuccessResponse(c, response.NewResponseArray(comments))
+}

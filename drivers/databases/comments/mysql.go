@@ -79,3 +79,14 @@ func (nr *mysqlCommentsRepository) GetComments(ctx context.Context) ([]comments.
 
 	return ToDomainArray(recordThread), nil
 }
+
+func (nr *mysqlCommentsRepository) GetCommentsByThreadID(ctx context.Context, threadId int) ([]comments.Domain, error) {
+	var recordThread []Comments
+	
+	result := nr.Conn.Where("threads.id = ?", threadId).Joins("Thread").Joins("User").Find(&recordThread)
+	if result.Error != nil {
+		return []comments.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordThread), nil
+}
