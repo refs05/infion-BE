@@ -5,8 +5,6 @@ import (
 	"infion-BE/businesses"
 	"infion-BE/businesses/comments"
 	_commentsMock "infion-BE/businesses/comments/mocks"
-	"infion-BE/businesses/replies"
-	_repliesMock "infion-BE/businesses/replies/mocks"
 	"os"
 	"testing"
 	"time"
@@ -18,13 +16,12 @@ import (
 
 var (
 	commentsRepository _commentsMock.Repository
-	repliesRepository	_repliesMock.Repository
 	commentsUsecase    comments.Usecase
 	commentsDomain     comments.Domain
 )
 
 func TestMain(m *testing.M) {
-	commentsUsecase = comments.NewCommentsUsecase(&commentsRepository, 2, &repliesRepository)
+	commentsUsecase = comments.NewCommentsUsecase(&commentsRepository, 2)
 	commentsDomain = comments.Domain{
 		ID:				1,
 		ThreadID: 		1,
@@ -65,7 +62,6 @@ func TestStore(t *testing.T){
 func TestGetByID(t *testing.T){
 	t.Run("GetByID | Valid", func(t *testing.T) {
 		commentsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(commentsDomain, nil).Once()
-		repliesRepository.On("GetRepliesByCommentID", mock.Anything, mock.AnythingOfType("int")).Return([]replies.Domain(nil), nil).Once()
 
 		ctx := context.Background()
 		result, err := commentsUsecase.GetByID(ctx, commentsDomain.ID)
