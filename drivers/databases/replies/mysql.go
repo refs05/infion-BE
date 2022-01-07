@@ -35,7 +35,7 @@ func (nr *mysqlRepliesRepository) Store(ctx context.Context, repliesDomain *repl
 
 func (nr mysqlRepliesRepository) GetByID(ctx context.Context, repliesId int) (replies.Domain, error) {
 	rec := Replies{}
-	err := nr.Conn.Where("replies.id = ?", repliesId).Joins("Comment").Joins("User").First(&rec).Error
+	err := nr.Conn.Where("replies.id = ?", repliesId).Joins("User").First(&rec).Error
 	if err != nil {
 		return replies.Domain{}, err
 	}
@@ -72,7 +72,7 @@ func (nr mysqlRepliesRepository) Delete(ctx context.Context, repliesDomain *repl
 func (nr mysqlRepliesRepository) GetReplies(ctx context.Context) ([]replies.Domain, error) {
 	var recordReplies []Replies
 
-	result := nr.Conn.Unscoped().Joins("Comment").Joins("User").Find(&recordReplies)
+	result := nr.Conn.Unscoped().Joins("User").Find(&recordReplies)
 	if result.Error != nil {
 		return []replies.Domain{}, result.Error
 	}
@@ -83,7 +83,7 @@ func (nr mysqlRepliesRepository) GetReplies(ctx context.Context) ([]replies.Doma
 func (nr *mysqlRepliesRepository) GetRepliesByCommentID(ctx context.Context, commentId int) ([]replies.Domain, error) {
 	var recordReplies []Replies
 	
-	result := nr.Conn.Where("replies.comment_id = ?", commentId).Joins("Comment").Joins("User").Find(&recordReplies)
+	result := nr.Conn.Where("replies.comment_id = ?", commentId).Joins("User").Find(&recordReplies)
 	if result.Error != nil {
 		return []replies.Domain{}, result.Error
 	}
