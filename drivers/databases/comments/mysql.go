@@ -35,7 +35,7 @@ func (nr *mysqlCommentsRepository) Store(ctx context.Context, commentsDomain *co
 
 func (nr *mysqlCommentsRepository) GetByID(ctx context.Context, commentsId int) (comments.Domain, error) {
 	rec := Comments{}
-	err := nr.Conn.Where("comments.id = ?", commentsId).Joins("Thread").Joins("User").First(&rec).Error
+	err := nr.Conn.Where("comments.id = ?", commentsId).Preload("Replies").Joins("Thread").Joins("User").First(&rec).Error
 	if err != nil {
 		return comments.Domain{}, err
 	}
@@ -72,7 +72,7 @@ func (nr *mysqlCommentsRepository) Delete(ctx context.Context, commentsDomain *c
 func (nr *mysqlCommentsRepository) GetComments(ctx context.Context) ([]comments.Domain, error) {
 	var recordComments []Comments
 	
-	result := nr.Conn.Unscoped().Joins("Thread").Joins("User").Find(&recordComments)
+	result := nr.Conn.Unscoped().Preload("Replies").Joins("Thread").Joins("User").Find(&recordComments)
 	if result.Error != nil {
 		return []comments.Domain{}, result.Error
 	}
@@ -83,7 +83,7 @@ func (nr *mysqlCommentsRepository) GetComments(ctx context.Context) ([]comments.
 func (nr *mysqlCommentsRepository) GetCommentsByThreadID(ctx context.Context, threadId int) ([]comments.Domain, error) {
 	var recordComments []Comments
 	
-	result := nr.Conn.Where("comments.thread_id = ?", threadId).Joins("Thread").Joins("User").Find(&recordComments)
+	result := nr.Conn.Where("comments.thread_id = ?", threadId).Preload("Replies").Joins("Thread").Joins("User").Find(&recordComments)
 	if result.Error != nil {
 		return []comments.Domain{}, result.Error
 	}

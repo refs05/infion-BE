@@ -2,6 +2,7 @@ package comments
 
 import (
 	"context"
+	"infion-BE/businesses/replies"
 	"time"
 )
 
@@ -12,6 +13,7 @@ type Domain struct {
 	User			string
 	UrlImg			string
 	Comment   		string
+	Replies			[]replies.Domain
 	LikeCount		int
 	ReplyCount		int
 	CreatedAt    	time.Time

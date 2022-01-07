@@ -2,7 +2,6 @@ package replies
 
 import (
 	repliesUsecase "infion-BE/businesses/replies"
-	"infion-BE/drivers/databases/comments"
 	"infion-BE/drivers/databases/users"
 	"time"
 )
@@ -10,7 +9,6 @@ import (
 type Replies struct {
 	ID        int `gorm:"primaryKey"`
 	CommentID int
-	Comment   comments.Comments
 	UserID    int
 	User      users.User
 	UrlImg    string

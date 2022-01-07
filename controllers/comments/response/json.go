@@ -2,6 +2,7 @@ package response
 
 import (
 	"infion-BE/businesses/comments"
+	"infion-BE/businesses/replies"
 	"time"
 )
 
@@ -12,6 +13,7 @@ type Comments struct {
 	User			string `json:"username"`
 	UrlImg			string `json:"url_img"`
 	Comment			string `json:"comment"`
+	Replies			[]replies.Domain `json:"replies"`
 	LikeCount		int `json:"like_count"`
 	ReplyCount		int `json:"reply_count"`
 	CreatedAt    	time.Time `json:"created_at"`
@@ -26,6 +28,7 @@ func FromDomain(domain comments.Domain) Comments {
 		User: 			domain.User,
 		UrlImg:			domain.UrlImg,
 		Comment: 		domain.Comment,
+		Replies:		domain.Replies,
 		LikeCount:  	domain.LikeCount,
 		ReplyCount: 	domain.ReplyCount,
 		CreatedAt:    	domain.CreatedAt,
