@@ -6,16 +6,16 @@ import (
 )
 
 type Domain struct {
-	ID        int
-	CommentID int
-	UserID    int
-	User      string
-	UrlImg    string
-	Reply     string
-	LikeCount int
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt time.Time
+	ID        int       `json:"id"`
+	CommentID int       `json:"comment_id"`
+	UserID    int       `json:"user_id"`
+	User      string    `json:"username"`
+	UrlImg    string    `json:"url_img"`
+	Reply     string    `json:"reply"`
+	LikeCount int       `json:"like_count"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	DeletedAt time.Time `json:"deleted_at"`
 }
 
 type Usecase interface {
