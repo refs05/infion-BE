@@ -1,7 +1,6 @@
 package comments
 
 import (
-	"fmt"
 	commentsUsecase "infion-BE/businesses/comments"
 	repliesUsecase "infion-BE/businesses/replies"
 	"infion-BE/drivers/databases/threads"
@@ -73,7 +72,7 @@ func ToDomainArray(modelComments []Comments) []commentsUsecase.Domain {
 }
 
 func toDomain2(rec Replies) repliesUsecase.Domain {
-	fmt.Println("username: ",rec)
+	// fmt.Println("username: ",rec)
 	return repliesUsecase.Domain{
 		ID:        rec.ID,
 		CommentID: rec.CommentID,
