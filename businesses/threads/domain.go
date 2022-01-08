@@ -25,6 +25,7 @@ type Usecase interface {
 	Store(ctx context.Context, threadsDomain *Domain) (Domain, error)
 	GetByID(ctx context.Context, threadsId int) (Domain, error)
 	GetThreads(ctx context.Context) ([]Domain, error)
+	GetThreadsByCategory(ctx context.Context, category string) ([]Domain, error)
 	Update(ctx context.Context, threadsDomain *Domain) (*Domain, error)
 	Delete(ctx context.Context, threadsDomain *Domain) (*Domain, error)
 }
@@ -33,6 +34,7 @@ type Repository interface {
 	Store(ctx context.Context, threadsDomain *Domain) (Domain, error)
 	GetByID(ctx context.Context, threadsId int) (Domain, error)
 	GetThreads(ctx context.Context) ([]Domain, error)
+	GetThreadsByCategory(ctx context.Context, category string) ([]Domain, error)
 	Update(ctx context.Context, threadsDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, threadsDomain *Domain) (Domain, error)
 }

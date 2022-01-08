@@ -2,6 +2,7 @@ package threads
 
 import (
 	"errors"
+	"fmt"
 	"infion-BE/businesses/threads"
 	controller "infion-BE/controllers"
 	"infion-BE/controllers/threads/request"
@@ -108,9 +109,20 @@ func (ctrl *ThreadsController) Delete(c echo.Context) error {
 }
 
 func (ctrl *ThreadsController) GetThreads(c echo.Context) error {
+	fmt.Println("routes")
 	ctx := c.Request().Context()
+	category := c.QueryParam("category")
+	if category == "" {
+		fmt.Println("empty category")
+		threads, err := ctrl.threadsUseCase.GetThreads(ctx)
+		if err != nil {
+			return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+		}
 	
-	threads, err := ctrl.threadsUseCase.GetThreads(ctx)
+		return controller.NewSuccessResponse(c, response.NewResponseArray(threads))
+	}
+	
+	threads, err := ctrl.threadsUseCase.GetThreadsByCategory(ctx, category)
 	if err != nil {
 		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}

@@ -79,6 +79,29 @@ func (_m *Repository) GetThreads(ctx context.Context) ([]threads.Domain, error) 
 	return r0, r1
 }
 
+// GetThreadsByCategory provides a mock function with given fields: ctx, category
+func (_m *Repository) GetThreadsByCategory(ctx context.Context, category string) ([]threads.Domain, error) {
+	ret := _m.Called(ctx, category)
+
+	var r0 []threads.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, string) []threads.Domain); ok {
+		r0 = rf(ctx, category)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]threads.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, category)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Store provides a mock function with given fields: ctx, threadsDomain
 func (_m *Repository) Store(ctx context.Context, threadsDomain *threads.Domain) (threads.Domain, error) {
 	ret := _m.Called(ctx, threadsDomain)

@@ -79,3 +79,14 @@ func (nr *mysqlThreadsRepository) GetThreads(ctx context.Context) ([]threads.Dom
 
 	return ToDomainArray(recordThread), nil
 }
+
+func (nr *mysqlThreadsRepository) GetThreadsByCategory(ctx context.Context, category string) ([]threads.Domain, error) {
+	var recordThread []Threads
+	
+	result := nr.Conn.Unscoped().Where("threads.category = ?", category).Joins("User").Find(&recordThread)
+	if result.Error != nil {
+		return []threads.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordThread), nil
+}
