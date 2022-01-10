@@ -53,6 +53,14 @@ func (tu *threadsUsecase) GetThreads(ctx context.Context) ([]Domain, error) {
 	return result, nil
 }
 
+func (tu *threadsUsecase) GetThreadsByCategory(ctx context.Context, category string) ([]Domain, error) {
+	result, err := tu.threadsRepository.GetThreadsByCategory(ctx, category)
+	if err != nil {
+		return []Domain{}, err
+	}
+	return result, nil
+}
+
 func (tu *threadsUsecase) Update(ctx context.Context, threadsDomain *Domain) (*Domain, error) {
 	existedThreads, err := tu.threadsRepository.GetByID(ctx, threadsDomain.ID)
 	if err != nil {
