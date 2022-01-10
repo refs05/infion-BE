@@ -3,12 +3,22 @@ package comments
 import (
 	commentsUsecase "infion-BE/businesses/comments"
 	repliesUsecase "infion-BE/businesses/replies"
-	"infion-BE/drivers/databases/replies"
 	"infion-BE/drivers/databases/threads"
 	"infion-BE/drivers/databases/users"
 	"time"
 )
 
+type Replies struct {
+	ID        int `gorm:"primaryKey"`
+	CommentID int
+	UserID    int
+	User      users.User
+	UrlImg    string
+	Reply     string
+	LikeCount int
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
 type Comments struct {
 	ID           	int `gorm:"primaryKey"`
 	ThreadID		int
@@ -17,7 +27,7 @@ type Comments struct {
 	User			users.User
 	UrlImg			string
 	Comment			string
-	Replies			[]replies.Replies `gorm:"foreignKey:CommentID;references:ID"`
+	Replies			[]Replies `gorm:"foreignKey:CommentID;references:ID"`
 	LikeCount		int
 	ReplyCount		int
 	CreatedAt    	time.Time
@@ -61,7 +71,8 @@ func ToDomainArray(modelComments []Comments) []commentsUsecase.Domain {
 	return response
 }
 
-func toDomain2(rec replies.Replies) repliesUsecase.Domain {
+func toDomain2(rec Replies) repliesUsecase.Domain {
+	// fmt.Println("username: ",rec)
 	return repliesUsecase.Domain{
 		ID:        rec.ID,
 		CommentID: rec.CommentID,
@@ -75,7 +86,7 @@ func toDomain2(rec replies.Replies) repliesUsecase.Domain {
 	}
 }
 
-func ToDomainArray2(modelReplies []replies.Replies) []repliesUsecase.Domain {
+func ToDomainArray2(modelReplies []Replies) []repliesUsecase.Domain {
 	var response []repliesUsecase.Domain
 
 	for _, val := range modelReplies{
