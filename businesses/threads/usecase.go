@@ -61,6 +61,22 @@ func (tu *threadsUsecase) GetThreadsByCategory(ctx context.Context, category str
 	return result, nil
 }
 
+func (tu *threadsUsecase) GetThreadsBySort(ctx context.Context, sort string) ([]Domain, error) {
+	result, err := tu.threadsRepository.GetThreadsBySort(ctx, sort)
+	if err != nil {
+		return []Domain{}, err
+	}
+	return result, nil
+}
+
+func (tu *threadsUsecase) GetThreadsBySortCategory(ctx context.Context, sort string, category string) ([]Domain, error) {
+	result, err := tu.threadsRepository.GetThreadsBySortCategory(ctx, sort, category)
+	if err != nil {
+		return []Domain{}, err
+	}
+	return result, nil
+}
+
 func (tu *threadsUsecase) Update(ctx context.Context, threadsDomain *Domain) (*Domain, error) {
 	existedThreads, err := tu.threadsRepository.GetByID(ctx, threadsDomain.ID)
 	if err != nil {

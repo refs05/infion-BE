@@ -136,6 +136,50 @@ func TestGetThreadsByCategory(t *testing.T){
 	})
 }
 
+func TestGetThreadsBySort(t *testing.T){
+	t.Run("GetThreadsBySort | Valid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySort", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+
+		ctx := context.Background()
+		result, err := threadsUsecase.GetThreadsBySort(ctx, "sort")
+
+		assert.Nil(t, err)
+		assert.Equal(t, []threads.Domain{threadsDomain}, result)
+	})
+
+	t.Run("GetThreads | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySort", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, businesses.ErrNotFound).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySort(ctx, "sort")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+}
+
+func TestGetThreadsBySortCategory(t *testing.T){
+	t.Run("GetThreadsBySortCategory | Valid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySortCategory", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+
+		ctx := context.Background()
+		result, err := threadsUsecase.GetThreadsBySortCategory(ctx, "sort", "category")
+
+		assert.Nil(t, err)
+		assert.Equal(t, []threads.Domain{threadsDomain}, result)
+	})
+
+	t.Run("GetThreads | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySortCategory", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, businesses.ErrNotFound).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySortCategory(ctx, "sort", "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+}
+
 func TestUpdate(t *testing.T){
 	t.Run("Update | Valid", func(t *testing.T) {
 		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
