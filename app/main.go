@@ -46,6 +46,7 @@ import (
 	"time"
 
 	echo "github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
@@ -91,6 +92,7 @@ func main() {
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
 	e := echo.New()
+	e.Use(middleware.CORS())
 
 	userRepo := _userRepo.NewUserRepository(db)
 	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext)
