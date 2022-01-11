@@ -113,6 +113,29 @@ func TestGetThreads(t *testing.T){
 	})
 }
 
+
+func TestGetThreadsByCategory(t *testing.T){
+	t.Run("GetThreadsByCategory | Valid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByCategory", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+
+		ctx := context.Background()
+		result, err := threadsUsecase.GetThreadsByCategory(ctx, "category")
+
+		assert.Nil(t, err)
+		assert.Equal(t, []threads.Domain{threadsDomain}, result)
+	})
+
+	t.Run("GetThreads | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByCategory", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, businesses.ErrNotFound).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByCategory(ctx, "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+}
+
 func TestUpdate(t *testing.T){
 	t.Run("Update | Valid", func(t *testing.T) {
 		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
