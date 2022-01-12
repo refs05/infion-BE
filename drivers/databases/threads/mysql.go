@@ -90,3 +90,25 @@ func (nr *mysqlThreadsRepository) GetThreadsByCategory(ctx context.Context, cate
 
 	return ToDomainArray(recordThread), nil
 }
+
+func (nr *mysqlThreadsRepository) GetThreadsBySort(ctx context.Context, sort string) ([]threads.Domain, error) {
+	var recordThread []Threads
+	
+	result := nr.Conn.Unscoped().Order(sort).Joins("User").Find(&recordThread)
+	if result.Error != nil {
+		return []threads.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordThread), nil
+}
+
+func (nr *mysqlThreadsRepository) GetThreadsBySortCategory(ctx context.Context, sort string, category string) ([]threads.Domain, error) {
+	var recordThread []Threads
+	
+	result := nr.Conn.Unscoped().Order(sort).Where("threads.category = ?", category).Joins("User").Find(&recordThread)
+	if result.Error != nil {
+		return []threads.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordThread), nil
+}

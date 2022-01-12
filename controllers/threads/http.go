@@ -111,9 +111,11 @@ func (ctrl *ThreadsController) Delete(c echo.Context) error {
 func (ctrl *ThreadsController) GetThreads(c echo.Context) error {
 	fmt.Println("routes")
 	ctx := c.Request().Context()
+	sortBy := c.QueryParam("sortBy")
 	category := c.QueryParam("category")
-	if category == "" {
-		fmt.Println("empty category")
+
+	if sortBy == "" && category == "" {
+		fmt.Println("empty sortBy & category")
 		threads, err := ctrl.threadsUseCase.GetThreads(ctx)
 		if err != nil {
 			return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
@@ -121,11 +123,31 @@ func (ctrl *ThreadsController) GetThreads(c echo.Context) error {
 	
 		return controller.NewSuccessResponse(c, response.NewResponseArray(threads))
 	}
+
+	if sortBy != "" && category == "" {
+		fmt.Println("empty category")
+		threads, err := ctrl.threadsUseCase.GetThreadsBySort(ctx, sortBy)
+		if err != nil {
+			return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+		}
 	
-	threads, err := ctrl.threadsUseCase.GetThreadsByCategory(ctx, category)
+		return controller.NewSuccessResponse(c, response.NewResponseArray(threads))
+	}
+
+	if sortBy == "" && category != "" {
+		fmt.Println("empty sortBy")
+		threads, err := ctrl.threadsUseCase.GetThreadsByCategory(ctx, category)
+		if err != nil {
+			return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+		}
+	
+		return controller.NewSuccessResponse(c, response.NewResponseArray(threads))
+	}
+
+	threads, err := ctrl.threadsUseCase.GetThreadsBySortCategory(ctx, sortBy, category)
 	if err != nil {
 		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
-
+	
 	return controller.NewSuccessResponse(c, response.NewResponseArray(threads))
 }

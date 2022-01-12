@@ -102,6 +102,52 @@ func (_m *Repository) GetThreadsByCategory(ctx context.Context, category string)
 	return r0, r1
 }
 
+// GetThreadsBySort provides a mock function with given fields: ctx, sort
+func (_m *Repository) GetThreadsBySort(ctx context.Context, sort string) ([]threads.Domain, error) {
+	ret := _m.Called(ctx, sort)
+
+	var r0 []threads.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, string) []threads.Domain); ok {
+		r0 = rf(ctx, sort)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]threads.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, sort)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetThreadsBySortCategory provides a mock function with given fields: ctx, sort, category
+func (_m *Repository) GetThreadsBySortCategory(ctx context.Context, sort string, category string) ([]threads.Domain, error) {
+	ret := _m.Called(ctx, sort, category)
+
+	var r0 []threads.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) []threads.Domain); ok {
+		r0 = rf(ctx, sort, category)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]threads.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, sort, category)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Store provides a mock function with given fields: ctx, threadsDomain
 func (_m *Repository) Store(ctx context.Context, threadsDomain *threads.Domain) (threads.Domain, error) {
 	ret := _m.Called(ctx, threadsDomain)
