@@ -26,4 +26,5 @@ type Repository interface {
 	GetByID(ctx context.Context, followThreadsId int) (Domain, error)
 	Update(ctx context.Context, followThreadsDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, followThreadsDomain *Domain) (Domain, error)
+	CountByThreadID(ctx context.Context,id int) (int, error)
 }
