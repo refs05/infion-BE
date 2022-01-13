@@ -90,3 +90,15 @@ func (nr *mysqlCommentsRepository) GetCommentsByThreadID(ctx context.Context, th
 
 	return ToDomainArray(recordComments), nil
 }
+
+func (nr *mysqlCommentsRepository) CountByThreadID(ctx context.Context,id int) (int, error) {
+	rec := Comments{}
+	var count int64
+	
+	result := nr.Conn.Model(&rec).Where("thread_id = ?", id).Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return int(count), nil
+}

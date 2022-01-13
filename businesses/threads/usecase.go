@@ -3,6 +3,7 @@ package threads
 import (
 	"context"
 	"infion-BE/businesses"
+	"infion-BE/businesses/comments"
 	"infion-BE/businesses/likeThreads"
 
 	"time"
@@ -12,13 +13,15 @@ type threadsUsecase struct {
 	threadsRepository		Repository
 	contextTimeout			time.Duration
 	likeThreadsRepository	likeThreads.Repository
+	commentsRepository		comments.Repository
 }
 
-func NewThreadsUsecase(tr Repository, timeout time.Duration, ltr likeThreads.Repository) Usecase {
+func NewThreadsUsecase(tr Repository, timeout time.Duration, ltr likeThreads.Repository, cr comments.Repository) Usecase {
 	return &threadsUsecase{
 		threadsRepository:  tr,
 		contextTimeout:  timeout,
 		likeThreadsRepository: ltr,
+		commentsRepository: cr,
 	}
 }
 
@@ -50,8 +53,16 @@ func (tu *threadsUsecase) GetByID(ctx context.Context, threadsId int) (Domain, e
 	if err != nil {
 		return Domain{}, err
 	}
+	
+	res.CommentCount, err = tu.commentsRepository.CountByThreadID(ctx, res.ID)
+	if err != nil {
+		return Domain{}, err
+	}
 
-	tu.threadsRepository.Update(ctx, &res)
+	_, err = tu.threadsRepository.Update(ctx, &res)
+	if err != nil {
+		return Domain{}, err
+	}
 
 	return res, nil
 }
@@ -70,7 +81,17 @@ func (tu *threadsUsecase) GetThreads(ctx context.Context) ([]Domain, error) {
 	}
 
 	for i := range result {
-		tu.threadsRepository.Update(ctx, &result[i])
+		result[i].CommentCount, err = tu.commentsRepository.CountByThreadID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		_, err = tu.threadsRepository.Update(ctx, &result[i])
+		if err != nil {
+			return []Domain{}, err
+		}
 	}
 
 	return result, nil
@@ -90,7 +111,17 @@ func (tu *threadsUsecase) GetThreadsByCategory(ctx context.Context, category str
 	}
 
 	for i := range result {
-		tu.threadsRepository.Update(ctx, &result[i])
+		result[i].CommentCount, err = tu.commentsRepository.CountByThreadID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		_, err = tu.threadsRepository.Update(ctx, &result[i])
+		if err != nil {
+			return []Domain{}, err
+		}
 	}
 
 	return result, nil
@@ -108,9 +139,19 @@ func (tu *threadsUsecase) GetThreadsBySort(ctx context.Context, sort string) ([]
 			return []Domain{}, err
 		}
 	}
-	
+
 	for i := range result {
-		tu.threadsRepository.Update(ctx, &result[i])
+		result[i].CommentCount, err = tu.commentsRepository.CountByThreadID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		_, err = tu.threadsRepository.Update(ctx, &result[i])
+		if err != nil {
+			return []Domain{}, err
+		}
 	}
 
 	return result, nil
@@ -130,7 +171,17 @@ func (tu *threadsUsecase) GetThreadsBySortCategory(ctx context.Context, sort str
 	}
 
 	for i := range result {
-		tu.threadsRepository.Update(ctx, &result[i])
+		result[i].CommentCount, err = tu.commentsRepository.CountByThreadID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		_, err = tu.threadsRepository.Update(ctx, &result[i])
+		if err != nil {
+			return []Domain{}, err
+		}
 	}
 	
 	return result, nil

@@ -123,7 +123,7 @@ func main() {
 	likeThreadsCtrl := _likeThreadsController.NewLikeThreadsController(likeThreadsUsecase)
 
 	threadsRepo := _threadsRepo.NewThreadsRepository(db)
-	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext, likeThreadsRepo)
+	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext, likeThreadsRepo, commentsRepo)
 	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
 
 	reportsRepo := _reportsRepo.NewReportsRepository(db)
