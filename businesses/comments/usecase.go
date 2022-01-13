@@ -3,18 +3,22 @@ package comments
 import (
 	"context"
 	"infion-BE/businesses"
+	"infion-BE/businesses/replies"
 	"time"
 )
 
 type commentsUsecase struct {
 	commentsRepository  Repository
 	contextTimeout  time.Duration
+	repliesRepository replies.Repository
 }
 
-func NewCommentsUsecase(tr Repository, timeout time.Duration) Usecase {
+func NewCommentsUsecase(tr Repository, timeout time.Duration, rr replies.Repository) Usecase {
 	return &commentsUsecase{
 		commentsRepository:  tr,
 		contextTimeout:  timeout,
+		repliesRepository: rr,
+
 	}
 }
 
@@ -42,6 +46,11 @@ func (tu *commentsUsecase) GetByID(ctx context.Context, commentsId int) (Domain,
 		return Domain{}, err
 	}
 
+	res.Replies, err = tu.repliesRepository.GetRepliesByCommentID(ctx, res.ID)
+	if err != nil {
+		return Domain{}, err
+	}
+
 	return res, nil
 }
 
@@ -50,6 +59,12 @@ func (tu *commentsUsecase) GetComments(ctx context.Context) ([]Domain, error) {
 	if err != nil {
 		return []Domain{}, err
 	}
+	for i := range result {
+		result[i].Replies, err = tu.repliesRepository.GetRepliesByCommentID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
 	return result, nil
 }
 
@@ -57,6 +72,12 @@ func (tu *commentsUsecase) GetCommentsByThreadID(ctx context.Context, threadId i
 	result, err := tu.commentsRepository.GetCommentsByThreadID(ctx, threadId)
 	if err != nil {
 		return []Domain{}, err
+	}
+	for i := range result {
+		result[i].Replies, err = tu.repliesRepository.GetRepliesByCommentID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
 	}
 	return result, nil
 }
