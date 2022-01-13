@@ -114,13 +114,13 @@ func main() {
 	likeThreadsUsecase := _likeThreadsUsecase.NewLikeThreadsUsecase(likeThreadsRepo, timeoutContext)
 	likeThreadsCtrl := _likeThreadsController.NewLikeThreadsController(likeThreadsUsecase)
 
-	commentsRepo := _commentsRepo.NewCommentsRepository(db)
-	commentsUsecase := _commentsUsecase.NewCommentsUsecase(commentsRepo, timeoutContext)
-	commentsCtrl := _commentsController.NewCommentsController(commentsUsecase)
-
 	repliesRepo := _repliesRepo.NewRepliesRepository(db)
 	repliesUsecase := _repliesUsecase.NewRepliesUsecase(repliesRepo, timeoutContext)
 	repliesCtrl := _repliesController.NewRepliesController(repliesUsecase)
+
+	commentsRepo := _commentsRepo.NewCommentsRepository(db)
+	commentsUsecase := _commentsUsecase.NewCommentsUsecase(commentsRepo, timeoutContext, repliesRepo)
+	commentsCtrl := _commentsController.NewCommentsController(commentsUsecase)
 
 	likeCommentsRepo := _likeCommentsRepo.NewLikeCommentsRepository(db)
 	likeCommentsUsecase := _likeCommentsUsecase.NewLikeCommentsUsecase(likeCommentsRepo, timeoutContext)
