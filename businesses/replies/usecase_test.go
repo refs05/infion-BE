@@ -3,6 +3,7 @@ package replies_test
 import (
 	"context"
 	"infion-BE/businesses"
+	_likeRepliesMock "infion-BE/businesses/likeReplies/mocks"
 	"infion-BE/businesses/replies"
 	_repliesMock "infion-BE/businesses/replies/mocks"
 	"os"
@@ -14,13 +15,14 @@ import (
 )
 
 var (
-	repliesRepository _repliesMock.Repository
-	repliesUsecase    replies.Usecase
-	repliesDomain     replies.Domain
+	repliesRepository		_repliesMock.Repository
+	repliesUsecase			replies.Usecase
+	repliesDomain			replies.Domain
+	likeRepliesRepository	_likeRepliesMock.Repository
 )
 
 func TestMain(m *testing.M) {
-	repliesUsecase = replies.NewRepliesUsecase(&repliesRepository, 2)
+	repliesUsecase = replies.NewRepliesUsecase(&repliesRepository, 2, &likeRepliesRepository)
 	repliesDomain = replies.Domain{
 		ID:        1,
 		CommentID: 1,
@@ -60,6 +62,8 @@ func TestStore(t *testing.T) {
 func TestGetByID(t *testing.T) {
 	t.Run("GetByID | Valid", func(t *testing.T) {
 		repliesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(repliesDomain, nil).Once()
+		likeRepliesRepository.On("CountByReplyID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		repliesRepository.On("Update", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, nil).Once()
 
 		ctx := context.Background()
 		result, err := repliesUsecase.GetByID(ctx, repliesDomain.ID)
@@ -85,11 +89,36 @@ func TestGetByID(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
+
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		repliesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(repliesDomain, nil).Once()
+		likeRepliesRepository.On("CountByReplyID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := repliesUsecase.GetByID(ctx, repliesDomain.ID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		repliesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(repliesDomain, nil).Once()
+		likeRepliesRepository.On("CountByReplyID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		repliesRepository.On("Update", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := repliesUsecase.GetByID(ctx, repliesDomain.ID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
 }
 
 func TestGetReplies(t *testing.T) {
 	t.Run("GetReplies | Valid", func(t *testing.T) {
 		repliesRepository.On("GetReplies", mock.Anything).Return([]replies.Domain{repliesDomain}, nil).Once()
+		likeRepliesRepository.On("CountByReplyID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		repliesRepository.On("Update", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, nil).Once()
 
 		ctx := context.Background()
 		result, err := repliesUsecase.GetReplies(ctx)
@@ -107,11 +136,36 @@ func TestGetReplies(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, businesses.ErrNotFound, err)
 	})
+
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		repliesRepository.On("GetReplies", mock.Anything).Return([]replies.Domain{repliesDomain}, nil).Once()
+		likeRepliesRepository.On("CountByReplyID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := repliesUsecase.GetReplies(ctx)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		repliesRepository.On("GetReplies", mock.Anything).Return([]replies.Domain{repliesDomain}, nil).Once()
+		likeRepliesRepository.On("CountByReplyID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		repliesRepository.On("Update", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := repliesUsecase.GetReplies(ctx)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
 }
 
 func TestGetRepliesByCommentId(t *testing.T){
 	t.Run("GetRepliesByCommentId | Valid", func(t *testing.T) {
 		repliesRepository.On("GetRepliesByCommentID", mock.Anything, mock.AnythingOfType("int")).Return([]replies.Domain{repliesDomain}, nil).Once()
+		likeRepliesRepository.On("CountByReplyID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		repliesRepository.On("Update", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, nil).Once()
 
 		ctx := context.Background()
 		result, err := repliesUsecase.GetRepliesByCommentID(ctx, repliesDomain.CommentID)
@@ -128,6 +182,29 @@ func TestGetRepliesByCommentId(t *testing.T){
 
 		assert.NotNil(t, err)
 		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		repliesRepository.On("GetRepliesByCommentID", mock.Anything, mock.AnythingOfType("int")).Return([]replies.Domain{repliesDomain}, nil).Once()
+		likeRepliesRepository.On("CountByReplyID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := repliesUsecase.GetRepliesByCommentID(ctx, repliesDomain.CommentID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		repliesRepository.On("GetRepliesByCommentID", mock.Anything, mock.AnythingOfType("int")).Return([]replies.Domain{repliesDomain}, nil).Once()
+		likeRepliesRepository.On("CountByReplyID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		repliesRepository.On("Update", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := repliesUsecase.GetRepliesByCommentID(ctx, repliesDomain.CommentID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
 

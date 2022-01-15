@@ -112,7 +112,7 @@ func main() {
 	likeRepliesCtrl := _likeRepliesController.NewLikeRepliesController(likeRepliesUsecase)
 
 	repliesRepo := _repliesRepo.NewRepliesRepository(db)
-	repliesUsecase := _repliesUsecase.NewRepliesUsecase(repliesRepo, timeoutContext)
+	repliesUsecase := _repliesUsecase.NewRepliesUsecase(repliesRepo, timeoutContext, likeRepliesRepo)
 	repliesCtrl := _repliesController.NewRepliesController(repliesUsecase)
 
 	likeCommentsRepo := _likeCommentsRepo.NewLikeCommentsRepository(db)
