@@ -34,4 +34,5 @@ type Repository interface {
 	GetRepliesByCommentID(ctx context.Context, commentId int) ([]Domain, error)
 	Update(ctx context.Context, repliesDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, repliesDomain *Domain) (Domain, error)
+	CountByCommentID(ctx context.Context,id int) (int, error)
 }

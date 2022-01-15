@@ -111,7 +111,7 @@ func main() {
 	likeCommentsCtrl := _likeCommentsController.NewLikeCommentsController(likeCommentsUsecase)
 
 	commentsRepo := _commentsRepo.NewCommentsRepository(db)
-	commentsUsecase := _commentsUsecase.NewCommentsUsecase(commentsRepo, timeoutContext, repliesRepo)
+	commentsUsecase := _commentsUsecase.NewCommentsUsecase(commentsRepo, timeoutContext, repliesRepo, likeCommentsRepo)
 	commentsCtrl := _commentsController.NewCommentsController(commentsUsecase)
 
 	followThreadsRepo := _followThreadsRepo.NewFollowThreadsRepository(db)
