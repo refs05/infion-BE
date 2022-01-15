@@ -17,6 +17,7 @@ type Threads struct {
 	UrlImg			string
 	LikeCount		int
 	CommentCount	int
+	FollowerCount	int
 	CreatedAt    	time.Time
 	UpdatedAt   	time.Time
 }
@@ -31,6 +32,7 @@ func fromDomain(domain *threadsUsecase.Domain) *Threads {
 		UserID: 		domain.UserID,
 		LikeCount:  	domain.LikeCount,
 		CommentCount: 	domain.CommentCount,
+		FollowerCount: 	domain.FollowerCount,
 	}
 }
 
@@ -46,6 +48,7 @@ func (rec *Threads) toDomain() threadsUsecase.Domain {
 		UrlImg: 		rec.User.UrlImg,
 		LikeCount:  	rec.LikeCount,
 		CommentCount: 	rec.CommentCount,
+		FollowerCount: 	rec.FollowerCount,
 		CreatedAt:    	rec.CreatedAt,
 		UpdatedAt:    	rec.UpdatedAt,
 	}

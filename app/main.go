@@ -102,9 +102,17 @@ func main() {
 	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
 	rolesCtrl := _rolesController.NewRolesController(rolesUsecase)
 
-	threadsRepo := _threadsRepo.NewThreadsRepository(db)
-	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext)
-	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
+	repliesRepo := _repliesRepo.NewRepliesRepository(db)
+	repliesUsecase := _repliesUsecase.NewRepliesUsecase(repliesRepo, timeoutContext)
+	repliesCtrl := _repliesController.NewRepliesController(repliesUsecase)
+
+	likeCommentsRepo := _likeCommentsRepo.NewLikeCommentsRepository(db)
+	likeCommentsUsecase := _likeCommentsUsecase.NewLikeCommentsUsecase(likeCommentsRepo, timeoutContext)
+	likeCommentsCtrl := _likeCommentsController.NewLikeCommentsController(likeCommentsUsecase)
+
+	commentsRepo := _commentsRepo.NewCommentsRepository(db)
+	commentsUsecase := _commentsUsecase.NewCommentsUsecase(commentsRepo, timeoutContext, repliesRepo)
+	commentsCtrl := _commentsController.NewCommentsController(commentsUsecase)
 
 	followThreadsRepo := _followThreadsRepo.NewFollowThreadsRepository(db)
 	followThreadsUsecase := _followThreadsUsecase.NewFollowThreadsUsecase(followThreadsRepo, timeoutContext)
@@ -114,17 +122,9 @@ func main() {
 	likeThreadsUsecase := _likeThreadsUsecase.NewLikeThreadsUsecase(likeThreadsRepo, timeoutContext)
 	likeThreadsCtrl := _likeThreadsController.NewLikeThreadsController(likeThreadsUsecase)
 
-	repliesRepo := _repliesRepo.NewRepliesRepository(db)
-	repliesUsecase := _repliesUsecase.NewRepliesUsecase(repliesRepo, timeoutContext)
-	repliesCtrl := _repliesController.NewRepliesController(repliesUsecase)
-
-	commentsRepo := _commentsRepo.NewCommentsRepository(db)
-	commentsUsecase := _commentsUsecase.NewCommentsUsecase(commentsRepo, timeoutContext, repliesRepo)
-	commentsCtrl := _commentsController.NewCommentsController(commentsUsecase)
-
-	likeCommentsRepo := _likeCommentsRepo.NewLikeCommentsRepository(db)
-	likeCommentsUsecase := _likeCommentsUsecase.NewLikeCommentsUsecase(likeCommentsRepo, timeoutContext)
-	likeCommentsCtrl := _likeCommentsController.NewLikeCommentsController(likeCommentsUsecase)
+	threadsRepo := _threadsRepo.NewThreadsRepository(db)
+	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext, likeThreadsRepo, commentsRepo, followThreadsRepo)
+	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
 
 	reportsRepo := _reportsRepo.NewReportsRepository(db)
 	reportsUsecase := _reportsUsecase.NewReportsUsecase(reportsRepo, timeoutContext)

@@ -16,6 +16,7 @@ type Domain struct {
 	UrlImg			string
 	LikeCount		int
 	CommentCount	int
+	FollowerCount	int
 	CreatedAt    	time.Time
 	UpdatedAt    	time.Time
 	DeletedAt		time.Time
