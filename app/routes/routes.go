@@ -4,6 +4,7 @@ import (
 	"infion-BE/controllers/comments"
 	"infion-BE/controllers/followThreads"
 	"infion-BE/controllers/likeComments"
+	"infion-BE/controllers/likeReplies"
 	"infion-BE/controllers/likeThreads"
 	"infion-BE/controllers/replies"
 	"infion-BE/controllers/reports"
@@ -25,6 +26,7 @@ type ControllerList struct {
 	LikeCommentsController  likeComments.LikeCommentsController
 	ReportsController       reports.ReportsController
 	RepliesController       replies.RepliesController
+	LikeRepliesController	likeReplies.LikeRepliesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -79,6 +81,12 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	likeComments.GET("/:id", cl.LikeCommentsController.ReadID)
 	likeComments.PUT("/:id", cl.LikeCommentsController.Update)
 	likeComments.DELETE("/:id", cl.LikeCommentsController.Delete)
+
+	likeReplies := e.Group("likeReplies")
+	likeReplies.POST("/create", cl.LikeRepliesController.Create)
+	likeReplies.GET("/:id", cl.LikeRepliesController.ReadID)
+	likeReplies.PUT("/:id", cl.LikeRepliesController.Update)
+	likeReplies.DELETE("/:id", cl.LikeRepliesController.Delete)
 
 	reports := e.Group("reports")
 	reports.POST("/create", cl.ReportsController.Create)

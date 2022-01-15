@@ -33,6 +33,10 @@ import (
 	_likeCommentsController "infion-BE/controllers/likeComments"
 	_likeCommentsRepo "infion-BE/drivers/databases/likeComments"
 
+	_likeRepliesUsecase "infion-BE/businesses/likeReplies"
+	_likeRepliesController "infion-BE/controllers/likeReplies"
+	_likeRepliesRepo "infion-BE/drivers/databases/likeReplies"
+
 	_reportsUsecase "infion-BE/businesses/reports"
 	_reportsController "infion-BE/controllers/reports"
 	_reportsRepo "infion-BE/drivers/databases/reports"
@@ -75,6 +79,7 @@ func dbMigrate(db *gorm.DB) {
 		&_likeCommentsRepo.LikeComments{},
 		&_reportsRepo.Reports{},
 		&_repliesRepo.Replies{},
+		&_likeRepliesRepo.LikeReplies{},
 	)
 }
 
@@ -101,6 +106,10 @@ func main() {
 	rolesRepo := _rolesRepo.NewRolesRepository(db)
 	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
 	rolesCtrl := _rolesController.NewRolesController(rolesUsecase)
+
+	likeRepliesRepo := _likeRepliesRepo.NewLikeRepliesRepository(db)
+	likeRepliesUsecase := _likeRepliesUsecase.NewLikeRepliesUsecase(likeRepliesRepo, timeoutContext)
+	likeRepliesCtrl := _likeRepliesController.NewLikeRepliesController(likeRepliesUsecase)
 
 	repliesRepo := _repliesRepo.NewRepliesRepository(db)
 	repliesUsecase := _repliesUsecase.NewRepliesUsecase(repliesRepo, timeoutContext)
@@ -140,6 +149,7 @@ func main() {
 		LikeCommentsController:  *likeCommentsCtrl,
 		ReportsController:       *reportsCtrl,
 		RepliesController:       *repliesCtrl,
+		LikeRepliesController:  *likeRepliesCtrl,
 	}
 	routesInit.RouteRegister(e)
 
