@@ -14,6 +14,27 @@ type Repository struct {
 	mock.Mock
 }
 
+// CountByCommentID provides a mock function with given fields: ctx, id
+func (_m *Repository) CountByCommentID(ctx context.Context, id int) (int, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, int) int); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Delete provides a mock function with given fields: ctx, likeCommentsDomain
 func (_m *Repository) Delete(ctx context.Context, likeCommentsDomain *likeComments.Domain) (likeComments.Domain, error) {
 	ret := _m.Called(ctx, likeCommentsDomain)

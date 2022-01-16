@@ -26,4 +26,5 @@ type Repository interface {
 	GetByID(ctx context.Context, likeCommentsId int) (Domain, error)
 	Update(ctx context.Context, likeCommentsDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, likeCommentsDomain *Domain) (Domain, error)
+	CountByCommentID(ctx context.Context,id int) (int, error)
 }
