@@ -47,6 +47,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	threads.PUT("/:id", cl.ThreadsController.Update)
 	threads.DELETE("/:id", cl.ThreadsController.Delete)
 	threads.GET("/list/", cl.ThreadsController.GetThreads)
+	threads.GET("/listByUser/:id", cl.ThreadsController.GetThreadsByUserID)
 
 	followThreads := e.Group("followThreads")
 	followThreads.POST("/create", cl.FollowThreadsController.Create)
