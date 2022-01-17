@@ -223,6 +223,43 @@ func (tu *threadsUsecase) GetThreadsBySortCategory(ctx context.Context, sort str
 	return result, nil
 }
 
+func (tu *threadsUsecase) GetThreadsByUserID(ctx context.Context, userID int) ([]Domain, error) {
+	result, err := tu.threadsRepository.GetThreadsByUserID(ctx, userID)
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	for i := range result {
+		result[i].LikeCount, err = tu.likeThreadsRepository.CountByThreadID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].CommentCount, err = tu.commentsRepository.CountByThreadID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].FollowerCount, err = tu.followThreadsRepository.CountByThreadID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		_, err = tu.threadsRepository.Update(ctx, &result[i])
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	return result, nil
+}
+
 func (tu *threadsUsecase) Update(ctx context.Context, threadsDomain *Domain) (*Domain, error) {
 	existedThreads, err := tu.threadsRepository.GetByID(ctx, threadsDomain.ID)
 	if err != nil {
