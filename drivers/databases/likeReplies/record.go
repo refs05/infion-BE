@@ -8,7 +8,7 @@ import (
 type LikeReplies struct {
 	ID			int `gorm:"primaryKey"`
 	ReplyID		int
-	UserID		int `gorm:"unique"`
+	UserID		int
 	CreatedAt	time.Time
 	UpdatedAt	time.Time
 }

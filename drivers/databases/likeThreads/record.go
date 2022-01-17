@@ -8,7 +8,7 @@ import (
 type LikeThreads struct {
 	ID        int `gorm:"primaryKey"`
 	ThreadID  int
-	UserID    int `gorm:"unique"`
+	UserID    int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
