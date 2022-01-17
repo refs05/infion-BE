@@ -9,7 +9,7 @@ type LikeReplies struct {
 	ID			int `gorm:"primaryKey"`
 	ReplyID		int
 	UserID		int
-	CreatedAt	time.Time
+	CreatedAt	time.Time `gorm:"<-:create"`
 	UpdatedAt	time.Time
 }
 

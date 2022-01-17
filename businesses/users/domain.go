@@ -16,7 +16,7 @@ type DomainUser struct{
 	CommentCount	int
 	LikeCount		int
 	FollowerCount	int
-	CretedAt 		time.Time
+	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
 	DeletedAt 		gorm.DeletedAt `gorm:"index"`
 	Token    		string

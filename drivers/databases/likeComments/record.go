@@ -9,7 +9,7 @@ type LikeComments struct {
 	ID        int `gorm:"primaryKey"`
 	CommentID int
 	UserID    int
-	CreatedAt time.Time
+	CreatedAt time.Time `gorm:"<-:create"`
 	UpdatedAt time.Time
 }
 

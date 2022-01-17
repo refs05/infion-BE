@@ -9,7 +9,7 @@ type FollowThreads struct {
 	ID        int `gorm:"primaryKey"`
 	ThreadID  int
 	UserID    int
-	CreatedAt time.Time
+	CreatedAt time.Time `gorm:"<-:create"`
 	UpdatedAt time.Time
 }
 

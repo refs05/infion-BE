@@ -14,7 +14,7 @@ type Replies struct {
 	UrlImg    string
 	Reply     string
 	LikeCount int
-	CreatedAt time.Time //`gorm:"<-:create"`
+	CreatedAt time.Time `gorm:"<-:create"`
 	UpdatedAt time.Time
 }
 

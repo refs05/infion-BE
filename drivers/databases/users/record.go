@@ -16,7 +16,7 @@ type User struct {
 	LikeCount		int
 	FollowerCount	int
 	Password  		string
-	CretedAt  		time.Time
+	CreatedAt  		time.Time `gorm:"<-:create"`
 	UpdatedAt 		time.Time
 	DeletedAt 		gorm.DeletedAt `gorm:"index"`
 	
@@ -33,7 +33,7 @@ func FromDomain(domain users.DomainUser) User{
 		LikeCount:		domain.LikeCount,
 		FollowerCount:	domain.FollowerCount,
 		Password:  		domain.Password,
-		CretedAt:		domain.CretedAt,
+		CreatedAt:		domain.CreatedAt,
 		UpdatedAt:		domain.UpdatedAt,
 		DeletedAt: 		domain.DeletedAt,
 	}
@@ -50,7 +50,7 @@ func (user User)ToDomain() users.DomainUser{
 		LikeCount:			user.LikeCount,
 		FollowerCount:		user.FollowerCount,
 		Password:  			user.Password,
-		CretedAt:			user.CretedAt,
+		CreatedAt:			user.CreatedAt,
 		UpdatedAt:			user.UpdatedAt,
 		DeletedAt: 			user.DeletedAt,
 	}

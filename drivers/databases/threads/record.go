@@ -18,7 +18,7 @@ type Threads struct {
 	LikeCount		int
 	CommentCount	int
 	FollowerCount	int
-	CreatedAt    	time.Time
+	CreatedAt    	time.Time `gorm:"<-:create"`
 	UpdatedAt   	time.Time
 }
 

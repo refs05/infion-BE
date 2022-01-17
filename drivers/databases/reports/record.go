@@ -15,7 +15,7 @@ type Reports struct {
 	User			users.User
 	ReportMessage	string
 	Status			string
-	CreatedAt    	time.Time
+	CreatedAt    	time.Time `gorm:"<-:create"`
 	UpdatedAt   	time.Time
 }
 
