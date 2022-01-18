@@ -99,10 +99,6 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.CORS())
 
-	userRepo := _userRepo.NewUserRepository(db)
-	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext)
-	userCtrl := _userController.NewUserController(userUsecase)
-
 	rolesRepo := _rolesRepo.NewRolesRepository(db)
 	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
 	rolesCtrl := _rolesController.NewRolesController(rolesUsecase)
@@ -134,6 +130,10 @@ func main() {
 	threadsRepo := _threadsRepo.NewThreadsRepository(db)
 	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext, likeThreadsRepo, commentsRepo, followThreadsRepo)
 	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
+
+	userRepo := _userRepo.NewUserRepository(db)
+	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext, commentsRepo)
+	userCtrl := _userController.NewUserController(userUsecase)
 
 	reportsRepo := _reportsRepo.NewReportsRepository(db)
 	reportsUsecase := _reportsUsecase.NewReportsUsecase(reportsRepo, timeoutContext)

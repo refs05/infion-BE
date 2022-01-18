@@ -4,26 +4,25 @@ import (
 	"context"
 
 	"infion-BE/businesses"
-
+	"infion-BE/businesses/comments"
 	"infion-BE/drivers/helpers/encrypt"
 
 	"regexp"
-	// "strings"
 	"time"
 
 	"gorm.io/gorm"
-	// "gorm.io/gorm"
 )
 
 type UserUseCase struct {
 	repo Repository
 	ctx  time.Duration
-
+	commentsRepository comments.Repository
 }
-func NewUseCase(UserRepo Repository,contextTimeout time.Duration) UseCase{
+func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository) UseCase{
 	return &UserUseCase{
 		repo: UserRepo,
 		ctx: contextTimeout,
+		commentsRepository: cr,
 		
 	}
 }
@@ -111,12 +110,12 @@ func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,erro
 	// 	}
 	// }
 
-	// for i := range result {
-	// 	result[i].CommentCount, err = usecase.commentsRepository.CountByThreadID(ctx, result[i].ID)
-	// 	if err != nil {
-	// 		return []DomainUser{}, err
-	// 	}
-	// }
+	for i := range result {
+		result[i].CommentCount, err = usecase.commentsRepository.CountByUserID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
 
 	// for i := range result {
 	// 	result[i].FollowerCount, err = usecase.followUsersRepository.CountByThreadID(ctx, result[i].ID)
