@@ -38,4 +38,5 @@ type Repository interface {
 	Update(ctx context.Context, commentsDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, commentsDomain *Domain) (Domain, error)
 	CountByThreadID(ctx context.Context,id int) (int, error)
+	CountByUserID(ctx context.Context,id uint) (int, error)
 }
