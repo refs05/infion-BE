@@ -79,6 +79,22 @@ func (repo *UserRepository) FindById(userId int,ctx context.Context)(users.Domai
 // 	}
 // }
 
+func (repo *UserRepository) Update(userDomain *users.DomainUser, ctx context.Context) (users.DomainUser, error) {
+	rec := FromDomain(*userDomain)
+
+	result := repo.db.Save(&rec)
+	if result.Error != nil {
+		return users.DomainUser{}, result.Error
+	}
+
+	record, err := repo.FindById(int(rec.Id), ctx)
+	if err != nil {
+		return users.DomainUser{}, err
+	}
+
+	return record, nil
+}
+
 func (repo *UserRepository) GetLeaderboard(ctx context.Context)([]users.DomainUser, error){
 	var recordUser []User
 	

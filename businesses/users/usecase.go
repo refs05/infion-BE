@@ -97,6 +97,21 @@ func (usecase *UserUseCase)FindById(userId int,ctx context.Context)(DomainUser,e
  return rec, nil
 }
 
+func (usecase *UserUseCase) Update(userDomain *DomainUser, ctx context.Context) (*DomainUser, error) {
+	existedComments, err := usecase.repo.FindById(int(userDomain.Id),ctx)
+	if err != nil {
+		return &DomainUser{}, err
+	}
+	userDomain.Id = existedComments.Id
+
+	result, err := usecase.repo.Update(userDomain, ctx)
+	if err != nil {
+		return &DomainUser{}, err
+	}
+
+	return &result, nil
+}
+
 func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,error){
 	result, err := usecase.repo.GetLeaderboard(ctx)
 	if err != nil {
@@ -124,12 +139,12 @@ func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,erro
 	// 	}
 	// }
 
-	// for i := range result {
-	// 	_, err = usecase.repo.Update(ctx, &result[i])
-	// 	if err != nil {
-	// 		return []DomainUser{}, err
-	// 	}
-	// }
+	for i := range result {
+		_, err = usecase.repo.Update(&result[i], ctx)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
 
 	return result, nil
 }
