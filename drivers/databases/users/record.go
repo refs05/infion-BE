@@ -55,3 +55,12 @@ func (user User)ToDomain() users.DomainUser{
 		DeletedAt: 			user.DeletedAt,
 	}
 }
+
+func ToDomainArray(modelThreads []User) []users.DomainUser {
+	var response []users.DomainUser
+
+	for _, val := range modelThreads{
+		response = append(response, val.ToDomain())
+	}
+	return response
+}

@@ -98,4 +98,39 @@ func (usecase *UserUseCase)FindById(userId int,ctx context.Context)(DomainUser,e
  return rec, nil
 }
 
+func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,error){
+	result, err := usecase.repo.GetLeaderboard(ctx)
+	if err != nil {
+		return []DomainUser{}, err
+	}
 
+	// for i := range result {
+	// 	result[i].LikeCount, err = usecase.likeUsersRepository.CountByThreadID(ctx, result[i].ID)
+	// 	if err != nil {
+	// 		return []DomainUser{}, err
+	// 	}
+	// }
+
+	// for i := range result {
+	// 	result[i].CommentCount, err = usecase.commentsRepository.CountByThreadID(ctx, result[i].ID)
+	// 	if err != nil {
+	// 		return []DomainUser{}, err
+	// 	}
+	// }
+
+	// for i := range result {
+	// 	result[i].FollowerCount, err = usecase.followUsersRepository.CountByThreadID(ctx, result[i].ID)
+	// 	if err != nil {
+	// 		return []DomainUser{}, err
+	// 	}
+	// }
+
+	// for i := range result {
+	// 	_, err = usecase.repo.Update(ctx, &result[i])
+	// 	if err != nil {
+	// 		return []DomainUser{}, err
+	// 	}
+	// }
+
+	return result, nil
+}

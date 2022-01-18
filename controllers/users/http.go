@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	
 	"infion-BE/businesses/users"
 	"infion-BE/controllers"
 	"infion-BE/controllers/users/request"
@@ -64,4 +63,15 @@ func (controller *UserController) FindById(c echo.Context)error{
 	return controllers.NewSuccessResponse(c,response.FromDomain(user))
 
 
+}
+
+func (ctrl *UserController) GetLeaderboard(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	users, err := ctrl.usecase.GetLeaderboard(ctx)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	
+	return controllers.NewSuccessResponse(c, response.NewResponseArray(users))
 }

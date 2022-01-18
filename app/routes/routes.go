@@ -34,6 +34,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	users.POST("/login", cl.UserController.Login)
 	users.POST("/create", cl.UserController.CreateNewUser)
 	users.GET("/:id", cl.UserController.FindById)
+	users.GET("/leaderboard/", cl.UserController.GetLeaderboard)
 
 	roles := e.Group("roles")
 	roles.POST("/create", cl.RolesController.Create)

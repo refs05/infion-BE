@@ -28,6 +28,7 @@ type UseCase interface {
 	Login(domain DomainUser, ctx context.Context )(DomainUser,error)
 	CreateNewUser(domain DomainUser, ctx context.Context)(DomainUser,error)
 	FindById(userId int,ctx context.Context)(DomainUser,error)
+	GetLeaderboard(ctx context.Context) ([]DomainUser, error)
 }
 
 type Repository interface{
@@ -35,4 +36,5 @@ type Repository interface{
 	GetUsername(domain DomainUser,ctx context.Context)(DomainUser,error)
 	CreateNewUser(domain DomainUser, ctx context.Context)(DomainUser,error)
 	FindById(userId int,ctx context.Context)(DomainUser,error)
+	GetLeaderboard(ctx context.Context) ([]DomainUser, error)
 }

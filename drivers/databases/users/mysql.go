@@ -78,3 +78,14 @@ func (repo *UserRepository) FindById(userId int,ctx context.Context)(users.Domai
 
 // 	}
 // }
+
+func (repo *UserRepository) GetLeaderboard(ctx context.Context)([]users.DomainUser, error){
+	var recordUser []User
+	
+	result := repo.db.Unscoped().Order("comment_count desc").Order("like_count desc").Order("follower_count desc").Find(&recordUser)
+	if result.Error != nil {
+		return []users.DomainUser{}, result.Error
+	}
+
+	return ToDomainArray(recordUser), nil
+}

@@ -41,3 +41,13 @@ func FromDomain(domain users.DomainUser) UserResponse{
 
 	}
 }
+
+func NewResponseArray(domainUsers []users.DomainUser) []UserResponse {
+	var resp []UserResponse
+
+	for _, value := range domainUsers {
+		resp = append(resp, FromDomain(value))
+	}
+
+	return resp
+}
