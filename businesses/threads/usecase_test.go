@@ -455,6 +455,83 @@ func TestGetThreadsBySortCategory(t *testing.T){
 	})
 }
 
+func TestGetThreadsByUserID(t *testing.T){
+	t.Run("GetThreadsByUserID | Valid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, nil).Once()
+
+		ctx := context.Background()
+		result, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.Nil(t, err)
+		assert.Equal(t, []threads.Domain{threadsDomain}, result)
+	})
+
+	t.Run("GetThreadsByUserID | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, businesses.ErrNotFound).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+
+	
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("CommentCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("FollowerCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+}
+
 func TestUpdate(t *testing.T){
 	t.Run("Update | Valid", func(t *testing.T) {
 		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
