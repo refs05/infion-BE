@@ -8,8 +8,8 @@ import (
 type LikeComments struct {
 	ID        int `gorm:"primaryKey"`
 	CommentID int
-	UserID    int `gorm:"unique"`
-	CreatedAt time.Time
+	UserID    int
+	CreatedAt time.Time `gorm:"<-:create"`
 	UpdatedAt time.Time
 }
 

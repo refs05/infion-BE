@@ -8,8 +8,8 @@ import (
 type FollowThreads struct {
 	ID        int `gorm:"primaryKey"`
 	ThreadID  int
-	UserID    int `gorm:"unique"`
-	CreatedAt time.Time
+	UserID    int
+	CreatedAt time.Time `gorm:"<-:create"`
 	UpdatedAt time.Time
 }
 
