@@ -123,3 +123,15 @@ func (nr *mysqlThreadsRepository) GetThreadsByUserID(ctx context.Context, userID
 
 	return ToDomainArray(recordThread), nil
 }
+
+func (nr *mysqlThreadsRepository) GetThreadLikeCountByUserID(ctx context.Context, userID uint) (int, error) {
+	rec := Threads{}
+	var count int64
+	
+	result := nr.Conn.Model(&rec).Where("threads.user_id = ?", userID).Joins("LikeThreads").Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return int(count), nil
+}

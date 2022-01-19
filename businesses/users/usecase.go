@@ -124,12 +124,12 @@ func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,erro
 		return []DomainUser{}, err
 	}
 
-	// for i := range result {
-	// 	result[i].LikeCount, err = usecase.likeUsersRepository.CountByThreadID(ctx, result[i].Id)
-	// 	if err != nil {
-	// 		return []DomainUser{}, err
-	// 	}
-	// }
+	for i := range result {
+		result[i].LikeCount, err = usecase.threadsRepository.GetThreadLikeCountByUserID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
 
 	for i := range result {
 		result[i].CommentCount, err = usecase.commentsRepository.CountByUserID(ctx, result[i].Id)

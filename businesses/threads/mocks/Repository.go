@@ -56,6 +56,27 @@ func (_m *Repository) GetByID(ctx context.Context, threadsId int) (threads.Domai
 	return r0, r1
 }
 
+// GetThreadLikeCountByUserID provides a mock function with given fields: ctx, userID
+func (_m *Repository) GetThreadLikeCountByUserID(ctx context.Context, userID uint) (int, error) {
+	ret := _m.Called(ctx, userID)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, uint) int); ok {
+		r0 = rf(ctx, userID)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, uint) error); ok {
+		r1 = rf(ctx, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetThreads provides a mock function with given fields: ctx
 func (_m *Repository) GetThreads(ctx context.Context) ([]threads.Domain, error) {
 	ret := _m.Called(ctx)
