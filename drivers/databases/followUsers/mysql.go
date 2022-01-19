@@ -59,11 +59,11 @@ func (nr *mysqlFollowUsersRepository) Delete(ctx context.Context, followUsersDom
 	return rec.toDomain(), nil
 }
 
-func (nr *mysqlFollowUsersRepository) CountByFollowedID(ctx context.Context,id int) (int, error) {
+func (nr *mysqlFollowUsersRepository) CountByFollowedID(ctx context.Context,id uint) (int, error) {
 	rec := FollowUsers{}
 	var count int64
 	
-	result := nr.Conn.Model(&rec).Where("thread_id = ?", id).Count(&count)
+	result := nr.Conn.Model(&rec).Where("followed_id = ?", id).Count(&count)
 	if result.Error != nil {
 		return 0, result.Error
 	}

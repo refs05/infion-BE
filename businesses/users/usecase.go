@@ -5,6 +5,8 @@ import (
 
 	"infion-BE/businesses"
 	"infion-BE/businesses/comments"
+	"infion-BE/businesses/followUsers"
+	"infion-BE/businesses/threads"
 	"infion-BE/drivers/helpers/encrypt"
 
 	"regexp"
@@ -16,13 +18,17 @@ import (
 type UserUseCase struct {
 	repo Repository
 	ctx  time.Duration
-	commentsRepository comments.Repository
+	commentsRepository		comments.Repository
+	threadsRepository		threads.Repository
+	followUsersRepository	followUsers.Repository
 }
-func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository) UseCase{
+func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository, tr threads.Repository, fur followUsers.Repository) UseCase{
 	return &UserUseCase{
 		repo: UserRepo,
 		ctx: contextTimeout,
 		commentsRepository: cr,
+		threadsRepository: tr,
+		followUsersRepository: fur,
 		
 	}
 }
@@ -119,7 +125,7 @@ func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,erro
 	}
 
 	// for i := range result {
-	// 	result[i].LikeCount, err = usecase.likeUsersRepository.CountByThreadID(ctx, result[i].ID)
+	// 	result[i].LikeCount, err = usecase.likeUsersRepository.CountByThreadID(ctx, result[i].Id)
 	// 	if err != nil {
 	// 		return []DomainUser{}, err
 	// 	}
@@ -132,12 +138,12 @@ func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,erro
 		}
 	}
 
-	// for i := range result {
-	// 	result[i].FollowerCount, err = usecase.followUsersRepository.CountByThreadID(ctx, result[i].ID)
-	// 	if err != nil {
-	// 		return []DomainUser{}, err
-	// 	}
-	// }
+	for i := range result {
+		result[i].FollowerCount, err = usecase.followUsersRepository.CountByFollowedID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
 
 	for i := range result {
 		_, err = usecase.repo.Update(&result[i], ctx)
