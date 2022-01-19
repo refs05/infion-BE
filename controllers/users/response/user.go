@@ -17,7 +17,7 @@ type UserResponse struct {
 	CommentCount  int            `json:"comment_count"`
 	LikeCount     int            `json:"like_count"`
 	FollowerCount int            `json:"follower_count"`
-	CretedAt      time.Time      `json:"created_at"`
+	CreatedAt     time.Time      `json:"created_at"`
 	UpdatedAt     time.Time      `json:"updated_at"`
 	DeletedAt     gorm.DeletedAt `json:"deleted_at"`
 	Token         string         `json:"token"`
@@ -34,10 +34,20 @@ func FromDomain(domain users.DomainUser) UserResponse{
 		CommentCount: 	domain.CommentCount,
 		LikeCount: 		domain.LikeCount,
 		FollowerCount: 	domain.FollowerCount,		
-		CretedAt:		 domain.CretedAt,
+		CreatedAt:		 domain.CreatedAt,
 		UpdatedAt:		 domain.UpdatedAt,
 		DeletedAt:		 domain.DeletedAt,
 		Token:			 domain.Token, 
 
 	}
+}
+
+func NewResponseArray(domainUsers []users.DomainUser) []UserResponse {
+	var resp []UserResponse
+
+	for _, value := range domainUsers {
+		resp = append(resp, FromDomain(value))
+	}
+
+	return resp
 }

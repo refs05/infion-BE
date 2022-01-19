@@ -4,29 +4,32 @@ import (
 	"context"
 
 	"infion-BE/businesses"
-
+	"infion-BE/businesses/comments"
 	"infion-BE/drivers/helpers/encrypt"
 	_middleware "infion-BE/app/middleware"
 
 	"regexp"
-	// "strings"
 	"time"
 
 	"gorm.io/gorm"
-	// "gorm.io/gorm"
 )
 
 type UserUseCase struct {
 	repo Repository
 	ctx  time.Duration
-	jwt *_middleware.ConfigJWT
+commentsRepository comments.Repository	
+jwt *_middleware.ConfigJWT
 
 }
-func NewUseCase(UserRepo Repository,contextTimeout time.Duration,configJWT *_middleware.ConfigJWT) UseCase{
+
+func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository,configJWT *_middleware.ConfigJWT) UseCase{
 	return &UserUseCase{
 		repo: UserRepo,
 		ctx: contextTimeout,
+		commentsRepository: cr,
 		jwt: configJWT,
+		
+
 	}
 }
 
@@ -102,4 +105,54 @@ func (usecase *UserUseCase)FindById(userId int,ctx context.Context)(DomainUser,e
  return rec, nil
 }
 
+func (usecase *UserUseCase) Update(userDomain *DomainUser, ctx context.Context) (*DomainUser, error) {
+	existedComments, err := usecase.repo.FindById(int(userDomain.Id),ctx)
+	if err != nil {
+		return &DomainUser{}, err
+	}
+	userDomain.Id = existedComments.Id
 
+	result, err := usecase.repo.Update(userDomain, ctx)
+	if err != nil {
+		return &DomainUser{}, err
+	}
+
+	return &result, nil
+}
+
+func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,error){
+	result, err := usecase.repo.GetLeaderboard(ctx)
+	if err != nil {
+		return []DomainUser{}, err
+	}
+
+	// for i := range result {
+	// 	result[i].LikeCount, err = usecase.likeUsersRepository.CountByThreadID(ctx, result[i].ID)
+	// 	if err != nil {
+	// 		return []DomainUser{}, err
+	// 	}
+	// }
+
+	for i := range result {
+		result[i].CommentCount, err = usecase.commentsRepository.CountByUserID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	// for i := range result {
+	// 	result[i].FollowerCount, err = usecase.followUsersRepository.CountByThreadID(ctx, result[i].ID)
+	// 	if err != nil {
+	// 		return []DomainUser{}, err
+	// 	}
+	// }
+
+	for i := range result {
+		_, err = usecase.repo.Update(&result[i], ctx)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	return result, nil
+}

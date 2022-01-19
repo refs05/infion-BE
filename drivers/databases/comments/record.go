@@ -30,7 +30,7 @@ type Comments struct {
 	Replies			[]Replies `gorm:"foreignKey:CommentID;references:ID"`
 	LikeCount		int
 	ReplyCount		int
-	CreatedAt    	time.Time
+	CreatedAt    	time.Time `gorm:"<-:create"`
 	UpdatedAt   	time.Time
 }
 

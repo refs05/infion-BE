@@ -151,3 +151,21 @@ func (ctrl *ThreadsController) GetThreads(c echo.Context) error {
 	
 	return controller.NewSuccessResponse(c, response.NewResponseArray(threads))
 }
+
+func (ctrl *ThreadsController) GetThreadsByUserID(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	idstr := c.Param("id")
+	if strings.TrimSpace(idstr) == "" {
+		return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
+	}
+
+	id, _ := strconv.Atoi(idstr)
+
+	threads, err := ctrl.threadsUseCase.GetThreadsByUserID(ctx, id)
+	if err != nil {
+		return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	
+	return controller.NewSuccessResponse(c, response.NewResponseArray(threads))
+}

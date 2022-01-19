@@ -3,18 +3,24 @@ package comments
 import (
 	"context"
 	"infion-BE/businesses"
+	"infion-BE/businesses/likeComments"
+	"infion-BE/businesses/replies"
 	"time"
 )
 
 type commentsUsecase struct {
-	commentsRepository  Repository
-	contextTimeout  time.Duration
+	commentsRepository  	Repository
+	contextTimeout  		time.Duration
+	repliesRepository 		replies.Repository
+	likeCommentsRepository	likeComments.Repository
 }
 
-func NewCommentsUsecase(tr Repository, timeout time.Duration) Usecase {
+func NewCommentsUsecase(tr Repository, timeout time.Duration, rr replies.Repository, lcr likeComments.Repository) Usecase {
 	return &commentsUsecase{
 		commentsRepository:  tr,
 		contextTimeout:  timeout,
+		repliesRepository: rr,
+		likeCommentsRepository: lcr,
 	}
 }
 
@@ -42,6 +48,26 @@ func (tu *commentsUsecase) GetByID(ctx context.Context, commentsId int) (Domain,
 		return Domain{}, err
 	}
 
+	res.Replies, err = tu.repliesRepository.GetRepliesByCommentID(ctx, res.ID)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	res.LikeCount, err = tu.likeCommentsRepository.CountByCommentID(ctx, res.ID)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	res.ReplyCount, err = tu.repliesRepository.CountByCommentID(ctx, res.ID)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	_, err = tu.commentsRepository.Update(ctx, &res)
+	if err != nil {
+		return Domain{}, err
+	}
+
 	return res, nil
 }
 
@@ -50,6 +76,34 @@ func (tu *commentsUsecase) GetComments(ctx context.Context) ([]Domain, error) {
 	if err != nil {
 		return []Domain{}, err
 	}
+	for i := range result {
+		result[i].Replies, err = tu.repliesRepository.GetRepliesByCommentID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].LikeCount, err = tu.likeCommentsRepository.CountByCommentID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].ReplyCount, err =  tu.repliesRepository.CountByCommentID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		_, err = tu.commentsRepository.Update(ctx, &result[i])
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
 	return result, nil
 }
 
@@ -58,6 +112,34 @@ func (tu *commentsUsecase) GetCommentsByThreadID(ctx context.Context, threadId i
 	if err != nil {
 		return []Domain{}, err
 	}
+	for i := range result {
+		result[i].Replies, err = tu.repliesRepository.GetRepliesByCommentID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].LikeCount, err = tu.likeCommentsRepository.CountByCommentID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].ReplyCount, err =  tu.repliesRepository.CountByCommentID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		_, err = tu.commentsRepository.Update(ctx, &result[i])
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
 	return result, nil
 }
 

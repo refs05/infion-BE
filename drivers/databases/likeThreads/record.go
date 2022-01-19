@@ -6,27 +6,27 @@ import (
 )
 
 type LikeThreads struct {
-	ID           	int `gorm:"primaryKey"`
-	ThreadID		int
-	UserID			int
-	CreatedAt    	time.Time
-	UpdatedAt   	time.Time
+	ID        int `gorm:"primaryKey"`
+	ThreadID  int
+	UserID    int
+	CreatedAt time.Time `gorm:"<-:create"`
+	UpdatedAt time.Time
 }
 
 func fromDomain(domain *likeThreadsUsecase.Domain) *LikeThreads {
 	return &LikeThreads{
-		ID:           	domain.ID,
-		ThreadID:		domain.ThreadID,
-		UserID: 		domain.UserID,
+		ID:       domain.ID,
+		ThreadID: domain.ThreadID,
+		UserID:   domain.UserID,
 	}
 }
 
 func (rec *LikeThreads) toDomain() likeThreadsUsecase.Domain {
 	return likeThreadsUsecase.Domain{
-		ID:           	rec.ID,
-		ThreadID:		rec.ThreadID,
-		UserID: 		rec.UserID,
-		CreatedAt:    	rec.CreatedAt,
-		UpdatedAt:    	rec.UpdatedAt,
+		ID:        rec.ID,
+		ThreadID:  rec.ThreadID,
+		UserID:    rec.UserID,
+		CreatedAt: rec.CreatedAt,
+		UpdatedAt: rec.UpdatedAt,
 	}
 }

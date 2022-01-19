@@ -3,18 +3,21 @@ package replies
 import (
 	"context"
 	"infion-BE/businesses"
+	"infion-BE/businesses/likeReplies"
 	"time"
 )
 
 type repliesUsecase struct {
-	repliesRepository Repository
-	contextTimeout    time.Duration
+	repliesRepository		Repository
+	contextTimeout			time.Duration
+	likeRepliesRepository	likeReplies.Repository
 }
 
-func NewRepliesUsecase(tr Repository, timeout time.Duration) Usecase {
+func NewRepliesUsecase(tr Repository, timeout time.Duration, lrr likeReplies.Repository) Usecase {
 	return &repliesUsecase{
 		repliesRepository: tr,
 		contextTimeout:    timeout,
+		likeRepliesRepository: lrr,
 	}
 }
 
@@ -42,6 +45,16 @@ func (tu *repliesUsecase) GetByID(ctx context.Context, repliesId int) (Domain, e
 		return Domain{}, err
 	}
 
+	res.LikeCount, err = tu.likeRepliesRepository.CountByReplyID(ctx, res.ID)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	_, err = tu.repliesRepository.Update(ctx, &res)
+	if err != nil {
+		return Domain{}, err
+	}
+
 	return res, nil
 }
 
@@ -50,6 +63,21 @@ func (tu *repliesUsecase) GetReplies(ctx context.Context) ([]Domain, error) {
 	if err != nil {
 		return []Domain{}, err
 	}
+
+	for i := range result {
+		result[i].LikeCount, err = tu.likeRepliesRepository.CountByReplyID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		_, err = tu.repliesRepository.Update(ctx, &result[i])
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
 	return result, nil
 }
 
@@ -58,6 +86,21 @@ func (tu *repliesUsecase) GetRepliesByCommentID(ctx context.Context, threadId in
 	if err != nil {
 		return []Domain{}, err
 	}
+
+	for i := range result {
+		result[i].LikeCount, err = tu.likeRepliesRepository.CountByReplyID(ctx, result[i].ID)
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+
+	for i := range result {
+		_, err = tu.repliesRepository.Update(ctx, &result[i])
+		if err != nil {
+			return []Domain{}, err
+		}
+	}
+	
 	return result, nil
 }
 

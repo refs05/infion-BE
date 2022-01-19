@@ -58,3 +58,15 @@ func (nr *mysqlLikeCommentsRepository) Delete(ctx context.Context, likeCommentsD
 
 	return rec.toDomain(), nil
 }
+
+func (nr *mysqlLikeCommentsRepository) CountByCommentID(ctx context.Context,id int) (int, error) {
+	rec := LikeComments{}
+	var count int64
+	
+	result := nr.Conn.Model(&rec).Where("comment_id = ?", id).Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return int(count), nil
+}

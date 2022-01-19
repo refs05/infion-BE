@@ -8,7 +8,7 @@ import (
 type Roles struct {
 	ID           	int `gorm:"primaryKey"`
 	Name      		string
-	CreatedAt    	time.Time
+	CreatedAt    	time.Time `gorm:"<-:create"`
 	UpdatedAt   	time.Time
 }
 

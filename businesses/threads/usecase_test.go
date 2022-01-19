@@ -3,6 +3,9 @@ package threads_test
 import (
 	"context"
 	"infion-BE/businesses"
+	_commentsMock "infion-BE/businesses/comments/mocks"
+	_followThreadsMock "infion-BE/businesses/followThreads/mocks"
+	_likeThreadsMock "infion-BE/businesses/likeThreads/mocks"
 	"infion-BE/businesses/threads"
 	_threadsMock "infion-BE/businesses/threads/mocks"
 	"os"
@@ -13,15 +16,17 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-
 var (
-	threadsRepository _threadsMock.Repository
-	threadsUsecase    threads.Usecase
-	threadsDomain     threads.Domain
+	threadsRepository		_threadsMock.Repository
+	threadsUsecase			threads.Usecase
+	threadsDomain			threads.Domain
+	likeThreadsRepository	_likeThreadsMock.Repository
+	commentsRepository		_commentsMock.Repository
+	followThreadsRepository	_followThreadsMock.Repository
 )
 
 func TestMain(m *testing.M) {
-	threadsUsecase = threads.NewThreadsUsecase(&threadsRepository, 2)
+	threadsUsecase = threads.NewThreadsUsecase(&threadsRepository, 2, &likeThreadsRepository, &commentsRepository, &followThreadsRepository)
 	threadsDomain = threads.Domain{
 		ID:				1,
 		Title:			"test thread",
@@ -33,6 +38,7 @@ func TestMain(m *testing.M) {
 		UrlImg: 		"placeholder.jpg",
 		LikeCount:		1,
 		CommentCount:	1,
+		FollowerCount: 	1,
 		CreatedAt: 		time.Now(),
 		UpdatedAt: 		time.Now(),
 	}
@@ -64,6 +70,10 @@ func TestStore(t *testing.T){
 func TestGetByID(t *testing.T){
 	t.Run("GetByID | Valid", func(t *testing.T) {
 		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, nil).Once()
 
 		ctx := context.Background()
 		result, err := threadsUsecase.GetByID(ctx, threadsDomain.ID)
@@ -89,11 +99,65 @@ func TestGetByID(t *testing.T){
 		assert.NotNil(t, err)
 		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
+
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetByID(ctx, threadsDomain.ID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("CommentCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetByID(ctx, threadsDomain.ID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("FollowerCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetByID(ctx, threadsDomain.ID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetByID(ctx, threadsDomain.ID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
 }
 
 func TestGetThreads(t *testing.T){
 	t.Run("GetThreads | Valid", func(t *testing.T) {
 		threadsRepository.On("GetThreads", mock.Anything).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, nil).Once()
 
 		ctx := context.Background()
 		result, err := threadsUsecase.GetThreads(ctx)
@@ -111,12 +175,66 @@ func TestGetThreads(t *testing.T){
 		assert.NotNil(t, err)
 		assert.Equal(t, businesses.ErrNotFound, err)
 	})
-}
 
+	
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreads", mock.Anything).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreads(ctx)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("CommentCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreads", mock.Anything).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreads(ctx)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("FollowerCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreads", mock.Anything).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreads(ctx)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreads", mock.Anything).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreads(ctx)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+}
 
 func TestGetThreadsByCategory(t *testing.T){
 	t.Run("GetThreadsByCategory | Valid", func(t *testing.T) {
 		threadsRepository.On("GetThreadsByCategory", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, nil).Once()
 
 		ctx := context.Background()
 		result, err := threadsUsecase.GetThreadsByCategory(ctx, "category")
@@ -125,7 +243,7 @@ func TestGetThreadsByCategory(t *testing.T){
 		assert.Equal(t, []threads.Domain{threadsDomain}, result)
 	})
 
-	t.Run("GetThreads | InValid", func(t *testing.T) {
+	t.Run("GetThreadsByCategory | InValid", func(t *testing.T) {
 		threadsRepository.On("GetThreadsByCategory", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, businesses.ErrNotFound).Once()
 
 		ctx := context.Background()
@@ -134,11 +252,65 @@ func TestGetThreadsByCategory(t *testing.T){
 		assert.NotNil(t, err)
 		assert.Equal(t, businesses.ErrNotFound, err)
 	})
+	
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByCategory", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByCategory(ctx, "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("CommentCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByCategory", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByCategory(ctx, "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("FollowerCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByCategory", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByCategory(ctx, "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByCategory", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByCategory(ctx, "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
 }
 
 func TestGetThreadsBySort(t *testing.T){
 	t.Run("GetThreadsBySort | Valid", func(t *testing.T) {
 		threadsRepository.On("GetThreadsBySort", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, nil).Once()
 
 		ctx := context.Background()
 		result, err := threadsUsecase.GetThreadsBySort(ctx, "sort")
@@ -147,7 +319,7 @@ func TestGetThreadsBySort(t *testing.T){
 		assert.Equal(t, []threads.Domain{threadsDomain}, result)
 	})
 
-	t.Run("GetThreads | InValid", func(t *testing.T) {
+	t.Run("GetThreadsBySort | InValid", func(t *testing.T) {
 		threadsRepository.On("GetThreadsBySort", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, businesses.ErrNotFound).Once()
 
 		ctx := context.Background()
@@ -156,11 +328,64 @@ func TestGetThreadsBySort(t *testing.T){
 		assert.NotNil(t, err)
 		assert.Equal(t, businesses.ErrNotFound, err)
 	})
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySort", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySort(ctx, "sort")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("CommentCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySort", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySort(ctx, "sort")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("FollowerCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySort", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySort(ctx, "sort")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySort", mock.Anything, mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySort(ctx, "sort")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
 }
 
 func TestGetThreadsBySortCategory(t *testing.T){
 	t.Run("GetThreadsBySortCategory | Valid", func(t *testing.T) {
 		threadsRepository.On("GetThreadsBySortCategory", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, nil).Once()
 
 		ctx := context.Background()
 		result, err := threadsUsecase.GetThreadsBySortCategory(ctx, "sort", "category")
@@ -169,7 +394,7 @@ func TestGetThreadsBySortCategory(t *testing.T){
 		assert.Equal(t, []threads.Domain{threadsDomain}, result)
 	})
 
-	t.Run("GetThreads | InValid", func(t *testing.T) {
+	t.Run("GetThreadsBySortCategory | InValid", func(t *testing.T) {
 		threadsRepository.On("GetThreadsBySortCategory", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, businesses.ErrNotFound).Once()
 
 		ctx := context.Background()
@@ -177,6 +402,133 @@ func TestGetThreadsBySortCategory(t *testing.T){
 
 		assert.NotNil(t, err)
 		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+	
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySortCategory", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySortCategory(ctx, "sort", "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("CommentCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySortCategory", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySortCategory(ctx, "sort", "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("FollowerCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySortCategory", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySortCategory(ctx, "sort", "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsBySortCategory", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsBySortCategory(ctx, "sort", "category")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+}
+
+func TestGetThreadsByUserID(t *testing.T){
+	t.Run("GetThreadsByUserID | Valid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, nil).Once()
+
+		ctx := context.Background()
+		result, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.Nil(t, err)
+		assert.Equal(t, []threads.Domain{threadsDomain}, result)
+	})
+
+	t.Run("GetThreadsByUserID | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, businesses.ErrNotFound).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+
+	
+	t.Run("LikeCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("CommentCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("FollowerCount | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(0, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Update | InValid", func(t *testing.T) {
+		threadsRepository.On("GetThreadsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]threads.Domain{threadsDomain}, nil).Once()
+		likeThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		commentsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		followThreadsRepository.On("CountByThreadID", mock.Anything, mock.AnythingOfType("int")).Return(1, nil).Once()
+		threadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := threadsUsecase.GetThreadsByUserID(ctx, threadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
 
