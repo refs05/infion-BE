@@ -98,7 +98,7 @@ func (repo *UserRepository) Update(userDomain *users.DomainUser, ctx context.Con
 func (repo *UserRepository) GetLeaderboard(ctx context.Context)([]users.DomainUser, error){
 	var recordUser []User
 	
-	result := repo.db.Unscoped().Order("comment_count desc").Order("like_count desc").Order("follower_count desc").Find(&recordUser)
+	result := repo.db.Unscoped().Order("thread_count desc").Order("like_count desc").Order("follower_count desc").Find(&recordUser)
 	if result.Error != nil {
 		return []users.DomainUser{}, result.Error
 	}
