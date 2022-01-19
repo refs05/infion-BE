@@ -89,13 +89,18 @@ func main() {
 	db := configDB.InitialDB()
 	dbMigrate(db)
 
+	jwt := _middleware.ConfigJWT{
+		SecretJWT : viper.GetString(`jwt.secret`),
+		ExpiresDuration : viper.GetInt(`jwt.expired`),
+	}
+
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
 	e := echo.New()
 	e.Use(middleware.CORS())
 
 	userRepo := _userRepo.NewUserRepository(db)
-	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext)
+	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext,&jwt)
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	rolesRepo := _rolesRepo.NewRolesRepository(db)
@@ -140,6 +145,7 @@ func main() {
 		LikeCommentsController:  *likeCommentsCtrl,
 		ReportsController:       *reportsCtrl,
 		RepliesController:       *repliesCtrl,
+		JWTConfig: jwt.Init(),
 	}
 	routesInit.RouteRegister(e)
 
