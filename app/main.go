@@ -17,6 +17,10 @@ import (
 	_followThreadsController "infion-BE/controllers/followThreads"
 	_followThreadsRepo "infion-BE/drivers/databases/followThreads"
 
+	_followUsersUsecase "infion-BE/businesses/followUsers"
+	_followUsersController "infion-BE/controllers/followUsers"
+	_followUsersRepo "infion-BE/drivers/databases/followUsers"
+
 	_likeThreadsUsecase "infion-BE/businesses/likeThreads"
 	_likeThreadsController "infion-BE/controllers/likeThreads"
 	_likeThreadsRepo "infion-BE/drivers/databases/likeThreads"
@@ -71,6 +75,7 @@ func init() {
 func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&_userRepo.User{},
+		&_followUsersRepo.FollowUsers{},
 		&_rolesRepo.Roles{},
 		&_threadsRepo.Threads{},
 		&_followThreadsRepo.FollowThreads{},
@@ -131,6 +136,10 @@ func main() {
 	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext, likeThreadsRepo, commentsRepo, followThreadsRepo)
 	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
 
+	followUsersRepo := _followUsersRepo.NewFollowUsersRepository(db)
+	followUsersUsecase := _followUsersUsecase.NewFollowUsersUsecase(followUsersRepo, timeoutContext)
+	followUsersCtrl := _followUsersController.NewFollowUsersController(followUsersUsecase)
+
 	userRepo := _userRepo.NewUserRepository(db)
 	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext, commentsRepo)
 	userCtrl := _userController.NewUserController(userUsecase)
@@ -140,16 +149,17 @@ func main() {
 	reportsCtrl := _reportsController.NewReportsController(reportsUsecase)
 
 	routesInit := _routes.ControllerList{
-		UserController:          *userCtrl,
-		RolesController:         *rolesCtrl,
-		ThreadsController:       *threadsCtrl,
-		FollowThreadsController: *followThreadsCtrl,
-		LikeThreadsController:   *likeThreadsCtrl,
-		CommentsController:      *commentsCtrl,
-		LikeCommentsController:  *likeCommentsCtrl,
-		ReportsController:       *reportsCtrl,
-		RepliesController:       *repliesCtrl,
-		LikeRepliesController:  *likeRepliesCtrl,
+		UserController:				*userCtrl,
+		FollowUsersController:		*followUsersCtrl,
+		RolesController:			*rolesCtrl,
+		ThreadsController:			*threadsCtrl,
+		FollowThreadsController:	*followThreadsCtrl,
+		LikeThreadsController:		*likeThreadsCtrl,
+		CommentsController:			*commentsCtrl,
+		LikeCommentsController:		*likeCommentsCtrl,
+		ReportsController:			*reportsCtrl,
+		RepliesController:			*repliesCtrl,
+		LikeRepliesController:		*likeRepliesCtrl,
 	}
 	routesInit.RouteRegister(e)
 

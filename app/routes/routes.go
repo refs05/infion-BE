@@ -3,6 +3,7 @@ package routes
 import (
 	"infion-BE/controllers/comments"
 	"infion-BE/controllers/followThreads"
+	"infion-BE/controllers/followUsers"
 	"infion-BE/controllers/likeComments"
 	"infion-BE/controllers/likeReplies"
 	"infion-BE/controllers/likeThreads"
@@ -18,6 +19,7 @@ import (
 
 type ControllerList struct {
 	UserController          userController.UserController
+	FollowUsersController 	followUsers.FollowUsersController
 	RolesController         roles.RolesController
 	ThreadsController       threads.ThreadsController
 	FollowThreadsController followThreads.FollowThreadsController
@@ -36,6 +38,12 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	users.GET("/:id", cl.UserController.FindById)
 	users.PUT("/:id", cl.UserController.Update)
 	users.GET("/leaderboard/", cl.UserController.GetLeaderboard)
+
+	followUsers := e.Group("followUsers")
+	followUsers.POST("/create", cl.FollowUsersController.Create)
+	followUsers.GET("/:id", cl.FollowUsersController.ReadID)
+	followUsers.PUT("/:id", cl.FollowUsersController.Update)
+	followUsers.DELETE("/:id", cl.FollowUsersController.Delete)
 
 	roles := e.Group("roles")
 	roles.POST("/create", cl.RolesController.Create)
