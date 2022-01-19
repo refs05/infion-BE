@@ -98,11 +98,15 @@ return existedUser,businesses.ErrDuplicateData
 }
 
 func (usecase *UserUseCase)FindById(userId int,ctx context.Context)(DomainUser,error){
+	_, err := usecase.GetLeaderboard(ctx)
+	if err != nil{
+		return DomainUser{},err
+	}
 	rec,err := usecase.repo.FindById(userId,ctx)
- if err != nil{
-	 return DomainUser{},err
- }
- return rec, nil
+	if err != nil{
+		return DomainUser{},err
+	}
+	return rec, nil
 }
 
 func (usecase *UserUseCase) Update(userDomain *DomainUser, ctx context.Context) (*DomainUser, error) {
