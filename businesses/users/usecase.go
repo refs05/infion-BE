@@ -169,6 +169,10 @@ func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,erro
 	}
 
 	for i := range result {
+		result[i].Rank = i + 1
+	}
+
+	for i := range result {
 		_, err = usecase.repo.Update(&result[i], ctx)
 		if err != nil {
 			return []DomainUser{}, err
