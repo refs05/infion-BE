@@ -132,7 +132,14 @@ func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,erro
 	}
 
 	for i := range result {
-		result[i].CommentCount, err = usecase.commentsRepository.CountByUserID(ctx, result[i].Id)
+		result[i].ThreadCount, err = usecase.commentsRepository.CountByUserID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].ThreadCount, err = usecase.threadsRepository.CountByUserID(ctx, result[i].Id)
 		if err != nil {
 			return []DomainUser{}, err
 		}

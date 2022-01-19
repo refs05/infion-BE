@@ -15,6 +15,7 @@ type UserResponse struct {
 	RoleId        int            `json:"role_id"`
 	UrlImg        string         `json:"url_img"`
 	CommentCount  int            `json:"comment_count"`
+	ThreadCount   int            `json:"thread_count"`
 	LikeCount     int            `json:"like_count"`
 	FollowerCount int            `json:"follower_count"`
 	CreatedAt     time.Time      `json:"created_at"`
@@ -32,6 +33,7 @@ func FromDomain(domain users.DomainUser) UserResponse{
 		RoleId:  		domain.RoleId,
 		UrlImg: 		domain.UrlImg,
 		CommentCount: 	domain.CommentCount,
+		ThreadCount: 	domain.ThreadCount,
 		LikeCount: 		domain.LikeCount,
 		FollowerCount: 	domain.FollowerCount,		
 		CreatedAt:		 domain.CreatedAt,

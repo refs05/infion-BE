@@ -14,6 +14,7 @@ type DomainUser struct{
 	RoleId			int
 	UrlImg			string
 	CommentCount	int
+	ThreadCount		int
 	LikeCount		int
 	FollowerCount	int
 	CreatedAt 		time.Time

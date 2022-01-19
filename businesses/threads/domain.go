@@ -44,5 +44,6 @@ type Repository interface {
 	GetThreadsByUserID(ctx context.Context, userID int) ([]Domain, error)
 	Update(ctx context.Context, threadsDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, threadsDomain *Domain) (Domain, error)
+	CountByUserID(ctx context.Context,id uint) (int, error)
 	GetThreadLikeCountByUserID(ctx context.Context, userID uint) (int, error)
 }

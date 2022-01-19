@@ -13,6 +13,7 @@ type User struct {
 	RoleId			int
 	UrlImg			string
 	CommentCount	int
+	ThreadCount		int
 	LikeCount		int
 	FollowerCount	int
 	Password  		string
@@ -30,6 +31,7 @@ func FromDomain(domain users.DomainUser) User{
 		RoleId:			domain.RoleId,
 		UrlImg:			domain.UrlImg,
 		CommentCount:	domain.CommentCount,
+		ThreadCount:	domain.ThreadCount,
 		LikeCount:		domain.LikeCount,
 		FollowerCount:	domain.FollowerCount,
 		Password:  		domain.Password,
@@ -47,6 +49,7 @@ func (user User)ToDomain() users.DomainUser{
 		RoleId:				user.RoleId,
 		UrlImg:				user.UrlImg,
 		CommentCount:		user.CommentCount,
+		ThreadCount: 		user.ThreadCount,
 		LikeCount:			user.LikeCount,
 		FollowerCount:		user.FollowerCount,
 		Password:  			user.Password,
