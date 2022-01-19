@@ -2,6 +2,7 @@ package threads
 
 import (
 	threadsUsecase "infion-BE/businesses/threads"
+	"infion-BE/drivers/databases/followThreads"
 	"infion-BE/drivers/databases/likeThreads"
 	"infion-BE/drivers/databases/users"
 	"time"
@@ -16,6 +17,7 @@ type Threads struct {
 	UserID			int
 	User			users.User
 	LikeThreads		likeThreads.LikeThreads `gorm:"foreignKey:ThreadID;references:ID"`
+	FollowThreads	followThreads.FollowThreads `gorm:"foreignKey:ThreadID;references:ID"`
 	UrlImg			string
 	LikeCount		int
 	CommentCount	int

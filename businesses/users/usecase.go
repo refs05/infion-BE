@@ -5,6 +5,7 @@ import (
 
 	"infion-BE/businesses"
 	"infion-BE/businesses/comments"
+	"infion-BE/businesses/followThreads"
 	"infion-BE/businesses/followUsers"
 	"infion-BE/businesses/threads"
 	"infion-BE/drivers/helpers/encrypt"
@@ -21,15 +22,16 @@ type UserUseCase struct {
 	commentsRepository		comments.Repository
 	threadsRepository		threads.Repository
 	followUsersRepository	followUsers.Repository
+	followThreadsRepository	followThreads.Repository
 }
-func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository, tr threads.Repository, fur followUsers.Repository) UseCase{
+func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository, tr threads.Repository, fur followUsers.Repository, ftr followThreads.Repository) UseCase{
 	return &UserUseCase{
 		repo: UserRepo,
 		ctx: contextTimeout,
 		commentsRepository: cr,
 		threadsRepository: tr,
 		followUsersRepository: fur,
-		
+		followThreadsRepository: ftr,
 	}
 }
 
@@ -147,6 +149,20 @@ func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,erro
 
 	for i := range result {
 		result[i].FollowerCount, err = usecase.followUsersRepository.CountByFollowedID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].ThreadFollowerCount, err = usecase.threadsRepository.GetThreadFollowerCountByUserID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].ThreadFollowingCount, err = usecase.followThreadsRepository.CountByUserID(ctx, result[i].Id)
 		if err != nil {
 			return []DomainUser{}, err
 		}

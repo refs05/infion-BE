@@ -18,6 +18,9 @@ type UserResponse struct {
 	ThreadCount   int            `json:"thread_count"`
 	LikeCount     int            `json:"like_count"`
 	FollowerCount int            `json:"follower_count"`
+	ThreadFollowerCount int      `json:"thread_follower_count"`
+	ThreadFollowingCount int     `json:"thread_following_count"`
+	Rank          int            `json:"rank"` 
 	CreatedAt     time.Time      `json:"created_at"`
 	UpdatedAt     time.Time      `json:"updated_at"`
 	DeletedAt     gorm.DeletedAt `json:"deleted_at"`
@@ -35,11 +38,14 @@ func FromDomain(domain users.DomainUser) UserResponse{
 		CommentCount: 	domain.CommentCount,
 		ThreadCount: 	domain.ThreadCount,
 		LikeCount: 		domain.LikeCount,
-		FollowerCount: 	domain.FollowerCount,		
-		CreatedAt:		 domain.CreatedAt,
-		UpdatedAt:		 domain.UpdatedAt,
-		DeletedAt:		 domain.DeletedAt,
-		Token:			 domain.Token, 
+		FollowerCount: 	domain.FollowerCount,	
+		ThreadFollowerCount:  domain.ThreadFollowerCount,
+		ThreadFollowingCount: domain.ThreadFollowingCount,
+		Rank:           domain.Rank,	
+		CreatedAt:		domain.CreatedAt,
+		UpdatedAt:		domain.UpdatedAt,
+		DeletedAt:		domain.DeletedAt,
+		Token:			domain.Token, 
 
 	}
 }
