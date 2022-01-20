@@ -70,3 +70,12 @@ func (nr *mysqlLikeCommentsRepository) CountByCommentID(ctx context.Context,id i
 
 	return int(count), nil
 }
+
+func (nr *mysqlLikeCommentsRepository) GetDuplicate(ctx context.Context, commentID int, userID int) (likeComments.Domain, error) {
+	rec := LikeComments{}
+	err := nr.Conn.Where("comment_id = ? AND user_id = ?", commentID, userID).First(&rec).Error
+	if err != nil {
+		return likeComments.Domain{}, err
+	}
+	return rec.toDomain(), nil
+}
