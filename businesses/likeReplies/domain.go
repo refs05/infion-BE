@@ -27,4 +27,5 @@ type Repository interface {
 	Update(ctx context.Context, likeRepliesDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, likeRepliesDomain *Domain) (Domain, error)
 	CountByReplyID(ctx context.Context,id int) (int, error)
+	GetDuplicate(ctx context.Context, replyID int, userID int) (Domain, error)
 }

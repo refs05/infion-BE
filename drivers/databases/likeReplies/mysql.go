@@ -70,3 +70,12 @@ func (nr *mysqlLikeRepliesRepository) CountByReplyID(ctx context.Context,id int)
 
 	return int(count), nil
 }
+
+func (nr *mysqlLikeRepliesRepository) GetDuplicate(ctx context.Context, threadID int, userID int) (likeReplies.Domain, error) {
+	rec := LikeReplies{}
+	err := nr.Conn.Where("reply_id = ? AND user_id = ?", threadID, userID).First(&rec).Error
+	if err != nil {
+		return likeReplies.Domain{}, err
+	}
+	return rec.toDomain(), nil
+}
