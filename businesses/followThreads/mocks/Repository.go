@@ -35,6 +35,27 @@ func (_m *Repository) CountByThreadID(ctx context.Context, id int) (int, error) 
 	return r0, r1
 }
 
+// CountByUserID provides a mock function with given fields: ctx, id
+func (_m *Repository) CountByUserID(ctx context.Context, id uint) (int, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, uint) int); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, uint) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Delete provides a mock function with given fields: ctx, followThreadsDomain
 func (_m *Repository) Delete(ctx context.Context, followThreadsDomain *followThreads.Domain) (followThreads.Domain, error) {
 	ret := _m.Called(ctx, followThreadsDomain)

@@ -70,3 +70,15 @@ func (nr *mysqlFollowThreadsRepository) CountByThreadID(ctx context.Context,id i
 
 	return int(count), nil
 }
+
+func (nr *mysqlFollowThreadsRepository) CountByUserID(ctx context.Context,id uint) (int, error) {
+	rec := FollowThreads{}
+	var count int64
+	
+	result := nr.Conn.Model(&rec).Where("user_id = ?", id).Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return int(count), nil
+}

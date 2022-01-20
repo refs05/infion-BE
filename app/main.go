@@ -141,7 +141,7 @@ func main() {
 	followUsersCtrl := _followUsersController.NewFollowUsersController(followUsersUsecase)
 
 	userRepo := _userRepo.NewUserRepository(db)
-	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext, commentsRepo)
+	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext, commentsRepo, threadsRepo, followUsersRepo, followThreadsRepo)
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	reportsRepo := _reportsRepo.NewReportsRepository(db)

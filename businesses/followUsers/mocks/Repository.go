@@ -15,18 +15,18 @@ type Repository struct {
 }
 
 // CountByFollowedID provides a mock function with given fields: ctx, id
-func (_m *Repository) CountByFollowedID(ctx context.Context, id int) (int, error) {
+func (_m *Repository) CountByFollowedID(ctx context.Context, id uint) (int, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(context.Context, int) int); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uint) int); ok {
 		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, uint) error); ok {
 		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)

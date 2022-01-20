@@ -27,4 +27,5 @@ type Repository interface {
 	Update(ctx context.Context, followThreadsDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, followThreadsDomain *Domain) (Domain, error)
 	CountByThreadID(ctx context.Context,id int) (int, error)
+	CountByUserID(ctx context.Context,id uint) (int, error)
 }

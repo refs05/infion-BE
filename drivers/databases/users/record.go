@@ -13,8 +13,12 @@ type User struct {
 	RoleId			int
 	UrlImg			string
 	CommentCount	int
+	ThreadCount		int
 	LikeCount		int
 	FollowerCount	int
+	ThreadFollowerCount  int
+	ThreadFollowingCount int
+	Rank            int
 	Password  		string
 	CreatedAt  		time.Time `gorm:"<-:create"`
 	UpdatedAt 		time.Time
@@ -30,8 +34,12 @@ func FromDomain(domain users.DomainUser) User{
 		RoleId:			domain.RoleId,
 		UrlImg:			domain.UrlImg,
 		CommentCount:	domain.CommentCount,
+		ThreadCount:	domain.ThreadCount,
 		LikeCount:		domain.LikeCount,
 		FollowerCount:	domain.FollowerCount,
+		ThreadFollowerCount:  domain.ThreadFollowerCount,
+		ThreadFollowingCount: domain.ThreadFollowingCount,
+		Rank:           domain.Rank,
 		Password:  		domain.Password,
 		CreatedAt:		domain.CreatedAt,
 		UpdatedAt:		domain.UpdatedAt,
@@ -47,8 +55,12 @@ func (user User)ToDomain() users.DomainUser{
 		RoleId:				user.RoleId,
 		UrlImg:				user.UrlImg,
 		CommentCount:		user.CommentCount,
+		ThreadCount: 		user.ThreadCount,
 		LikeCount:			user.LikeCount,
 		FollowerCount:		user.FollowerCount,
+		ThreadFollowerCount:  user.ThreadFollowerCount,
+		ThreadFollowingCount: user.ThreadFollowingCount,
+		Rank:               user.Rank,
 		Password:  			user.Password,
 		CreatedAt:			user.CreatedAt,
 		UpdatedAt:			user.UpdatedAt,

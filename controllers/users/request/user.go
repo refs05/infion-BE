@@ -9,9 +9,6 @@ type Users struct {
 	Password      string         `json:"password"`
 	RoleId        int            `json:"role_id"`
 	UrlImg        string         `json:"url_img"`
-	CommentCount  int            `json:"comment_count"`
-	LikeCount     int            `json:"like_count"`
-	FollowerCount int            `json:"follower_count"`
 	Token         string         `json:"token"`
 }
 
@@ -23,9 +20,6 @@ func (user *Users) ToDomain() *users.DomainUser{
 		Password:   	user.Password,
 		RoleId:  		user.RoleId,
 		UrlImg: 		user.UrlImg,
-		CommentCount: 	user.CommentCount,
-		LikeCount: 		user.LikeCount,
-		FollowerCount: 	user.FollowerCount,	
 		Token:			user.Token, 	
 	}
 }

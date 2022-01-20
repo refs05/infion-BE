@@ -26,5 +26,5 @@ type Repository interface {
 	GetByID(ctx context.Context, followUsersId int) (Domain, error)
 	Update(ctx context.Context, followUsersDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, followUsersDomain *Domain) (Domain, error)
-	CountByFollowedID(ctx context.Context, id int) (int, error)
+	CountByFollowedID(ctx context.Context, id uint) (int, error)
 }

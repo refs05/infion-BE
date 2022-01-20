@@ -14,8 +14,12 @@ type DomainUser struct{
 	RoleId			int
 	UrlImg			string
 	CommentCount	int
+	ThreadCount		int
 	LikeCount		int
 	FollowerCount	int
+	ThreadFollowerCount  int
+	ThreadFollowingCount int
+	Rank            int
 	CreatedAt 		time.Time
 	UpdatedAt 		time.Time
 	DeletedAt 		gorm.DeletedAt `gorm:"index"`
