@@ -27,9 +27,9 @@ func TestMain(m *testing.M) {
 		ThreadID: 		1,
 		Title:			"test thread",
 		UserID:			1,
-		Moderator:		"mod1",
+		Reporter:		"mod1",
 		ReportMessage: 	"test message",
-		Status: 		"clear",
+		Status: 		false,
 		CreatedAt: 		time.Now(),
 		UpdatedAt: 		time.Now(),
 	}

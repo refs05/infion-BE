@@ -6,7 +6,7 @@ type Reports struct {
 	ThreadID		int	`json:"thread_id"`
 	UserID			int `json:"user_id"`
 	ReportMessage   string `json:"report_message"`
-	Status   		string `json:"status"`
+	Status   		bool `json:"status"`
 }
 
 func (req *Reports) ToDomain() *reports.Domain {
