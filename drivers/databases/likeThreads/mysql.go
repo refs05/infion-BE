@@ -70,3 +70,12 @@ func (nr *mysqlLikeThreadsRepository) CountByThreadID(ctx context.Context,id int
 
 	return int(count), nil
 }
+
+func (nr *mysqlLikeThreadsRepository) GetDuplicate(ctx context.Context, threadID int, userID int) (likeThreads.Domain, error) {
+	rec := LikeThreads{}
+	err := nr.Conn.Where("thread_id = ? AND user_id = ?", threadID, userID).First(&rec).Error
+	if err != nil {
+		return likeThreads.Domain{}, err
+	}
+	return rec.toDomain(), nil
+}

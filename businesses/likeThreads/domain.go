@@ -27,4 +27,5 @@ type Repository interface {
 	Update(ctx context.Context, likeThreadsDomain *Domain) (Domain, error)
 	Delete(ctx context.Context, likeThreadsDomain *Domain) (Domain, error)
 	CountByThreadID(ctx context.Context,id int) (int, error)
+	GetDuplicate(ctx context.Context, threadID int, userID int) (Domain, error)
 }
