@@ -14,7 +14,7 @@ type Reports struct {
 	UserID			int
 	User			users.User
 	ReportMessage	string
-	Status			string
+	Status			bool `gorm:"default:false"`
 	CreatedAt    	time.Time `gorm:"<-:create"`
 	UpdatedAt   	time.Time
 }
@@ -35,7 +35,7 @@ func (rec *Reports) toDomain() reportsUsecase.Domain {
 		ThreadID: 		rec.ThreadID,
 		Title: 			rec.Thread.Title,
 		UserID: 		rec.UserID,
-		Moderator: 		rec.User.Username,
+		Reporter: 		rec.User.Username,
 		ReportMessage: 	rec.ReportMessage,
 		Status: 		rec.Status,
 		CreatedAt:    	rec.CreatedAt,

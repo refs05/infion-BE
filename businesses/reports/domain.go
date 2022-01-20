@@ -10,9 +10,9 @@ type Domain struct {
 	ThreadID		int
 	Title			string
 	UserID			int
-	Moderator		string
+	Reporter		string
 	ReportMessage	string
-	Status			string
+	Status			bool
 	CreatedAt    	time.Time
 	UpdatedAt    	time.Time
 	DeletedAt		time.Time

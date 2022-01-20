@@ -10,9 +10,9 @@ type Reports struct {
 	ThreadID		int	`json:"thread_id"`
 	Title			string `json:"title"`
 	UserID			int `json:"user_id"`
-	Moderator		string `json:"moderator"`
+	Reporter		string `json:"reporter"`
 	ReportMessage   string `json:"report_message"`
-	Status   		string `json:"status"`
+	Status   		bool `json:"status"`
 	CreatedAt    	time.Time `json:"created_at"`
 	UpdatedAt   	time.Time `json:"updated_at"`
 }
@@ -23,7 +23,7 @@ func FromDomain(domain reports.Domain) Reports {
 		ThreadID: 		domain.ThreadID,
 		Title: 			domain.Title,
 		UserID: 		domain.UserID,
-		Moderator: 		domain.Moderator,
+		Reporter: 		domain.Reporter,
 		ReportMessage: 	domain.ReportMessage,
 		Status: 		domain.Status,
 		CreatedAt:    	domain.CreatedAt,
