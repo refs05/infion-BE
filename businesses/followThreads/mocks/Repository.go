@@ -98,6 +98,27 @@ func (_m *Repository) GetByID(ctx context.Context, followThreadsId int) (followT
 	return r0, r1
 }
 
+// GetDuplicate provides a mock function with given fields: ctx, threadID, userID
+func (_m *Repository) GetDuplicate(ctx context.Context, threadID int, userID int) (followThreads.Domain, error) {
+	ret := _m.Called(ctx, threadID, userID)
+
+	var r0 followThreads.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, int, int) followThreads.Domain); ok {
+		r0 = rf(ctx, threadID, userID)
+	} else {
+		r0 = ret.Get(0).(followThreads.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int, int) error); ok {
+		r1 = rf(ctx, threadID, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Store provides a mock function with given fields: ctx, followThreadsDomain
 func (_m *Repository) Store(ctx context.Context, followThreadsDomain *followThreads.Domain) (followThreads.Domain, error) {
 	ret := _m.Called(ctx, followThreadsDomain)

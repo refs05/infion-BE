@@ -82,3 +82,12 @@ func (nr *mysqlFollowThreadsRepository) CountByUserID(ctx context.Context,id uin
 
 	return int(count), nil
 }
+
+func (nr *mysqlFollowThreadsRepository) GetDuplicate(ctx context.Context, threadID int, userID int) (followThreads.Domain, error) {
+	rec := FollowThreads{}
+	err := nr.Conn.Where("thread_id = ? AND user_id = ?", threadID, userID).First(&rec).Error
+	if err != nil {
+		return followThreads.Domain{}, err
+	}
+	return rec.toDomain(), nil
+}
