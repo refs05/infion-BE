@@ -6,6 +6,7 @@ type FollowUsers struct {
 	ID          	int `json:"id"`
 	FollowedID		int	`json:"followed_id"`
 	FollowerID		int	`json:"follower_id"`
+	Status			bool `json:"status"`
 }
 
 func (req *FollowUsers) ToDomain() *followUsers.Domain {
@@ -13,5 +14,6 @@ func (req *FollowUsers) ToDomain() *followUsers.Domain {
 		ID:				req.ID,
 		FollowedID:		req.FollowedID,
 		FollowerID: 	req.FollowerID,
+		Status: 		req.Status,
 	}
 }
