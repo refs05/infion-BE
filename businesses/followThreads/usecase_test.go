@@ -43,14 +43,15 @@ func TestStore(t *testing.T){
 		assert.Equal(t, followThreadsDomain, result)
 	})
 
-	t.Run("Duplicate | InValid", func(t *testing.T) {
+	t.Run("Duplicate | Status Update", func(t *testing.T) {
 		followThreadsRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(followThreadsDomain, nil).Once()
+		followThreadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*followThreads.Domain")).Return(followThreadsDomain, nil).Once()
 
 		ctx := context.Background()
-		_, err := followThreadsUsecase.Store(ctx, &followThreadsDomain)
+		result, err := followThreadsUsecase.Store(ctx, &followThreadsDomain)
 
-		assert.NotNil(t, err)
-		assert.Equal(t, businesses.ErrDuplicateData, err)
+		assert.Nil(t, err)
+		assert.NotEqual(t, followThreadsDomain, result)
 	})
 
 	t.Run("Store | InValid", func(t *testing.T) {

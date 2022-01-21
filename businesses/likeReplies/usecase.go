@@ -22,9 +22,11 @@ func (tu *likeRepliesUsecase) Store(ctx context.Context, likeRepliesDomain *Doma
 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
 	defer cancel()
 
-	_, err := tu.likeRepliesRepository.GetDuplicate(ctx, likeRepliesDomain.ReplyID, likeRepliesDomain.UserID)
+	duplicate, err := tu.likeRepliesRepository.GetDuplicate(ctx, likeRepliesDomain.ReplyID, likeRepliesDomain.UserID)
 	if err == nil {
-		return Domain{}, businesses.ErrDuplicateData
+		duplicate.Status = !duplicate.Status
+		tu.likeRepliesRepository.Update(ctx, &duplicate)
+		return duplicate, nil
 	}
 
 	result, err := tu.likeRepliesRepository.Store(ctx, likeRepliesDomain)
