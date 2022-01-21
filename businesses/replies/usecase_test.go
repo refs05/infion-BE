@@ -3,6 +3,7 @@ package replies_test
 import (
 	"context"
 	"infion-BE/businesses"
+	"infion-BE/businesses/likeReplies"
 	_likeRepliesMock "infion-BE/businesses/likeReplies/mocks"
 	"infion-BE/businesses/replies"
 	_repliesMock "infion-BE/businesses/replies/mocks"
@@ -19,6 +20,7 @@ var (
 	repliesUsecase			replies.Usecase
 	repliesDomain			replies.Domain
 	likeRepliesRepository	_likeRepliesMock.Repository
+	likeRepliesDomain		likeReplies.Domain
 )
 
 func TestMain(m *testing.M) {
@@ -245,6 +247,8 @@ func TestUpdate(t *testing.T) {
 func TestDelete(t *testing.T) {
 	t.Run("Delete | Valid", func(t *testing.T) {
 		repliesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(repliesDomain, nil).Once()
+		likeRepliesRepository.On("GetLikeRepliesByReplyID", mock.Anything, mock.AnythingOfType("int")).Return([]likeReplies.Domain{likeRepliesDomain}, nil).Once()
+		likeRepliesRepository.On("Delete", mock.Anything, mock.AnythingOfType("*likeReplies.Domain")).Return(likeRepliesDomain, nil).Once()
 		repliesRepository.On("Delete", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, nil).Once()
 
 		ctx := context.Background()
@@ -266,6 +270,8 @@ func TestDelete(t *testing.T) {
 
 	t.Run("Delete | InValid 2", func(t *testing.T) {
 		repliesRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(repliesDomain, nil).Once()
+		likeRepliesRepository.On("GetLikeRepliesByReplyID", mock.Anything, mock.AnythingOfType("int")).Return([]likeReplies.Domain{likeRepliesDomain}, nil).Once()
+		likeRepliesRepository.On("Delete", mock.Anything, mock.AnythingOfType("*likeReplies.Domain")).Return(likeRepliesDomain, nil).Once()
 		repliesRepository.On("Delete", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, businesses.ErrInternalServer).Once()
 
 		ctx := context.Background()
