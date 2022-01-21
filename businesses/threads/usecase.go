@@ -6,6 +6,7 @@ import (
 	"infion-BE/businesses/comments"
 	"infion-BE/businesses/followThreads"
 	"infion-BE/businesses/likeThreads"
+	"infion-BE/businesses/reports"
 
 	"time"
 )
@@ -16,15 +17,17 @@ type threadsUsecase struct {
 	likeThreadsRepository	likeThreads.Repository
 	commentsRepository		comments.Repository
 	followThreadsRepository	followThreads.Repository
+	reportsRepository		reports.Repository
 }
 
-func NewThreadsUsecase(tr Repository, timeout time.Duration, ltr likeThreads.Repository, cr comments.Repository, ftr followThreads.Repository) Usecase {
+func NewThreadsUsecase(tr Repository, timeout time.Duration, ltr likeThreads.Repository, cr comments.Repository, ftr followThreads.Repository, rr reports.Repository) Usecase {
 	return &threadsUsecase{
 		threadsRepository:  tr,
 		contextTimeout:  timeout,
 		likeThreadsRepository: ltr,
 		commentsRepository: cr,
 		followThreadsRepository: ftr,
+		reportsRepository: rr,
 	}
 }
 
@@ -282,6 +285,17 @@ func (tu *threadsUsecase) Delete(ctx context.Context, threadsDomain *Domain) (*D
 		return &Domain{}, err
 	}
 	threadsDomain.ID = existedThreads.ID
+
+	reports, err := tu.reportsRepository.GetReportsByThreadID(ctx, threadsDomain.ID)
+	if err != nil {
+		return &Domain{}, err
+	}
+	for i := range reports {
+		_, err = tu.reportsRepository.Delete(ctx, &reports[i])
+		if err != nil {
+			return &Domain{}, err
+		}
+	}
 
 	result, err := tu.threadsRepository.Delete(ctx, threadsDomain)
 	if err != nil {

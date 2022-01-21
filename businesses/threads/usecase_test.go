@@ -6,6 +6,7 @@ import (
 	_commentsMock "infion-BE/businesses/comments/mocks"
 	_followThreadsMock "infion-BE/businesses/followThreads/mocks"
 	_likeThreadsMock "infion-BE/businesses/likeThreads/mocks"
+	_reportsMock "infion-BE/businesses/reports/mocks"
 	"infion-BE/businesses/threads"
 	_threadsMock "infion-BE/businesses/threads/mocks"
 	"os"
@@ -23,10 +24,11 @@ var (
 	likeThreadsRepository	_likeThreadsMock.Repository
 	commentsRepository		_commentsMock.Repository
 	followThreadsRepository	_followThreadsMock.Repository
+	reportsRepository		_reportsMock.Repository
 )
 
 func TestMain(m *testing.M) {
-	threadsUsecase = threads.NewThreadsUsecase(&threadsRepository, 2, &likeThreadsRepository, &commentsRepository, &followThreadsRepository)
+	threadsUsecase = threads.NewThreadsUsecase(&threadsRepository, 2, &likeThreadsRepository, &commentsRepository, &followThreadsRepository, &reportsRepository)
 	threadsDomain = threads.Domain{
 		ID:				1,
 		Title:			"test thread",
