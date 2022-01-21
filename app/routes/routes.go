@@ -105,4 +105,5 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	reports.PUT("/:id", cl.ReportsController.Update)
 	reports.DELETE("/:id", cl.ReportsController.Delete)
 	reports.GET("/list", cl.ReportsController.GetReports)
+	reports.GET("/listbyuser/:id", cl.ReportsController.GetReportsByUserID)
 }

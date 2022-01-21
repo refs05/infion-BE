@@ -79,6 +79,29 @@ func (_m *Repository) GetReports(ctx context.Context) ([]reports.Domain, error) 
 	return r0, r1
 }
 
+// GetReportsByUserID provides a mock function with given fields: ctx, userID
+func (_m *Repository) GetReportsByUserID(ctx context.Context, userID int) ([]reports.Domain, error) {
+	ret := _m.Called(ctx, userID)
+
+	var r0 []reports.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, int) []reports.Domain); ok {
+		r0 = rf(ctx, userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]reports.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Store provides a mock function with given fields: ctx, reportsDomain
 func (_m *Repository) Store(ctx context.Context, reportsDomain *reports.Domain) (reports.Domain, error) {
 	ret := _m.Called(ctx, reportsDomain)
