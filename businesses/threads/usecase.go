@@ -288,34 +288,22 @@ func (tu *threadsUsecase) Delete(ctx context.Context, threadsDomain *Domain) (*D
 
 	reports, _ := tu.reportsRepository.GetReportsByThreadID(ctx, threadsDomain.ID)
 	for i := range reports {
-		_, err = tu.reportsRepository.Delete(ctx, &reports[i])
-		if err != nil {
-			return &Domain{}, err
-		}
+		_, _ = tu.reportsRepository.Delete(ctx, &reports[i])
 	}
 
 	comments, _ := tu.commentsRepository.GetCommentsByThreadID(ctx, threadsDomain.ID)
 	for i := range comments {
-		_, err = tu.commentsRepository.Delete(ctx, &comments[i])
-		if err != nil {
-			return &Domain{}, err
-		}
+		_, _ = tu.commentsRepository.Delete(ctx, &comments[i])
 	}
 
 	followThreads, _ := tu.followThreadsRepository.GetFollowThreadsByThreadID(ctx, threadsDomain.ID)
 	for i := range followThreads {
-		_, err = tu.followThreadsRepository.Delete(ctx, &followThreads[i])
-		if err != nil {
-			return &Domain{}, err
-		}
+		_, _ = tu.followThreadsRepository.Delete(ctx, &followThreads[i])
 	}
 
 	likeThreads, _ := tu.likeThreadsRepository.GetLikeThreadsByThreadID(ctx, threadsDomain.ID)
 	for i := range likeThreads {
-		_, err = tu.likeThreadsRepository.Delete(ctx, &likeThreads[i])
-		if err != nil {
-			return &Domain{}, err
-		}
+		_, _ = tu.likeThreadsRepository.Delete(ctx, &likeThreads[i])
 	}
 
 	result, err := tu.threadsRepository.Delete(ctx, threadsDomain)

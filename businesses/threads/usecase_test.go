@@ -3,9 +3,13 @@ package threads_test
 import (
 	"context"
 	"infion-BE/businesses"
+	"infion-BE/businesses/comments"
 	_commentsMock "infion-BE/businesses/comments/mocks"
+	"infion-BE/businesses/followThreads"
 	_followThreadsMock "infion-BE/businesses/followThreads/mocks"
+	"infion-BE/businesses/likeThreads"
 	_likeThreadsMock "infion-BE/businesses/likeThreads/mocks"
+	"infion-BE/businesses/reports"
 	_reportsMock "infion-BE/businesses/reports/mocks"
 	"infion-BE/businesses/threads"
 	_threadsMock "infion-BE/businesses/threads/mocks"
@@ -22,9 +26,13 @@ var (
 	threadsUsecase			threads.Usecase
 	threadsDomain			threads.Domain
 	likeThreadsRepository	_likeThreadsMock.Repository
+	likeThreadsDomain		likeThreads.Domain
 	commentsRepository		_commentsMock.Repository
+	commentsDomain			comments.Domain
 	followThreadsRepository	_followThreadsMock.Repository
+	followThreadsDomain		followThreads.Domain
 	reportsRepository		_reportsMock.Repository
+	reportsDomain			reports.Domain
 )
 
 func TestMain(m *testing.M) {
@@ -571,6 +579,14 @@ func TestUpdate(t *testing.T){
 func TestDelete(t *testing.T){
 	t.Run("Delete | Valid", func(t *testing.T) {
 		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
+		reportsRepository.On("GetReportsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]reports.Domain{reportsDomain}, nil).Once()
+		reportsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*reports.Domain")).Return(reportsDomain, nil).Once()
+		commentsRepository.On("GetCommentsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]comments.Domain{commentsDomain}, nil).Once()
+		commentsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*comments.Domain")).Return(commentsDomain, nil).Once()
+		followThreadsRepository.On("GetFollowThreadsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]followThreads.Domain{followThreadsDomain}, nil).Once()
+		followThreadsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*followThreads.Domain")).Return(followThreadsDomain, nil).Once()
+		likeThreadsRepository.On("GetLikeThreadsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]likeThreads.Domain{likeThreadsDomain}, nil).Once()
+		likeThreadsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*likeThreads.Domain")).Return(likeThreadsDomain, nil).Once()
 		threadsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, nil).Once()
 
 		ctx := context.Background()
@@ -592,6 +608,14 @@ func TestDelete(t *testing.T){
 
 	t.Run("Delete | InValid 2", func(t *testing.T) {
 		threadsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(threadsDomain, nil).Once()
+		reportsRepository.On("GetReportsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]reports.Domain{reportsDomain}, nil).Once()
+		reportsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*reports.Domain")).Return(reportsDomain, nil).Once()
+		commentsRepository.On("GetCommentsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]comments.Domain{commentsDomain}, nil).Once()
+		commentsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*comments.Domain")).Return(commentsDomain, nil).Once()
+		followThreadsRepository.On("GetFollowThreadsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]followThreads.Domain{followThreadsDomain}, nil).Once()
+		followThreadsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*followThreads.Domain")).Return(followThreadsDomain, nil).Once()
+		likeThreadsRepository.On("GetLikeThreadsByThreadID", mock.Anything, mock.AnythingOfType("int")).Return([]likeThreads.Domain{likeThreadsDomain}, nil).Once()
+		likeThreadsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*likeThreads.Domain")).Return(likeThreadsDomain, nil).Once()
 		threadsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*threads.Domain")).Return(threadsDomain, businesses.ErrInternalServer).Once()
 
 		ctx := context.Background()
