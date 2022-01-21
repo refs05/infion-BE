@@ -297,6 +297,17 @@ func (tu *threadsUsecase) Delete(ctx context.Context, threadsDomain *Domain) (*D
 		}
 	}
 
+	comments, err := tu.commentsRepository.GetCommentsByThreadID(ctx, threadsDomain.ID)
+	if err != nil {
+		return &Domain{}, err
+	}
+	for i := range comments {
+		_, err = tu.commentsRepository.Delete(ctx, &comments[i])
+		if err != nil {
+			return &Domain{}, err
+		}
+	}
+
 	result, err := tu.threadsRepository.Delete(ctx, threadsDomain)
 	if err != nil {
 		return &Domain{}, err
