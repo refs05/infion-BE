@@ -22,6 +22,11 @@ func (tu *likeThreadsUsecase) Store(ctx context.Context, likeThreadsDomain *Doma
 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
 	defer cancel()
 
+	_, err := tu.likeThreadsRepository.GetDuplicate(ctx, likeThreadsDomain.ThreadID, likeThreadsDomain.UserID)
+	if err == nil {
+		return Domain{}, businesses.ErrDuplicateData
+	}
+
 	result, err := tu.likeThreadsRepository.Store(ctx, likeThreadsDomain)
 	if err != nil {
 		return Domain{}, err

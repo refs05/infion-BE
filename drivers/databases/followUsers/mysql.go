@@ -70,3 +70,12 @@ func (nr *mysqlFollowUsersRepository) CountByFollowedID(ctx context.Context,id u
 
 	return int(count), nil
 }
+
+func (nr *mysqlFollowUsersRepository) GetDuplicate(ctx context.Context, followedID int, followerID int) (followUsers.Domain, error) {
+	rec := FollowUsers{}
+	err := nr.Conn.Where("followed_id = ? AND follower_id = ?", followedID, followerID).First(&rec).Error
+	if err != nil {
+		return followUsers.Domain{}, err
+	}
+	return rec.toDomain(), nil
+}

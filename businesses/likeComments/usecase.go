@@ -22,6 +22,11 @@ func (tu *likeCommentsUsecase) Store(ctx context.Context, likeCommentsDomain *Do
 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
 	defer cancel()
 
+	_, err := tu.likeCommentsRepository.GetDuplicate(ctx, likeCommentsDomain.CommentID, likeCommentsDomain.UserID)
+	if err == nil {
+		return Domain{}, businesses.ErrDuplicateData
+	}
+
 	result, err := tu.likeCommentsRepository.Store(ctx, likeCommentsDomain)
 	if err != nil {
 		return Domain{}, err
