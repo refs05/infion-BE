@@ -110,6 +110,28 @@ func TestGetReports(t *testing.T){
 	})
 }
 
+func TestGetReportsByUserID(t *testing.T){
+	t.Run("GetReports | Valid", func(t *testing.T) {
+		reportsRepository.On("GetReportsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]reports.Domain{reportsDomain}, nil).Once()
+
+		ctx := context.Background()
+		result, err := reportsUsecase.GetReportsByUserID(ctx, reportsDomain.UserID)
+
+		assert.Nil(t, err)
+		assert.Equal(t, []reports.Domain{reportsDomain}, result)
+	})
+
+	t.Run("GetReports | InValid", func(t *testing.T) {
+		reportsRepository.On("GetReportsByUserID", mock.Anything, mock.AnythingOfType("int")).Return([]reports.Domain{reportsDomain}, businesses.ErrNotFound).Once()
+
+		ctx := context.Background()
+		_, err := reportsUsecase.GetReportsByUserID(ctx, reportsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrNotFound, err)
+	})
+}
+
 func TestUpdate(t *testing.T){
 	t.Run("Update | Valid", func(t *testing.T) {
 		reportsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(reportsDomain, nil).Once()
