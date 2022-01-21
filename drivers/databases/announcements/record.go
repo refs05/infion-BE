@@ -11,6 +11,7 @@ type Announcements struct {
 	UserID			int
 	User			users.User
 	Message			string
+	Img				string
 	CreatedAt    	time.Time `gorm:"<-:create"`
 	UpdatedAt   	time.Time
 }
@@ -20,6 +21,7 @@ func fromDomain(domain *announcementsUsecase.Domain) *Announcements {
 		ID: 			domain.ID,
 		UserID: 		domain.UserID,
 		Message: 		domain.Message,
+		Img:			domain.Img,
 	}
 }
 
@@ -29,6 +31,7 @@ func (rec *Announcements) toDomain() announcementsUsecase.Domain {
 		UserID: 		rec.UserID,
 		Announcer: 		rec.User.Username,
 		Message: 		rec.Message,
+		Img:			rec.Img,
 		CreatedAt:    	rec.CreatedAt,
 		UpdatedAt:    	rec.UpdatedAt,
 	}

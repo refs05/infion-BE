@@ -10,6 +10,7 @@ type Domain struct {
 	UserID			int `json:"announcer_id"`
 	Announcer		string `json:"announcer"`
 	Message			string `json:"message"`
+	Img				string `json:"img"`
 	CreatedAt    	time.Time `json:"created_at"`
 	UpdatedAt    	time.Time `json:"updated_at"`
 	DeletedAt		time.Time `json:"deleted_at"`
