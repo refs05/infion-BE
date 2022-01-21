@@ -30,3 +30,12 @@ func (rec *LikeThreads) toDomain() likeThreadsUsecase.Domain {
 		UpdatedAt: rec.UpdatedAt,
 	}
 }
+
+func ToDomainArray(modelLikeThreads []LikeThreads) []likeThreadsUsecase.Domain {
+	var response []likeThreadsUsecase.Domain
+
+	for _, val := range modelLikeThreads{
+		response = append(response, val.toDomain())
+	}
+	return response
+}
