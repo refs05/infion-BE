@@ -83,7 +83,7 @@ func (nr *mysqlReportsRepository) GetReports(ctx context.Context) ([]reports.Dom
 func (nr *mysqlReportsRepository) GetReportsByUserID(ctx context.Context, userID int) ([]reports.Domain, error) {
 	var recordReport []Reports
 	
-	result := nr.Conn.Unscoped().Where("reports.user_id = ?", userID).Joins("User").Find(&recordReport)
+	result := nr.Conn.Unscoped().Where("reports.user_id = ?", userID).Joins("Thread").Joins("User").Find(&recordReport)
 	if result.Error != nil {
 		return []reports.Domain{}, result.Error
 	}
