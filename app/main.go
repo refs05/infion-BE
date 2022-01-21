@@ -45,6 +45,10 @@ import (
 	_reportsController "infion-BE/controllers/reports"
 	_reportsRepo "infion-BE/drivers/databases/reports"
 
+	_announcementsUsecase "infion-BE/businesses/announcements"
+	_announcementsController "infion-BE/controllers/announcements"
+	_announcementsRepo "infion-BE/drivers/databases/announcements"
+
 	_dbDriver "infion-BE/drivers/mysql"
 
 	_middleware "infion-BE/app/middleware"
@@ -85,6 +89,7 @@ func dbMigrate(db *gorm.DB) {
 		&_reportsRepo.Reports{},
 		&_repliesRepo.Replies{},
 		&_likeRepliesRepo.LikeReplies{},
+		&_announcementsRepo.Announcements{},
 	)
 }
 
@@ -148,6 +153,10 @@ func main() {
 	reportsUsecase := _reportsUsecase.NewReportsUsecase(reportsRepo, timeoutContext)
 	reportsCtrl := _reportsController.NewReportsController(reportsUsecase)
 
+	announcementsRepo := _announcementsRepo.NewAnnouncementsRepository(db)
+	announcementsUsecase := _announcementsUsecase.NewAnnouncementsUsecase(announcementsRepo, timeoutContext)
+	announcementsCtrl := _announcementsController.NewAnnouncementsController(announcementsUsecase)
+
 	routesInit := _routes.ControllerList{
 		UserController:				*userCtrl,
 		FollowUsersController:		*followUsersCtrl,
@@ -160,6 +169,7 @@ func main() {
 		ReportsController:			*reportsCtrl,
 		RepliesController:			*repliesCtrl,
 		LikeRepliesController:		*likeRepliesCtrl,
+		AnnouncementsController:	*announcementsCtrl,
 	}
 	routesInit.RouteRegister(e)
 
