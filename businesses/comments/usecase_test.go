@@ -349,6 +349,8 @@ func TestUpdate(t *testing.T){
 func TestDelete(t *testing.T){
 	t.Run("Delete | Valid", func(t *testing.T) {
 		commentsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(commentsDomain, nil).Once()
+		repliesRepository.On("GetRepliesByCommentID", mock.Anything, mock.AnythingOfType("int")).Return([]replies.Domain{repliesDomain}, nil).Once()
+		repliesRepository.On("Delete", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, nil).Once()
 		commentsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*comments.Domain")).Return(commentsDomain, nil).Once()
 
 		ctx := context.Background()
@@ -368,8 +370,22 @@ func TestDelete(t *testing.T){
 		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 
+	t.Run("Delete Replies | InValid 2", func(t *testing.T) {
+		commentsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(commentsDomain, nil).Once()
+		repliesRepository.On("GetRepliesByCommentID", mock.Anything, mock.AnythingOfType("int")).Return([]replies.Domain{repliesDomain}, nil).Once()
+		repliesRepository.On("Delete", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := commentsUsecase.Delete(ctx, &commentsDomain)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
 	t.Run("Delete | InValid 2", func(t *testing.T) {
 		commentsRepository.On("GetByID", mock.Anything, mock.AnythingOfType("int")).Return(commentsDomain, nil).Once()
+		repliesRepository.On("GetRepliesByCommentID", mock.Anything, mock.AnythingOfType("int")).Return([]replies.Domain{repliesDomain}, nil).Once()
+		repliesRepository.On("Delete", mock.Anything, mock.AnythingOfType("*replies.Domain")).Return(repliesDomain, nil).Once()
 		commentsRepository.On("Delete", mock.Anything, mock.AnythingOfType("*comments.Domain")).Return(commentsDomain, businesses.ErrInternalServer).Once()
 
 		ctx := context.Background()
