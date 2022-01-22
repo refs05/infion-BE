@@ -43,14 +43,15 @@ func TestStore(t *testing.T){
 		assert.Equal(t, likeCommentsDomain, result)
 	})
 
-	t.Run("Duplicate | InValid", func(t *testing.T) {
+	t.Run("Duplicate | Status Update", func(t *testing.T) {
 		likeCommentsRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(likeCommentsDomain, nil).Once()
+		likeCommentsRepository.On("Update", mock.Anything, mock.AnythingOfType("*likeComments.Domain")).Return(likeCommentsDomain, nil).Once()
 
 		ctx := context.Background()
-		_, err := likeCommentsUsecase.Store(ctx, &likeCommentsDomain)
+		result, err := likeCommentsUsecase.Store(ctx, &likeCommentsDomain)
 
-		assert.NotNil(t, err)
-		assert.Equal(t, businesses.ErrDuplicateData, err)
+		assert.Nil(t, err)
+		assert.NotEqual(t, likeCommentsDomain, result)
 	})
 
 	t.Run("Store | InValid", func(t *testing.T) {

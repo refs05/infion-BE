@@ -9,6 +9,7 @@ type Domain struct {
 	ID           	int
 	ThreadID		int
 	UserID			int
+	Status			bool
 	CreatedAt    	time.Time
 	UpdatedAt    	time.Time
 	DeletedAt		time.Time
