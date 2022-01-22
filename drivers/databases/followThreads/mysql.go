@@ -95,7 +95,7 @@ func (nr *mysqlFollowThreadsRepository) GetDuplicate(ctx context.Context, thread
 func (nr *mysqlFollowThreadsRepository) GetFollowThreadsByThreadID(ctx context.Context, threadID int) ([]followThreads.Domain, error) {
 	var recordFollowThread []FollowThreads
 	
-	result := nr.Conn.Unscoped().Where("follow_threads.thread_id = ?", threadID).Joins("Thread").Joins("User").Find(&recordFollowThread)
+	result := nr.Conn.Unscoped().Where("thread_id = ?", threadID).Find(&recordFollowThread)
 	if result.Error != nil {
 		return []followThreads.Domain{}, result.Error
 	}
