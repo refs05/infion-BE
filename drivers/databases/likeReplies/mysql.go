@@ -71,11 +71,22 @@ func (nr *mysqlLikeRepliesRepository) CountByReplyID(ctx context.Context,id int)
 	return int(count), nil
 }
 
-func (nr *mysqlLikeRepliesRepository) GetDuplicate(ctx context.Context, threadID int, userID int) (likeReplies.Domain, error) {
+func (nr *mysqlLikeRepliesRepository) GetDuplicate(ctx context.Context, replyID int, userID int) (likeReplies.Domain, error) {
 	rec := LikeReplies{}
-	err := nr.Conn.Where("reply_id = ? AND user_id = ?", threadID, userID).First(&rec).Error
+	err := nr.Conn.Where("reply_id = ? AND user_id = ?", replyID, userID).First(&rec).Error
 	if err != nil {
 		return likeReplies.Domain{}, err
 	}
 	return rec.toDomain(), nil
+}
+
+func (nr *mysqlLikeRepliesRepository) GetLikeRepliesByReplyID(ctx context.Context, replyID int) ([]likeReplies.Domain, error) {
+	var recordLikeReply []LikeReplies
+	
+	result := nr.Conn.Unscoped().Where("like_replies.reply_id = ?", replyID).Joins("Reply").Joins("User").Find(&recordLikeReply)
+	if result.Error != nil {
+		return []likeReplies.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordLikeReply), nil
 }

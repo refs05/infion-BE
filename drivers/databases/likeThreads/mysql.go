@@ -79,3 +79,14 @@ func (nr *mysqlLikeThreadsRepository) GetDuplicate(ctx context.Context, threadID
 	}
 	return rec.toDomain(), nil
 }
+
+func (nr *mysqlLikeThreadsRepository) GetLikeThreadsByThreadID(ctx context.Context, threadID int) ([]likeThreads.Domain, error) {
+	var recordLikeThread []LikeThreads
+	
+	result := nr.Conn.Unscoped().Where("like_threads.thread_id = ?", threadID).Joins("Thread").Joins("User").Find(&recordLikeThread)
+	if result.Error != nil {
+		return []likeThreads.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordLikeThread), nil
+}
