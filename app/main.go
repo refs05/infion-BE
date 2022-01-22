@@ -153,10 +153,6 @@ func main() {
 	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext, commentsRepo, threadsRepo, followUsersRepo, followThreadsRepo)
 	userCtrl := _userController.NewUserController(userUsecase)
 
-	reportsRepo := _reportsRepo.NewReportsRepository(db)
-	reportsUsecase := _reportsUsecase.NewReportsUsecase(reportsRepo, timeoutContext)
-	reportsCtrl := _reportsController.NewReportsController(reportsUsecase)
-
 	announcementsRepo := _announcementsRepo.NewAnnouncementsRepository(db)
 	announcementsUsecase := _announcementsUsecase.NewAnnouncementsUsecase(announcementsRepo, timeoutContext)
 	announcementsCtrl := _announcementsController.NewAnnouncementsController(announcementsUsecase)
