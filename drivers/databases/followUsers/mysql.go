@@ -63,7 +63,7 @@ func (nr *mysqlFollowUsersRepository) CountByFollowedID(ctx context.Context,id u
 	rec := FollowUsers{}
 	var count int64
 	
-	result := nr.Conn.Model(&rec).Where("followed_id = ?", id).Count(&count)
+	result := nr.Conn.Model(&rec).Where("followed_id = ?", id).Where("status = ?", true).Count(&count)
 	if result.Error != nil {
 		return 0, result.Error
 	}

@@ -269,7 +269,6 @@ func (tu *threadsUsecase) Update(ctx context.Context, threadsDomain *Domain) (*D
 		return &Domain{}, err
 	}
 	threadsDomain.ID = existedThreads.ID
-	threadsDomain.LikeCount = existedThreads.LikeCount
 
 	result, err := tu.threadsRepository.Update(ctx, threadsDomain)
 	if err != nil {
