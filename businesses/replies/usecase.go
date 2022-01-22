@@ -126,6 +126,12 @@ func (tu *repliesUsecase) Delete(ctx context.Context, repliesDomain *Domain) (*D
 	}
 	repliesDomain.ID = existedReplies.ID
 
+	likeReplies, _ := tu.likeRepliesRepository.GetLikeRepliesByReplyID(ctx, repliesDomain.ID)
+	for i := range likeReplies {
+		_, _ = tu.likeRepliesRepository.Delete(ctx, &likeReplies[i])
+	}
+
+
 	result, err := tu.repliesRepository.Delete(ctx, repliesDomain)
 	if err != nil {
 		return &Domain{}, err

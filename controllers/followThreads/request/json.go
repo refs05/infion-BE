@@ -6,6 +6,7 @@ type FollowThreads struct {
 	ID          	int `json:"id"`
 	ThreadID		int	`json:"thread_id"`
 	UserID			int	`json:"user_id"`
+	Status			bool `json:"status"`
 }
 
 func (req *FollowThreads) ToDomain() *followThreads.Domain {
@@ -13,5 +14,6 @@ func (req *FollowThreads) ToDomain() *followThreads.Domain {
 		ID:				req.ID,
 		ThreadID:		req.ThreadID,
 		UserID: 		req.UserID,
+		Status: 		req.Status,
 	}
 }

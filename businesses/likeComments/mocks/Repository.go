@@ -77,20 +77,43 @@ func (_m *Repository) GetByID(ctx context.Context, likeCommentsId int) (likeComm
 	return r0, r1
 }
 
-// GetDuplicate provides a mock function with given fields: ctx, threadID, userID
-func (_m *Repository) GetDuplicate(ctx context.Context, threadID int, userID int) (likeComments.Domain, error) {
-	ret := _m.Called(ctx, threadID, userID)
+// GetDuplicate provides a mock function with given fields: ctx, commentID, userID
+func (_m *Repository) GetDuplicate(ctx context.Context, commentID int, userID int) (likeComments.Domain, error) {
+	ret := _m.Called(ctx, commentID, userID)
 
 	var r0 likeComments.Domain
 	if rf, ok := ret.Get(0).(func(context.Context, int, int) likeComments.Domain); ok {
-		r0 = rf(ctx, threadID, userID)
+		r0 = rf(ctx, commentID, userID)
 	} else {
 		r0 = ret.Get(0).(likeComments.Domain)
 	}
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, int, int) error); ok {
-		r1 = rf(ctx, threadID, userID)
+		r1 = rf(ctx, commentID, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetLikeCommentsByCommentID provides a mock function with given fields: ctx, commentID
+func (_m *Repository) GetLikeCommentsByCommentID(ctx context.Context, commentID int) ([]likeComments.Domain, error) {
+	ret := _m.Called(ctx, commentID)
+
+	var r0 []likeComments.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, int) []likeComments.Domain); ok {
+		r0 = rf(ctx, commentID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]likeComments.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, commentID)
 	} else {
 		r1 = ret.Error(1)
 	}

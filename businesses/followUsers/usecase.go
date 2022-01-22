@@ -22,9 +22,11 @@ func (tu *followUsersUsecase) Store(ctx context.Context, followUsersDomain *Doma
 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
 	defer cancel()
 
-	_, err := tu.followUsersRepository.GetDuplicate(ctx, followUsersDomain.FollowedID, followUsersDomain.FollowerID)
+	duplicate, err := tu.followUsersRepository.GetDuplicate(ctx, followUsersDomain.FollowedID, followUsersDomain.FollowerID)
 	if err == nil {
-		return Domain{}, businesses.ErrDuplicateData
+		duplicate.Status = !duplicate.Status
+		tu.followUsersRepository.Update(ctx, &duplicate)
+		return duplicate, nil
 	}
 
 	result, err := tu.followUsersRepository.Store(ctx, followUsersDomain)

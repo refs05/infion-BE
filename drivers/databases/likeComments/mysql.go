@@ -79,3 +79,14 @@ func (nr *mysqlLikeCommentsRepository) GetDuplicate(ctx context.Context, comment
 	}
 	return rec.toDomain(), nil
 }
+
+func (nr *mysqlLikeCommentsRepository) GetLikeCommentsByCommentID(ctx context.Context, commentID int) ([]likeComments.Domain, error) {
+	var recordLikeComment []LikeComments
+	
+	result := nr.Conn.Unscoped().Where("like_comments.comment_id = ?", commentID).Joins("Comment").Joins("User").Find(&recordLikeComment)
+	if result.Error != nil {
+		return []likeComments.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordLikeComment), nil
+}

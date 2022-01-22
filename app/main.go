@@ -113,6 +113,10 @@ func main() {
 	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
 	rolesCtrl := _rolesController.NewRolesController(rolesUsecase)
 
+	reportsRepo := _reportsRepo.NewReportsRepository(db)
+	reportsUsecase := _reportsUsecase.NewReportsUsecase(reportsRepo, timeoutContext)
+	reportsCtrl := _reportsController.NewReportsController(reportsUsecase)
+
 	likeRepliesRepo := _likeRepliesRepo.NewLikeRepliesRepository(db)
 	likeRepliesUsecase := _likeRepliesUsecase.NewLikeRepliesUsecase(likeRepliesRepo, timeoutContext)
 	likeRepliesCtrl := _likeRepliesController.NewLikeRepliesController(likeRepliesUsecase)
@@ -138,7 +142,7 @@ func main() {
 	likeThreadsCtrl := _likeThreadsController.NewLikeThreadsController(likeThreadsUsecase)
 
 	threadsRepo := _threadsRepo.NewThreadsRepository(db)
-	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext, likeThreadsRepo, commentsRepo, followThreadsRepo)
+	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext, likeThreadsRepo, commentsRepo, followThreadsRepo, reportsRepo)
 	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
 
 	followUsersRepo := _followUsersRepo.NewFollowUsersRepository(db)
