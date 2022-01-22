@@ -33,3 +33,12 @@ func (rec *LikeComments) toDomain() likeCommentsUsecase.Domain {
 		UpdatedAt: rec.UpdatedAt,
 	}
 }
+
+func ToDomainArray(modelLikeComments []LikeComments) []likeCommentsUsecase.Domain {
+	var response []likeCommentsUsecase.Domain
+
+	for _, val := range modelLikeComments{
+		response = append(response, val.toDomain())
+	}
+	return response
+}

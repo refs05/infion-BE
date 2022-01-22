@@ -33,3 +33,12 @@ func (rec *FollowThreads) toDomain() followThreadsUsecase.Domain {
 		UpdatedAt: rec.UpdatedAt,
 	}
 }
+
+func ToDomainArray(modelFollowThreads []FollowThreads) []followThreadsUsecase.Domain {
+	var response []followThreadsUsecase.Domain
+
+	for _, val := range modelFollowThreads{
+		response = append(response, val.toDomain())
+	}
+	return response
+}
