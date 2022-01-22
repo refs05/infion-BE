@@ -140,7 +140,7 @@ func (nr *mysqlThreadsRepository) GetThreadLikeCountByUserID(ctx context.Context
 	rec := Threads{}
 	var count int64
 	
-	result := nr.Conn.Model(&rec).Where("threads.user_id = ?", userID).Joins("LikeThreads").Count(&count)
+	result := nr.Conn.Model(&rec).Where("threads.user_id = ?", userID).Joins("LikeThreads").Where("status = ?", true).Count(&count)
 	if result.Error != nil {
 		return 0, result.Error
 	}
@@ -152,7 +152,7 @@ func (nr *mysqlThreadsRepository) GetThreadFollowerCountByUserID(ctx context.Con
 	rec := Threads{}
 	var count int64
 	
-	result := nr.Conn.Model(&rec).Where("threads.user_id = ?", userID).Joins("FollowThreads").Count(&count)
+	result := nr.Conn.Model(&rec).Where("threads.user_id = ?", userID).Joins("FollowThreads").Where("status = ?", true).Count(&count)
 	if result.Error != nil {
 		return 0, result.Error
 	}

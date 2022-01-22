@@ -63,7 +63,7 @@ func (nr *mysqlLikeRepliesRepository) CountByReplyID(ctx context.Context,id int)
 	rec := LikeReplies{}
 	var count int64
 	
-	result := nr.Conn.Model(&rec).Where("reply_id = ?", id).Count(&count)
+	result := nr.Conn.Model(&rec).Where("reply_id = ?", id).Where("status = ?", true).Count(&count)
 	if result.Error != nil {
 		return 0, result.Error
 	}

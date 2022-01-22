@@ -63,7 +63,7 @@ func (nr *mysqlLikeCommentsRepository) CountByCommentID(ctx context.Context,id i
 	rec := LikeComments{}
 	var count int64
 	
-	result := nr.Conn.Model(&rec).Where("comment_id = ?", id).Count(&count)
+	result := nr.Conn.Model(&rec).Where("comment_id = ?", id).Where("status = ?", true).Count(&count)
 	if result.Error != nil {
 		return 0, result.Error
 	}
