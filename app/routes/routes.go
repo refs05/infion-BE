@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"infion-BE/controllers/announcements"
 	"infion-BE/controllers/comments"
 	"infion-BE/controllers/followThreads"
 	"infion-BE/controllers/followUsers"
@@ -29,6 +30,7 @@ type ControllerList struct {
 	ReportsController       reports.ReportsController
 	RepliesController       replies.RepliesController
 	LikeRepliesController	likeReplies.LikeRepliesController
+	AnnouncementsController       announcements.AnnouncementsController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -106,4 +108,12 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	reports.DELETE("/:id", cl.ReportsController.Delete)
 	reports.GET("/list", cl.ReportsController.GetReports)
 	reports.GET("/listbyuser/:id", cl.ReportsController.GetReportsByUserID)
+
+	announcements := e.Group("announcements")
+	announcements.POST("/create", cl.AnnouncementsController.Create)
+	announcements.GET("/:id", cl.AnnouncementsController.ReadID)
+	announcements.PUT("/:id", cl.AnnouncementsController.Update)
+	announcements.DELETE("/:id", cl.AnnouncementsController.Delete)
+	announcements.GET("/list", cl.AnnouncementsController.GetAnnouncements)
+	announcements.GET("/listbyuser/:id", cl.AnnouncementsController.GetAnnouncementsByUserID)
 }
