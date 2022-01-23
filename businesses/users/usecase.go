@@ -82,25 +82,22 @@ func (usecase *UserUseCase) CreateNewUser(domain DomainUser, ctx context.Context
 	if domain.Password == ""{
 		return DomainUser{},businesses.ErrUsernamePasswordNotFound
 	}
-existedUser,err := usecase.repo.GetUsername(domain,ctx)
+	existedUser,err := usecase.repo.GetUsername(domain,ctx)
 
 
-if err == gorm.ErrRecordNotFound {
-
-	domain.Password,err = encrypt.Hash(domain.Password)
-	if err != nil{
-		return DomainUser{},businesses.ErrInternalServer
-	}
-		user,err := usecase.repo.CreateNewUser(domain,ctx)
+	if err == gorm.ErrRecordNotFound {
+		domain.Password,err = encrypt.Hash(domain.Password)
 		if err != nil{
-			return DomainUser{},err
+			return DomainUser{},businesses.ErrInternalServer
 		}
-	return user,nil
-	
-	
-}else{
-return existedUser,businesses.ErrDuplicateData
-}
+			user,err := usecase.repo.CreateNewUser(domain,ctx)
+			if err != nil{
+				return DomainUser{},err
+			}
+		return user,nil
+	} else {
+		return existedUser,businesses.ErrDuplicateData
+	}
 }
 
 func (usecase *UserUseCase)FindById(userId int,ctx context.Context)(DomainUser,error){
