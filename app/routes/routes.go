@@ -30,7 +30,6 @@ type ControllerList struct {
 	LikeCommentsController  likeComments.LikeCommentsController
 	ReportsController       reports.ReportsController
 	RepliesController       replies.RepliesController
-
 	LikeRepliesController	likeReplies.LikeRepliesController
 	JWTConfig				middleware.JWTConfig
 	AnnouncementsController       announcements.AnnouncementsController
@@ -41,10 +40,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	users := e.Group("user")
 	users.POST("/login", cl.UserController.Login)
 	users.POST("/create", cl.UserController.CreateNewUser)
-
-users.GET("/:id", cl.UserController.FindById,middleware.JWTWithConfig(cl.JWTConfig))
+	users.GET("/:id", cl.UserController.FindById,middleware.JWTWithConfig(cl.JWTConfig))
 	users.PUT("/:id", cl.UserController.Update,middleware.JWTWithConfig(cl.JWTConfig))
-	users.GET("/leaderboard/", cl.UserController.GetLeaderboard,middleware.JWTWithConfig(cl.JWTConfig))
+	users.GET("/leaderboard/", cl.UserController.GetLeaderboard)
 
 	followUsers := e.Group("followUsers")
 	followUsers.POST("/create", cl.FollowUsersController.Create)
@@ -59,14 +57,12 @@ users.GET("/:id", cl.UserController.FindById,middleware.JWTWithConfig(cl.JWTConf
 	roles.DELETE("/:id", cl.RolesController.Delete)
 
 	threads := e.Group("threads")
-
 	threads.POST("/create", cl.ThreadsController.Create)
 	threads.GET("/:id", cl.ThreadsController.ReadID)
 	threads.PUT("/:id", cl.ThreadsController.Update)
 	threads.DELETE("/:id", cl.ThreadsController.Delete)
 	threads.GET("/list/", cl.ThreadsController.GetThreads)
 	threads.GET("/listbyuser/:id", cl.ThreadsController.GetThreadsByUserID)
-
 
 	followThreads := e.Group("followThreads")
 	followThreads.POST("/create", cl.FollowThreadsController.Create)

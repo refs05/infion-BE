@@ -164,7 +164,6 @@ func main() {
 	announcementsCtrl := _announcementsController.NewAnnouncementsController(announcementsUsecase)
 
 	routesInit := _routes.ControllerList{
-
 		UserController:				*userCtrl,
 		FollowUsersController:		*followUsersCtrl,
 		RolesController:			*rolesCtrl,
@@ -176,7 +175,7 @@ func main() {
 		ReportsController:			*reportsCtrl,
 		RepliesController:			*repliesCtrl,
 		LikeRepliesController:		*likeRepliesCtrl,
-		JWTConfig: jwt.Init(),
+		JWTConfig: 					jwt.Init(),
 		AnnouncementsController:	*announcementsCtrl,
 	}
 	routesInit.RouteRegister(e)
