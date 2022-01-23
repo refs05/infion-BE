@@ -33,6 +33,7 @@ func TestMain(m *testing.M) {
 
 func TestStore(t *testing.T){
 	t.Run("Store | Valid", func(t *testing.T) {
+		followThreadsRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(followThreadsDomain, businesses.ErrDuplicateData).Once()
 		followThreadsRepository.On("Store", mock.Anything, mock.AnythingOfType("*followThreads.Domain")).Return(followThreadsDomain, nil).Once()
 
 		ctx := context.Background()
@@ -42,7 +43,19 @@ func TestStore(t *testing.T){
 		assert.Equal(t, followThreadsDomain, result)
 	})
 
+	t.Run("Duplicate | Status Update", func(t *testing.T) {
+		followThreadsRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(followThreadsDomain, nil).Once()
+		followThreadsRepository.On("Update", mock.Anything, mock.AnythingOfType("*followThreads.Domain")).Return(followThreadsDomain, nil).Once()
+
+		ctx := context.Background()
+		result, err := followThreadsUsecase.Store(ctx, &followThreadsDomain)
+
+		assert.Nil(t, err)
+		assert.NotEqual(t, followThreadsDomain, result)
+	})
+
 	t.Run("Store | InValid", func(t *testing.T) {
+		followThreadsRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(followThreadsDomain, businesses.ErrDuplicateData).Once()
 		followThreadsRepository.On("Store", mock.Anything, mock.AnythingOfType("*followThreads.Domain")).Return(followThreadsDomain, businesses.ErrInternalServer).Once()
 
 		ctx := context.Background()

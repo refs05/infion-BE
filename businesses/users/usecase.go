@@ -5,6 +5,9 @@ import (
 
 	"infion-BE/businesses"
 	"infion-BE/businesses/comments"
+	"infion-BE/businesses/followThreads"
+	"infion-BE/businesses/followUsers"
+	"infion-BE/businesses/threads"
 	"infion-BE/drivers/helpers/encrypt"
 	_middleware "infion-BE/app/middleware"
 
@@ -17,19 +20,24 @@ import (
 type UserUseCase struct {
 	repo Repository
 	ctx  time.Duration
-commentsRepository comments.Repository	
-jwt *_middleware.ConfigJWT
-
 }
 
 func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository,configJWT *_middleware.ConfigJWT) UseCase{
+	commentsRepository		comments.Repository
+	threadsRepository		threads.Repository
+	followUsersRepository	followUsers.Repository
+	followThreadsRepository	followThreads.Repository
+  jwt *_middleware.ConfigJWT
+}
+func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository, tr threads.Repository, fur followUsers.Repository, ftr followThreads.Repository, configJWT *_middleware.ConfigJWT) UseCase{
 	return &UserUseCase{
 		repo: UserRepo,
 		ctx: contextTimeout,
 		commentsRepository: cr,
-		jwt: configJWT,
-		
-
+		threadsRepository: tr,
+		followUsersRepository: fur,
+		followThreadsRepository: ftr,
+    jwt: configJWT,
 	}
 }
 
@@ -98,11 +106,15 @@ return existedUser,businesses.ErrDuplicateData
 }
 
 func (usecase *UserUseCase)FindById(userId int,ctx context.Context)(DomainUser,error){
+	_, err := usecase.GetLeaderboard(ctx)
+	if err != nil{
+		return DomainUser{},err
+	}
 	rec,err := usecase.repo.FindById(userId,ctx)
- if err != nil{
-	 return DomainUser{},err
- }
- return rec, nil
+	if err != nil{
+		return DomainUser{},err
+	}
+	return rec, nil
 }
 
 func (usecase *UserUseCase) Update(userDomain *DomainUser, ctx context.Context) (*DomainUser, error) {
@@ -126,26 +138,51 @@ func (usecase *UserUseCase)GetLeaderboard(ctx context.Context)([]DomainUser,erro
 		return []DomainUser{}, err
 	}
 
-	// for i := range result {
-	// 	result[i].LikeCount, err = usecase.likeUsersRepository.CountByThreadID(ctx, result[i].ID)
-	// 	if err != nil {
-	// 		return []DomainUser{}, err
-	// 	}
-	// }
-
 	for i := range result {
-		result[i].CommentCount, err = usecase.commentsRepository.CountByUserID(ctx, result[i].Id)
+		result[i].LikeCount, err = usecase.threadsRepository.GetThreadLikeCountByUserID(ctx, result[i].Id)
 		if err != nil {
 			return []DomainUser{}, err
 		}
 	}
 
-	// for i := range result {
-	// 	result[i].FollowerCount, err = usecase.followUsersRepository.CountByThreadID(ctx, result[i].ID)
-	// 	if err != nil {
-	// 		return []DomainUser{}, err
-	// 	}
-	// }
+	for i := range result {
+		result[i].ThreadCount, err = usecase.commentsRepository.CountByUserID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].ThreadCount, err = usecase.threadsRepository.CountByUserID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].FollowerCount, err = usecase.followUsersRepository.CountByFollowedID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].ThreadFollowerCount, err = usecase.threadsRepository.GetThreadFollowerCountByUserID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].ThreadFollowingCount, err = usecase.followThreadsRepository.CountByUserID(ctx, result[i].Id)
+		if err != nil {
+			return []DomainUser{}, err
+		}
+	}
+
+	for i := range result {
+		result[i].Rank = i + 1
+	}
 
 	for i := range result {
 		_, err = usecase.repo.Update(&result[i], ctx)

@@ -6,6 +6,7 @@ import (
 	"infion-BE/businesses/comments"
 	"infion-BE/businesses/followThreads"
 	"infion-BE/businesses/likeThreads"
+	"infion-BE/businesses/reports"
 
 	"time"
 )
@@ -16,15 +17,17 @@ type threadsUsecase struct {
 	likeThreadsRepository	likeThreads.Repository
 	commentsRepository		comments.Repository
 	followThreadsRepository	followThreads.Repository
+	reportsRepository		reports.Repository
 }
 
-func NewThreadsUsecase(tr Repository, timeout time.Duration, ltr likeThreads.Repository, cr comments.Repository, ftr followThreads.Repository) Usecase {
+func NewThreadsUsecase(tr Repository, timeout time.Duration, ltr likeThreads.Repository, cr comments.Repository, ftr followThreads.Repository, rr reports.Repository) Usecase {
 	return &threadsUsecase{
 		threadsRepository:  tr,
 		contextTimeout:  timeout,
 		likeThreadsRepository: ltr,
 		commentsRepository: cr,
 		followThreadsRepository: ftr,
+		reportsRepository: rr,
 	}
 }
 
@@ -266,7 +269,6 @@ func (tu *threadsUsecase) Update(ctx context.Context, threadsDomain *Domain) (*D
 		return &Domain{}, err
 	}
 	threadsDomain.ID = existedThreads.ID
-	threadsDomain.LikeCount = existedThreads.LikeCount
 
 	result, err := tu.threadsRepository.Update(ctx, threadsDomain)
 	if err != nil {
@@ -282,6 +284,26 @@ func (tu *threadsUsecase) Delete(ctx context.Context, threadsDomain *Domain) (*D
 		return &Domain{}, err
 	}
 	threadsDomain.ID = existedThreads.ID
+
+	reports, _ := tu.reportsRepository.GetReportsByThreadID(ctx, threadsDomain.ID)
+	for i := range reports {
+		_, _ = tu.reportsRepository.Delete(ctx, &reports[i])
+	}
+
+	comments, _ := tu.commentsRepository.GetCommentsByThreadID(ctx, threadsDomain.ID)
+	for i := range comments {
+		_, _ = tu.commentsRepository.Delete(ctx, &comments[i])
+	}
+
+	followThreads, _ := tu.followThreadsRepository.GetFollowThreadsByThreadID(ctx, threadsDomain.ID)
+	for i := range followThreads {
+		_, _ = tu.followThreadsRepository.Delete(ctx, &followThreads[i])
+	}
+
+	likeThreads, _ := tu.likeThreadsRepository.GetLikeThreadsByThreadID(ctx, threadsDomain.ID)
+	for i := range likeThreads {
+		_, _ = tu.likeThreadsRepository.Delete(ctx, &likeThreads[i])
+	}
 
 	result, err := tu.threadsRepository.Delete(ctx, threadsDomain)
 	if err != nil {

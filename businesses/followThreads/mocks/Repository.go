@@ -35,6 +35,27 @@ func (_m *Repository) CountByThreadID(ctx context.Context, id int) (int, error) 
 	return r0, r1
 }
 
+// CountByUserID provides a mock function with given fields: ctx, id
+func (_m *Repository) CountByUserID(ctx context.Context, id uint) (int, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, uint) int); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, uint) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Delete provides a mock function with given fields: ctx, followThreadsDomain
 func (_m *Repository) Delete(ctx context.Context, followThreadsDomain *followThreads.Domain) (followThreads.Domain, error) {
 	ret := _m.Called(ctx, followThreadsDomain)
@@ -70,6 +91,50 @@ func (_m *Repository) GetByID(ctx context.Context, followThreadsId int) (followT
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
 		r1 = rf(ctx, followThreadsId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetDuplicate provides a mock function with given fields: ctx, threadID, userID
+func (_m *Repository) GetDuplicate(ctx context.Context, threadID int, userID int) (followThreads.Domain, error) {
+	ret := _m.Called(ctx, threadID, userID)
+
+	var r0 followThreads.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, int, int) followThreads.Domain); ok {
+		r0 = rf(ctx, threadID, userID)
+	} else {
+		r0 = ret.Get(0).(followThreads.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int, int) error); ok {
+		r1 = rf(ctx, threadID, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetFollowThreadsByThreadID provides a mock function with given fields: ctx, threadID
+func (_m *Repository) GetFollowThreadsByThreadID(ctx context.Context, threadID int) ([]followThreads.Domain, error) {
+	ret := _m.Called(ctx, threadID)
+
+	var r0 []followThreads.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, int) []followThreads.Domain); ok {
+		r0 = rf(ctx, threadID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]followThreads.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, threadID)
 	} else {
 		r1 = ret.Error(1)
 	}

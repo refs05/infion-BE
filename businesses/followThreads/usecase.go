@@ -22,6 +22,13 @@ func (tu *followThreadsUsecase) Store(ctx context.Context, followThreadsDomain *
 	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
 	defer cancel()
 
+	duplicate, err := tu.followThreadsRepository.GetDuplicate(ctx, followThreadsDomain.ThreadID, followThreadsDomain.UserID)
+	if err == nil {
+		duplicate.Status = !duplicate.Status
+		tu.followThreadsRepository.Update(ctx, &duplicate)
+		return duplicate, nil
+	}
+
 	result, err := tu.followThreadsRepository.Store(ctx, followThreadsDomain)
 	if err != nil {
 		return Domain{}, err

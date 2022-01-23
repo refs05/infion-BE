@@ -33,6 +33,7 @@ func TestMain(m *testing.M) {
 
 func TestStore(t *testing.T){
 	t.Run("Store | Valid", func(t *testing.T) {
+		likeRepliesRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(likeRepliesDomain, businesses.ErrDuplicateData).Once()
 		likeRepliesRepository.On("Store", mock.Anything, mock.AnythingOfType("*likeReplies.Domain")).Return(likeRepliesDomain, nil).Once()
 
 		ctx := context.Background()
@@ -42,7 +43,19 @@ func TestStore(t *testing.T){
 		assert.Equal(t, likeRepliesDomain, result)
 	})
 
+	t.Run("Duplicate | Status Update", func(t *testing.T) {
+		likeRepliesRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(likeRepliesDomain, nil).Once()
+		likeRepliesRepository.On("Update", mock.Anything, mock.AnythingOfType("*likeReplies.Domain")).Return(likeRepliesDomain, nil).Once()
+
+		ctx := context.Background()
+		result, err := likeRepliesUsecase.Store(ctx, &likeRepliesDomain)
+
+		assert.Nil(t, err)
+		assert.NotEqual(t, likeRepliesDomain, result)
+	})
+
 	t.Run("Store | InValid", func(t *testing.T) {
+		likeRepliesRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(likeRepliesDomain, businesses.ErrDuplicateData).Once()
 		likeRepliesRepository.On("Store", mock.Anything, mock.AnythingOfType("*likeReplies.Domain")).Return(likeRepliesDomain, businesses.ErrInternalServer).Once()
 
 		ctx := context.Background()

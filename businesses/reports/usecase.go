@@ -53,6 +53,15 @@ func (tu *reportsUsecase) GetReports(ctx context.Context) ([]Domain, error) {
 	return result, nil
 }
 
+func (tu *reportsUsecase) GetReportsByUserID(ctx context.Context, userID int) ([]Domain, error) {
+	result, err := tu.reportsRepository.GetReportsByUserID(ctx, userID)
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (tu *reportsUsecase) Update(ctx context.Context, reportsDomain *Domain) (*Domain, error) {
 	existedReports, err := tu.reportsRepository.GetByID(ctx, reportsDomain.ID)
 	if err != nil {

@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"infion-BE/controllers/announcements"
 	"infion-BE/controllers/comments"
 	"infion-BE/controllers/followThreads"
 	"infion-BE/controllers/followUsers"
@@ -32,6 +33,7 @@ type ControllerList struct {
 
 	LikeRepliesController	likeReplies.LikeRepliesController
 	JWTConfig				middleware.JWTConfig
+	AnnouncementsController       announcements.AnnouncementsController
 
 }
 
@@ -112,4 +114,13 @@ users.GET("/:id", cl.UserController.FindById,middleware.JWTWithConfig(cl.JWTConf
 	reports.PUT("/:id", cl.ReportsController.Update)
 	reports.DELETE("/:id", cl.ReportsController.Delete)
 	reports.GET("/list", cl.ReportsController.GetReports)
+	reports.GET("/listbyuser/:id", cl.ReportsController.GetReportsByUserID)
+
+	announcements := e.Group("announcements")
+	announcements.POST("/create", cl.AnnouncementsController.Create)
+	announcements.GET("/:id", cl.AnnouncementsController.ReadID)
+	announcements.PUT("/:id", cl.AnnouncementsController.Update)
+	announcements.DELETE("/:id", cl.AnnouncementsController.Delete)
+	announcements.GET("/list", cl.AnnouncementsController.GetAnnouncements)
+	announcements.GET("/listbyuser/:id", cl.AnnouncementsController.GetAnnouncementsByUserID)
 }

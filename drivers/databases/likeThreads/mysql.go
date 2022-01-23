@@ -63,10 +63,30 @@ func (nr *mysqlLikeThreadsRepository) CountByThreadID(ctx context.Context,id int
 	rec := LikeThreads{}
 	var count int64
 	
-	result := nr.Conn.Model(&rec).Where("thread_id = ?", id).Count(&count)
+	result := nr.Conn.Model(&rec).Where("thread_id = ?", id).Where("status = ?", true).Count(&count)
 	if result.Error != nil {
 		return 0, result.Error
 	}
 
 	return int(count), nil
+}
+
+func (nr *mysqlLikeThreadsRepository) GetDuplicate(ctx context.Context, threadID int, userID int) (likeThreads.Domain, error) {
+	rec := LikeThreads{}
+	err := nr.Conn.Where("thread_id = ? AND user_id = ?", threadID, userID).First(&rec).Error
+	if err != nil {
+		return likeThreads.Domain{}, err
+	}
+	return rec.toDomain(), nil
+}
+
+func (nr *mysqlLikeThreadsRepository) GetLikeThreadsByThreadID(ctx context.Context, threadID int) ([]likeThreads.Domain, error) {
+	var recordLikeThread []LikeThreads
+	
+	result := nr.Conn.Unscoped().Where("thread_id = ?", threadID).Find(&recordLikeThread)
+	if result.Error != nil {
+		return []likeThreads.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordLikeThread), nil
 }

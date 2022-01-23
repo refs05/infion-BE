@@ -63,10 +63,30 @@ func (nr *mysqlLikeCommentsRepository) CountByCommentID(ctx context.Context,id i
 	rec := LikeComments{}
 	var count int64
 	
-	result := nr.Conn.Model(&rec).Where("comment_id = ?", id).Count(&count)
+	result := nr.Conn.Model(&rec).Where("comment_id = ?", id).Where("status = ?", true).Count(&count)
 	if result.Error != nil {
 		return 0, result.Error
 	}
 
 	return int(count), nil
+}
+
+func (nr *mysqlLikeCommentsRepository) GetDuplicate(ctx context.Context, commentID int, userID int) (likeComments.Domain, error) {
+	rec := LikeComments{}
+	err := nr.Conn.Where("comment_id = ? AND user_id = ?", commentID, userID).First(&rec).Error
+	if err != nil {
+		return likeComments.Domain{}, err
+	}
+	return rec.toDomain(), nil
+}
+
+func (nr *mysqlLikeCommentsRepository) GetLikeCommentsByCommentID(ctx context.Context, commentID int) ([]likeComments.Domain, error) {
+	var recordLikeComment []LikeComments
+	
+	result := nr.Conn.Unscoped().Where("like_comments.comment_id = ?", commentID).Joins("Comment").Joins("User").Find(&recordLikeComment)
+	if result.Error != nil {
+		return []likeComments.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordLikeComment), nil
 }

@@ -45,6 +45,10 @@ import (
 	_reportsController "infion-BE/controllers/reports"
 	_reportsRepo "infion-BE/drivers/databases/reports"
 
+	_announcementsUsecase "infion-BE/businesses/announcements"
+	_announcementsController "infion-BE/controllers/announcements"
+	_announcementsRepo "infion-BE/drivers/databases/announcements"
+
 	_dbDriver "infion-BE/drivers/mysql"
 
 	_middleware "infion-BE/app/middleware"
@@ -85,6 +89,7 @@ func dbMigrate(db *gorm.DB) {
 		&_reportsRepo.Reports{},
 		&_repliesRepo.Replies{},
 		&_likeRepliesRepo.LikeReplies{},
+		&_announcementsRepo.Announcements{},
 	)
 }
 
@@ -114,6 +119,10 @@ func main() {
 	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
 	rolesCtrl := _rolesController.NewRolesController(rolesUsecase)
 
+	reportsRepo := _reportsRepo.NewReportsRepository(db)
+	reportsUsecase := _reportsUsecase.NewReportsUsecase(reportsRepo, timeoutContext)
+	reportsCtrl := _reportsController.NewReportsController(reportsUsecase)
+
 	likeRepliesRepo := _likeRepliesRepo.NewLikeRepliesRepository(db)
 	likeRepliesUsecase := _likeRepliesUsecase.NewLikeRepliesUsecase(likeRepliesRepo, timeoutContext)
 	likeRepliesCtrl := _likeRepliesController.NewLikeRepliesController(likeRepliesUsecase)
@@ -139,7 +148,7 @@ func main() {
 	likeThreadsCtrl := _likeThreadsController.NewLikeThreadsController(likeThreadsUsecase)
 
 	threadsRepo := _threadsRepo.NewThreadsRepository(db)
-	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext, likeThreadsRepo, commentsRepo, followThreadsRepo)
+	threadsUsecase := _threadsUsecase.NewThreadsUsecase(threadsRepo, timeoutContext, likeThreadsRepo, commentsRepo, followThreadsRepo, reportsRepo)
 	threadsCtrl := _threadsController.NewThreadsController(threadsUsecase)
 
 	followUsersRepo := _followUsersRepo.NewFollowUsersRepository(db)
@@ -147,12 +156,12 @@ func main() {
 	followUsersCtrl := _followUsersController.NewFollowUsersController(followUsersUsecase)
 
 	userRepo := _userRepo.NewUserRepository(db)
-	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext, commentsRepo,&jwt)
+	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext, commentsRepo, threadsRepo, followUsersRepo, followThreadsRepo, &jwt)
 	userCtrl := _userController.NewUserController(userUsecase)
 
-	reportsRepo := _reportsRepo.NewReportsRepository(db)
-	reportsUsecase := _reportsUsecase.NewReportsUsecase(reportsRepo, timeoutContext)
-	reportsCtrl := _reportsController.NewReportsController(reportsUsecase)
+	announcementsRepo := _announcementsRepo.NewAnnouncementsRepository(db)
+	announcementsUsecase := _announcementsUsecase.NewAnnouncementsUsecase(announcementsRepo, timeoutContext)
+	announcementsCtrl := _announcementsController.NewAnnouncementsController(announcementsUsecase)
 
 	routesInit := _routes.ControllerList{
 
@@ -168,7 +177,7 @@ func main() {
 		RepliesController:			*repliesCtrl,
 		LikeRepliesController:		*likeRepliesCtrl,
 		JWTConfig: jwt.Init(),
-
+		AnnouncementsController:	*announcementsCtrl,
 	}
 	routesInit.RouteRegister(e)
 

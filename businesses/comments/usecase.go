@@ -165,6 +165,20 @@ func (tu *commentsUsecase) Delete(ctx context.Context, commentsDomain *Domain) (
 	}
 	commentsDomain.ID = existedComments.ID
 
+	replies, _ := tu.repliesRepository.GetRepliesByCommentID(ctx, commentsDomain.ID)
+	for i := range replies {
+		_, err = tu.repliesRepository.Delete(ctx, &replies[i])
+		if err != nil {
+			return &Domain{}, err
+		}
+	}
+
+	likeComments, _ := tu.likeCommentsRepository.GetLikeCommentsByCommentID(ctx, commentsDomain.ID)
+	for i := range likeComments {
+		_, _ = tu.likeCommentsRepository.Delete(ctx, &likeComments[i])
+	}
+
+
 	result, err := tu.commentsRepository.Delete(ctx, commentsDomain)
 	if err != nil {
 		return &Domain{}, err

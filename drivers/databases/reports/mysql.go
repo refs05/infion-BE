@@ -79,3 +79,25 @@ func (nr *mysqlReportsRepository) GetReports(ctx context.Context) ([]reports.Dom
 
 	return ToDomainArray(recordThread), nil
 }
+
+func (nr *mysqlReportsRepository) GetReportsByUserID(ctx context.Context, userID int) ([]reports.Domain, error) {
+	var recordReport []Reports
+	
+	result := nr.Conn.Unscoped().Where("reports.user_id = ?", userID).Joins("Thread").Joins("User").Find(&recordReport)
+	if result.Error != nil {
+		return []reports.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordReport), nil
+}
+
+func (nr *mysqlReportsRepository) GetReportsByThreadID(ctx context.Context, threadID int) ([]reports.Domain, error) {
+	var recordReport []Reports
+	
+	result := nr.Conn.Unscoped().Where("reports.thread_id = ?", threadID).Joins("Thread").Joins("User").Find(&recordReport)
+	if result.Error != nil {
+		return []reports.Domain{}, result.Error
+	}
+
+	return ToDomainArray(recordReport), nil
+}
