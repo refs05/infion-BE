@@ -104,10 +104,16 @@ func main() {
 	db := configDB.InitialDB()
 	dbMigrate(db)
 
+	jwt := _middleware.ConfigJWT{
+		SecretJWT : viper.GetString(`jwt.secret`),
+		ExpiresDuration : viper.GetInt(`jwt.expired`),
+	}
+
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
 	e := echo.New()
 	e.Use(middleware.CORS())
+
 
 	rolesRepo := _rolesRepo.NewRolesRepository(db)
 	rolesUsecase := _rolesUsecase.NewRolesUsecase(rolesRepo, timeoutContext)
@@ -150,7 +156,7 @@ func main() {
 	followUsersCtrl := _followUsersController.NewFollowUsersController(followUsersUsecase)
 
 	userRepo := _userRepo.NewUserRepository(db)
-	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext, commentsRepo, threadsRepo, followUsersRepo, followThreadsRepo)
+	userUsecase := _userUseCase.NewUseCase(userRepo, timeoutContext, commentsRepo, threadsRepo, followUsersRepo, followThreadsRepo, &jwt)
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	announcementsRepo := _announcementsRepo.NewAnnouncementsRepository(db)
@@ -169,6 +175,7 @@ func main() {
 		ReportsController:			*reportsCtrl,
 		RepliesController:			*repliesCtrl,
 		LikeRepliesController:		*likeRepliesCtrl,
+		JWTConfig: 					jwt.Init(),
 		AnnouncementsController:	*announcementsCtrl,
 	}
 	routesInit.RouteRegister(e)

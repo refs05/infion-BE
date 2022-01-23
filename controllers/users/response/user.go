@@ -11,7 +11,7 @@ type UserResponse struct {
 	Id            uint           `json:"id"`
 	Username      string         `json:"username"`
 	Email         string         `json:"email"`
-	Password      string         `json:"password"`
+	// Password      string         `json:"password"`
 	RoleId        int            `json:"role_id"`
 	UrlImg        string         `json:"url_img"`
 	CommentCount  int            `json:"comment_count"`
@@ -32,7 +32,7 @@ func FromDomain(domain users.DomainUser) UserResponse{
 		Id:				domain.Id,
 		Username: 		domain.Username,
 		Email:  		domain.Email,
-		Password:   	domain.Password,
+		// Password:   	domain.Password,
 		RoleId:  		domain.RoleId,
 		UrlImg: 		domain.UrlImg,
 		CommentCount: 	domain.CommentCount,

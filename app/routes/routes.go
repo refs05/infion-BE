@@ -16,6 +16,7 @@ import (
 	userController "infion-BE/controllers/users"
 
 	echo "github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type ControllerList struct {
@@ -30,15 +31,16 @@ type ControllerList struct {
 	ReportsController       reports.ReportsController
 	RepliesController       replies.RepliesController
 	LikeRepliesController	likeReplies.LikeRepliesController
-	AnnouncementsController       announcements.AnnouncementsController
+	JWTConfig				middleware.JWTConfig
+	AnnouncementsController	announcements.AnnouncementsController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	users := e.Group("user")
 	users.POST("/login", cl.UserController.Login)
 	users.POST("/create", cl.UserController.CreateNewUser)
-	users.GET("/:id", cl.UserController.FindById)
-	users.PUT("/:id", cl.UserController.Update)
+	users.GET("/:id", cl.UserController.FindById,middleware.JWTWithConfig(cl.JWTConfig))
+	users.PUT("/:id", cl.UserController.Update,middleware.JWTWithConfig(cl.JWTConfig))
 	users.GET("/leaderboard/", cl.UserController.GetLeaderboard)
 
 	followUsers := e.Group("followUsers")

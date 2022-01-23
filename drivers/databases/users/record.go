@@ -10,8 +10,8 @@ type User struct {
 	Id        		uint `gorm:"primaryKey"`
 	Email     		string
 	Username      	string
-	RoleId			int
-	UrlImg			string
+	RoleId			int `gorm:"default:1"`
+	UrlImg			string `gorm:"https://inspektorat.kotawaringinbaratkab.go.id/public/uploads/user/default-user-imge.jpeg"`
 	CommentCount	int
 	ThreadCount		int
 	LikeCount		int
@@ -23,7 +23,6 @@ type User struct {
 	CreatedAt  		time.Time `gorm:"<-:create"`
 	UpdatedAt 		time.Time
 	DeletedAt 		gorm.DeletedAt `gorm:"index"`
-	
 }
 
 func FromDomain(domain users.DomainUser) User{
