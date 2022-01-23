@@ -9,13 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"infion-BE/businesses/comments"
 	_commentsMock "infion-BE/businesses/comments/mocks"
-	"infion-BE/businesses/followThreads"
 	_followThreadsMock "infion-BE/businesses/followThreads/mocks"
-	"infion-BE/businesses/followUsers"
 	_followUsersMock "infion-BE/businesses/followUsers/mocks"
-	"infion-BE/businesses/threads"
 	_threadsMock "infion-BE/businesses/threads/mocks"
 
 	_middleware "infion-BE/app/middleware"
@@ -30,14 +26,9 @@ var (
 	usersUsecase    users.UseCase
 	usersDomain     users.DomainUser
 	threadsRepository		_threadsMock.Repository
-	threadsUsecase			threads.Usecase
-	threadsDomain			threads.Domain
 	commentsRepository		_commentsMock.Repository
-	commentsDomain			comments.Domain
 	followThreadsRepository	_followThreadsMock.Repository
-	followThreadsDomain		followThreads.Domain
 	followUsersRepository	_followUsersMock.Repository
-	followUsersDomain		followUsers.Domain
 	jwt 					*_middleware.ConfigJWT
 )
 
