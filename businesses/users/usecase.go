@@ -35,7 +35,7 @@ func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Re
 		threadsRepository: tr,
 		followUsersRepository: fur,
 		followThreadsRepository: ftr,
-    	jwt: configJWT,
+		jwt: configJWT,
 	}
 }
 
