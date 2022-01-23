@@ -1,0 +1,20 @@
+{
+    "debug": false,
+    "server": {
+        "address": ":8080"
+    },
+    "context": {
+        "timeout": 2
+    },
+    "database": {
+        "host": "mysql-infion-be",
+        "port": "3306",
+        "user": "root",
+        "pass": "password",
+        "name": "infion"
+    },
+    "jwt": {
+        "secret": "supersecret12345!@#$%",
+        "expired": 72
+    }
+}
