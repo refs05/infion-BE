@@ -32,8 +32,7 @@ type ControllerList struct {
 	RepliesController       replies.RepliesController
 	LikeRepliesController	likeReplies.LikeRepliesController
 	JWTConfig				middleware.JWTConfig
-	AnnouncementsController       announcements.AnnouncementsController
-
+	AnnouncementsController	announcements.AnnouncementsController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {

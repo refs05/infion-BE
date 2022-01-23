@@ -23,7 +23,6 @@ type User struct {
 	CreatedAt  		time.Time `gorm:"<-:create"`
 	UpdatedAt 		time.Time
 	DeletedAt 		gorm.DeletedAt `gorm:"index"`
-	
 }
 
 func FromDomain(domain users.DomainUser) User{
