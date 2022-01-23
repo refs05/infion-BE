@@ -9,6 +9,7 @@ import (
 	"infion-BE/businesses/followUsers"
 	"infion-BE/businesses/threads"
 	"infion-BE/drivers/helpers/encrypt"
+	_middleware "infion-BE/app/middleware"
 
 	"regexp"
 	"time"
@@ -19,12 +20,16 @@ import (
 type UserUseCase struct {
 	repo Repository
 	ctx  time.Duration
+}
+
+func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository,configJWT *_middleware.ConfigJWT) UseCase{
 	commentsRepository		comments.Repository
 	threadsRepository		threads.Repository
 	followUsersRepository	followUsers.Repository
 	followThreadsRepository	followThreads.Repository
+  jwt *_middleware.ConfigJWT
 }
-func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository, tr threads.Repository, fur followUsers.Repository, ftr followThreads.Repository) UseCase{
+func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Repository, tr threads.Repository, fur followUsers.Repository, ftr followThreads.Repository, configJWT *_middleware.ConfigJWT) UseCase{
 	return &UserUseCase{
 		repo: UserRepo,
 		ctx: contextTimeout,
@@ -32,6 +37,7 @@ func NewUseCase(UserRepo Repository,contextTimeout time.Duration, cr comments.Re
 		threadsRepository: tr,
 		followUsersRepository: fur,
 		followThreadsRepository: ftr,
+    jwt: configJWT,
 	}
 }
 
@@ -66,6 +72,8 @@ func (usecase *UserUseCase) Login(domain DomainUser, ctx context.Context )(Domai
 	if !encrypt.ValidateHash(domain.Password, user.Password) {
 		return DomainUser{},businesses.ErrWrongPass
 	}
+
+	user.Token = usecase.jwt.GenererateToken(user.Id)
 	return user,nil
 }
 
