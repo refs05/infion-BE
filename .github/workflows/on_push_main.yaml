@@ -13,7 +13,7 @@ on:
             - "test-*"
 
 jobs:
-    api-test:
+    unit-test:
         name: api test - run unitest on action
         runs-on: ubuntu-latest
         container: golang:1.17
