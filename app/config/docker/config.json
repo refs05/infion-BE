@@ -1,16 +1,16 @@
 {
     "debug": false,
     "server": {
-        "address": ":8080"
+        "address": ":8000"
     },
     "context": {
         "timeout": 2
     },
     "database": {
-        "host": "mysql-infion-be",
+        "host": "infion.cspfqzx22tvk.us-east-1.rds.amazonaws.com",
         "port": "3306",
-        "user": "root",
-        "pass": "password",
+        "user": "admin",
+        "pass": "infionjago",
         "name": "infion"
     },
     "jwt": {
