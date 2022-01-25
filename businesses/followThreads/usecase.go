@@ -81,3 +81,19 @@ func (tu *followThreadsUsecase) Delete(ctx context.Context, followThreadsDomain 
 
 	return &result, nil
 }
+
+func (tu *followThreadsUsecase) GetStatus(ctx context.Context, threadID int, userID int) (Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
+	defer cancel()
+
+	if threadID <= 0 || userID <= 0 {
+		return Domain{}, businesses.ErrIDResource
+	}
+
+	res, err := tu.followThreadsRepository.GetDuplicate(ctx, threadID, userID)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return res, nil
+}

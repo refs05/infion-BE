@@ -2,7 +2,6 @@ package likeThreads
 
 import (
 	"errors"
-	"fmt"
 	"infion-BE/businesses/likeThreads"
 	controller "infion-BE/controllers"
 	"infion-BE/controllers/likeThreads/request"
@@ -109,13 +108,11 @@ func (ctrl *LikeThreadsController) Delete(c echo.Context) error {
 }
 
 func (ctrl *LikeThreadsController) GetStatus(c echo.Context) error {
-	fmt.Println("routes")
 	ctx := c.Request().Context()
 	threadIDString := c.QueryParam("threadID")
 	userIDString := c.QueryParam("userID")
 
 	if threadIDString != "" && userIDString != "" {
-		fmt.Println("good request query param")
 		threadID, _ := strconv.Atoi(threadIDString)
 		userID, _ := strconv.Atoi(userIDString)
 		resp, err := ctrl.likeThreadsUseCase.GetStatus(ctx, threadID, userID)
