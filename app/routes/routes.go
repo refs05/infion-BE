@@ -50,10 +50,10 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	followUsers.DELETE("/:id", cl.FollowUsersController.Delete,middleware.JWTWithConfig(cl.JWTConfig))
 
 	roles := e.Group("roles")
-	roles.POST("/create", cl.RolesController.Create,middleware.JWTWithConfig(cl.JWTConfig))
-	roles.GET("/:id", cl.RolesController.ReadID,middleware.JWTWithConfig(cl.JWTConfig))
-	roles.PUT("/:id", cl.RolesController.Update,middleware.JWTWithConfig(cl.JWTConfig))
-	roles.DELETE("/:id", cl.RolesController.Delete,middleware.JWTWithConfig(cl.JWTConfig))
+	roles.POST("/create", cl.RolesController.Create)
+	roles.GET("/:id", cl.RolesController.ReadID)
+	roles.PUT("/:id", cl.RolesController.Update)
+	roles.DELETE("/:id", cl.RolesController.Delete)
 
 	threads := e.Group("threads")
 	threads.POST("/create", cl.ThreadsController.Create,middleware.JWTWithConfig(cl.JWTConfig))
