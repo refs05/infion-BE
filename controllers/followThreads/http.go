@@ -106,3 +106,21 @@ func (ctrl *FollowThreadsController) Delete(c echo.Context) error {
 
 	return controller.NewDeleteResponse(c, response.FromDomain(*resp))
 }
+
+func (ctrl *FollowThreadsController) GetStatus(c echo.Context) error {
+	ctx := c.Request().Context()
+	threadIDString := c.QueryParam("threadID")
+	userIDString := c.QueryParam("userID")
+
+	if threadIDString != "" && userIDString != "" {
+		threadID, _ := strconv.Atoi(threadIDString)
+		userID, _ := strconv.Atoi(userIDString)
+		resp, err := ctrl.followThreadsUseCase.GetStatus(ctx, threadID, userID)
+		if err != nil {
+			return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+		}
+		return controller.NewSuccessResponse(c, response.FromDomain(resp))
+	}
+	
+	return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required threadID or userID"))
+}

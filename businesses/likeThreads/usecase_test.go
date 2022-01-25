@@ -163,3 +163,33 @@ func TestDelete(t *testing.T){
 		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
+
+func TestGetStatus(t *testing.T){
+	t.Run("GetStatus | Valid", func(t *testing.T) {
+		likeThreadsRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(likeThreadsDomain, nil).Once()
+
+		ctx := context.Background()
+		result, err := likeThreadsUsecase.GetStatus(ctx, likeThreadsDomain.ThreadID, likeThreadsDomain.UserID)
+
+		assert.Nil(t, err)
+		assert.Equal(t, likeThreadsDomain, result)
+	})
+
+	t.Run("GetStatus | InValid ID <= 0", func(t *testing.T) {
+		ctx := context.Background()
+		_, err := likeThreadsUsecase.GetStatus(ctx, 0, 0)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrIDResource, err)
+	})
+
+	t.Run("GetStatus | InValid", func(t *testing.T) {
+		likeThreadsRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(likeThreadsDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := likeThreadsUsecase.GetStatus(ctx, likeThreadsDomain.ThreadID, likeThreadsDomain.UserID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+}

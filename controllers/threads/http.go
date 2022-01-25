@@ -109,7 +109,6 @@ func (ctrl *ThreadsController) Delete(c echo.Context) error {
 }
 
 func (ctrl *ThreadsController) GetThreads(c echo.Context) error {
-	fmt.Println("routes")
 	ctx := c.Request().Context()
 	sortBy := c.QueryParam("sortBy")
 	category := c.QueryParam("category")

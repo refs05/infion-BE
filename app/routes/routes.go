@@ -68,12 +68,14 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	followThreads.GET("/:id", cl.FollowThreadsController.ReadID)
 	followThreads.PUT("/:id", cl.FollowThreadsController.Update)
 	followThreads.DELETE("/:id", cl.FollowThreadsController.Delete)
+	followThreads.GET("/status/", cl.FollowThreadsController.GetStatus)
 
 	likeThreads := e.Group("likeThreads")
 	likeThreads.POST("/create", cl.LikeThreadsController.Create)
 	likeThreads.GET("/:id", cl.LikeThreadsController.ReadID)
 	likeThreads.PUT("/:id", cl.LikeThreadsController.Update)
 	likeThreads.DELETE("/:id", cl.LikeThreadsController.Delete)
+	likeThreads.GET("/status/", cl.LikeThreadsController.GetStatus)
 
 	comments := e.Group("comments")
 	comments.POST("/create", cl.CommentsController.Create)
