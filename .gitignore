@@ -22,3 +22,4 @@ go.work
 
 # config
 app/config/config.json
+*.pem
