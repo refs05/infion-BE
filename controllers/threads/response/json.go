@@ -13,7 +13,7 @@ type Threads struct {
 	Category   		string `json:"category"`
 	UserID			int `json:"user_id"`
 	User			string `json:"username"`
-	UrlImg			string `json:"url_img"`
+	// UrlImg			string `json:"url_img"`
 	LikeCount		int `json:"like_count"`
 	CommentCount	int `json:"comment_count"`
 	FollowerCount	int `json:"follower_count"`
@@ -30,7 +30,7 @@ func FromDomain(domain threads.Domain) Threads {
 		Category:   	domain.Category,
 		UserID: 		domain.UserID,
 		User: 			domain.User,
-		UrlImg:			domain.UrlImg,
+		// UrlImg:			domain.UrlImg,
 		LikeCount:  	domain.LikeCount,
 		CommentCount: 	domain.CommentCount,
 		FollowerCount: 	domain.FollowerCount,
