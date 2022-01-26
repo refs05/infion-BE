@@ -33,6 +33,7 @@ type UseCase interface {
 	CreateNewUser(domain DomainUser, ctx context.Context)(DomainUser,error)
 	FindById(userId int,ctx context.Context)(DomainUser,error)
 	Update(userDomain *DomainUser, ctx context.Context, ) (*DomainUser, error)
+	Delete(ctx context.Context, userDomain *DomainUser) (*DomainUser, error)
 	GetLeaderboard(ctx context.Context) ([]DomainUser, error)
 }
 
@@ -42,5 +43,6 @@ type Repository interface{
 	CreateNewUser(domain DomainUser, ctx context.Context)(DomainUser,error)
 	FindById(userId int,ctx context.Context)(DomainUser,error)
 	Update(userDomain *DomainUser, ctx context.Context) (DomainUser, error)
+	Delete(ctx context.Context, userDomain *DomainUser) (DomainUser, error)
 	GetLeaderboard(ctx context.Context) ([]DomainUser, error)
 }
