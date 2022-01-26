@@ -61,7 +61,7 @@ func (nr *mysqlCommentsRepository) Update(ctx context.Context, commentsDomain *c
 func (nr *mysqlCommentsRepository) Delete(ctx context.Context, commentsDomain *comments.Domain) (comments.Domain, error) {
 	rec := fromDomain(commentsDomain)
 
-	result := nr.Conn.Delete(&rec)
+	result := nr.Conn.Unscoped().Delete(&rec)
 	if result.Error != nil {
 		return comments.Domain{}, result.Error
 	}

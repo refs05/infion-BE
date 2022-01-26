@@ -51,7 +51,7 @@ func (nr *mysqlLikeCommentsRepository) Update(ctx context.Context, likeCommentsD
 func (nr *mysqlLikeCommentsRepository) Delete(ctx context.Context, likeCommentsDomain *likeComments.Domain) (likeComments.Domain, error) {
 	rec := fromDomain(likeCommentsDomain)
 
-	result := nr.Conn.Delete(&rec)
+	result := nr.Conn.Unscoped().Delete(&rec)
 	if result.Error != nil {
 		return likeComments.Domain{}, result.Error
 	}
