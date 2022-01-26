@@ -51,7 +51,7 @@ func (nr *mysqlLikeRepliesRepository) Update(ctx context.Context, likeRepliesDom
 func (nr *mysqlLikeRepliesRepository) Delete(ctx context.Context, likeRepliesDomain *likeReplies.Domain) (likeReplies.Domain, error) {
 	rec := fromDomain(likeRepliesDomain)
 
-	result := nr.Conn.Delete(&rec)
+	result := nr.Conn.Unscoped().Delete(&rec)
 	if result.Error != nil {
 		return likeReplies.Domain{}, result.Error
 	}

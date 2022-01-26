@@ -88,7 +88,7 @@ func (repo *UserRepository) Update(userDomain *users.DomainUser, ctx context.Con
 func (repo *UserRepository) Delete(ctx context.Context, userDomain *users.DomainUser) (users.DomainUser, error) {
 	rec := FromDomain(*userDomain)
 
-	result := repo.db.Delete(&rec)
+	result := repo.db.Unscoped().Delete(&rec)
 	if result.Error != nil {
 		return users.DomainUser{}, result.Error
 	}

@@ -104,11 +104,16 @@ func (usecase *UserUseCase)FindById(userId int,ctx context.Context)(DomainUser,e
 }
 
 func (usecase *UserUseCase) Update(userDomain *DomainUser, ctx context.Context) (*DomainUser, error) {
-	existedComments, err := usecase.repo.FindById(int(userDomain.Id),ctx)
+	existedUser, err := usecase.repo.FindById(int(userDomain.Id),ctx)
 	if err != nil {
 		return &DomainUser{}, err
 	}
-	userDomain.Id = existedComments.Id
+	userDomain.Id = existedUser.Id
+
+	userDomain.Password, err = encrypt.Hash(userDomain.Password)
+	if err != nil{
+		return &DomainUser{},businesses.ErrInternalServer
+	}
 
 	result, err := usecase.repo.Update(userDomain, ctx)
 	if err != nil {

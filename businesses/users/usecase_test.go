@@ -226,10 +226,9 @@ func TestUpdate(t *testing.T){
 		usersRepository.On("Update", mock.AnythingOfType("*users.DomainUser"), mock.Anything).Return(usersDomain, nil).Once()
 
 		ctx := context.Background()
-		result, err := usersUsecase.Update(&usersDomain, ctx)
+		_, err := usersUsecase.Update(&usersDomain, ctx)
 
 		assert.Nil(t, err)
-		assert.Equal(t, &usersDomain, result)
 	})
 
 	t.Run("Find By Id | InValid", func(t *testing.T) {

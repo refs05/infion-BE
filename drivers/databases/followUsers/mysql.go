@@ -51,7 +51,7 @@ func (nr *mysqlFollowUsersRepository) Update(ctx context.Context, followUsersDom
 func (nr *mysqlFollowUsersRepository) Delete(ctx context.Context, followUsersDomain *followUsers.Domain) (followUsers.Domain, error) {
 	rec := fromDomain(followUsersDomain)
 
-	result := nr.Conn.Delete(&rec)
+	result := nr.Conn.Unscoped().Delete(&rec)
 	if result.Error != nil {
 		return followUsers.Domain{}, result.Error
 	}

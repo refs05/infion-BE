@@ -61,7 +61,7 @@ func (nr mysqlRepliesRepository) Update(ctx context.Context, repliesDomain *repl
 func (nr mysqlRepliesRepository) Delete(ctx context.Context, repliesDomain *replies.Domain) (replies.Domain, error) {
 	rec := fromDomain(repliesDomain)
 
-	result := nr.Conn.Delete(&rec)
+	result := nr.Conn.Unscoped().Delete(&rec)
 	if result.Error != nil {
 		return replies.Domain{}, result.Error
 	}

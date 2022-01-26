@@ -61,7 +61,7 @@ func (nr *mysqlReportsRepository) Update(ctx context.Context, reportsDomain *rep
 func (nr *mysqlReportsRepository) Delete(ctx context.Context, reportsDomain *reports.Domain) (reports.Domain, error) {
 	rec := fromDomain(reportsDomain)
 
-	result := nr.Conn.Delete(&rec)
+	result := nr.Conn.Unscoped().Delete(&rec)
 	if result.Error != nil {
 		return reports.Domain{}, result.Error
 	}

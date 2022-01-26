@@ -51,7 +51,7 @@ func (nr *mysqlRolesRepository) Update(ctx context.Context, rolesDomain *roles.D
 func (nr *mysqlRolesRepository) Delete(ctx context.Context, rolesDomain *roles.Domain) (roles.Domain, error) {
 	rec := fromDomain(rolesDomain)
 
-	result := nr.Conn.Delete(&rec)
+	result := nr.Conn.Unscoped().Delete(&rec)
 	if result.Error != nil {
 		return roles.Domain{}, result.Error
 	}

@@ -61,7 +61,7 @@ func (nr *mysqlThreadsRepository) Update(ctx context.Context, threadsDomain *thr
 func (nr *mysqlThreadsRepository) Delete(ctx context.Context, threadsDomain *threads.Domain) (threads.Domain, error) {
 	rec := fromDomain(threadsDomain)
 
-	result := nr.Conn.Delete(&rec)
+	result := nr.Conn.Unscoped().Delete(&rec)
 	if result.Error != nil {
 		return threads.Domain{}, result.Error
 	}

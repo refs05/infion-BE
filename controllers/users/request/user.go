@@ -9,7 +9,6 @@ type Users struct {
 	Password      string         `json:"password"`
 	RoleId        int            `json:"role_id"`
 	UrlImg        string         `json:"url_img"`
-	Token         string         `json:"token"`
 }
 
 func (user *Users) ToDomain() *users.DomainUser{
@@ -19,7 +18,6 @@ func (user *Users) ToDomain() *users.DomainUser{
 		Email:  		user.Email,
 		Password:   	user.Password,
 		RoleId:  		user.RoleId,
-		UrlImg: 		user.UrlImg,
-		Token:			user.Token, 	
+		UrlImg: 		user.UrlImg,	
 	}
 }
