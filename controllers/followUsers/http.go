@@ -106,3 +106,21 @@ func (ctrl *FollowUsersController) Delete(c echo.Context) error {
 
 	return controller.NewDeleteResponse(c, response.FromDomain(*resp))
 }
+
+func (ctrl *FollowUsersController) GetStatus(c echo.Context) error {
+	ctx := c.Request().Context()
+	followedIDString := c.QueryParam("followedID")
+	followerIDString := c.QueryParam("followerID")
+
+	if followedIDString != "" && followerIDString != "" {
+		followedID, _ := strconv.Atoi(followedIDString)
+		followerID, _ := strconv.Atoi(followerIDString)
+		resp, err := ctrl.followUsersUseCase.GetStatus(ctx, followedID, followerID)
+		if err != nil {
+			return controller.NewErrorResponse(c, http.StatusInternalServerError, err)
+		}
+		return controller.NewSuccessResponse(c, response.FromDomain(resp))
+	}
+	
+	return controller.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required followedID or followerID"))
+}

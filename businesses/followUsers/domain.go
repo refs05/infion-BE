@@ -20,6 +20,7 @@ type Usecase interface {
 	GetByID(ctx context.Context, followUsersId int) (Domain, error)
 	Update(ctx context.Context, followUsersDomain *Domain) (*Domain, error)
 	Delete(ctx context.Context, followUsersDomain *Domain) (*Domain, error)
+	GetStatus(ctx context.Context, followedID int, followerID int) (Domain, error)
 }
 
 type Repository interface {
