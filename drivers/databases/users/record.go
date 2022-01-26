@@ -11,7 +11,7 @@ type User struct {
 	Email     		string
 	Username      	string
 	RoleId			int `gorm:"default:1"`
-	UrlImg			string `gorm:"https://inspektorat.kotawaringinbaratkab.go.id/public/uploads/user/default-user-imge.jpeg"`
+	UrlImg			string
 	CommentCount	int
 	ThreadCount		int
 	LikeCount		int
