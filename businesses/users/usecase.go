@@ -54,13 +54,6 @@ func (usecase *UserUseCase) Login(domain DomainUser, ctx context.Context )(Domai
 		return DomainUser{},businesses.ErrUsernamePasswordNotFound
 	}
 
-	// password := domain.Password
-	// hash,_:= encrypt.Hash(domain.Password)
-
-	// if !encrypt.ValidateHash(password,hash) {
-	// 	return DomainUser{}, errors.New("Wrong Password")
-	// }
-
 	user,err := usecase.repo.Login(domain,ctx)
 	if err !=nil{
 		return DomainUser{},err
@@ -118,6 +111,21 @@ func (usecase *UserUseCase) Update(userDomain *DomainUser, ctx context.Context) 
 	userDomain.Id = existedComments.Id
 
 	result, err := usecase.repo.Update(userDomain, ctx)
+	if err != nil {
+		return &DomainUser{}, err
+	}
+
+	return &result, nil
+}
+
+func (usecase *UserUseCase) Delete(ctx context.Context, userDomain *DomainUser) (*DomainUser, error) {
+	existedRoles, err := usecase.repo.FindById(int(userDomain.Id),ctx)
+	if err != nil {
+		return &DomainUser{}, err
+	}
+	userDomain.Id = existedRoles.Id
+
+	result, err := usecase.repo.Delete(ctx, userDomain)
 	if err != nil {
 		return &DomainUser{}, err
 	}

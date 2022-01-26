@@ -94,6 +94,31 @@ func (ctrl *UserController) Update(c echo.Context) error {
 	return controllers.NewSuccessResponse(c, response.FromDomain(*resp))
 }
 
+func (ctrl *UserController) Delete(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	idstr := c.Param("id")
+	if strings.TrimSpace(idstr) == "" {
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, errors.New("missing required id"))
+	}
+
+	id, _ := strconv.Atoi(idstr)
+
+	req := request.Users{}
+	if err := c.Bind(&req); err != nil {
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	domainReq := req.ToDomain()
+	domainReq.Id = uint(id)
+	resp, err := ctrl.usecase.Delete(ctx, domainReq)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+
+	return controllers.NewDeleteResponse(c, response.FromDomain(*resp))
+}
+
 func (ctrl *UserController) GetLeaderboard(c echo.Context) error {
 	ctx := c.Request().Context()
 

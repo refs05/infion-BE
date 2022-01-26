@@ -41,6 +41,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	users.POST("/create", cl.UserController.CreateNewUser)
 	users.GET("/:id", cl.UserController.FindById,middleware.JWTWithConfig(cl.JWTConfig))
 	users.PUT("/:id", cl.UserController.Update,middleware.JWTWithConfig(cl.JWTConfig))
+	users.DELETE("/:id", cl.UserController.Delete,middleware.JWTWithConfig(cl.JWTConfig))
 	users.GET("/leaderboard/", cl.UserController.GetLeaderboard)
 
 	followUsers := e.Group("followUsers")

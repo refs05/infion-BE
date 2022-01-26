@@ -254,6 +254,40 @@ func TestUpdate(t *testing.T){
 	})
 }
 
+func TestDelete(t *testing.T){
+	t.Run("Delete | Valid", func(t *testing.T) {
+		usersRepository.On("FindById", mock.AnythingOfType("int"), mock.Anything).Return(usersDomain, nil).Once()
+		usersRepository.On("Delete", mock.Anything, mock.AnythingOfType("*users.DomainUser")).Return(usersDomain, nil).Once()
+
+		ctx := context.Background()
+		result, err := usersUsecase.Delete(ctx, &usersDomain)
+
+		assert.Nil(t, err)
+		assert.Equal(t, &usersDomain, result)
+	})
+
+	t.Run("Delete | InValid 1", func(t *testing.T) {
+		usersRepository.On("FindById", mock.AnythingOfType("int"), mock.Anything).Return(usersDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := usersUsecase.Delete(ctx, &usersDomain)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+
+	t.Run("Delete | InValid 2", func(t *testing.T) {
+		usersRepository.On("FindById", mock.AnythingOfType("int"), mock.Anything).Return(usersDomain, nil).Once()
+		usersRepository.On("Delete", mock.Anything, mock.AnythingOfType("*users.DomainUser")).Return(usersDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := usersUsecase.Delete(ctx, &usersDomain)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+}
+
 func TestGetLeaderboards(t *testing.T){
 	t.Run("GetLeaderboard | InValid", func(t *testing.T) {
 		usersRepository.On("GetLeaderboard", mock.Anything).Return([]users.DomainUser{usersDomain}, businesses.ErrInternalServer).Once()

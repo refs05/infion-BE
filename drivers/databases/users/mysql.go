@@ -69,16 +69,6 @@ func (repo *UserRepository) FindById(userId int,ctx context.Context)(users.Domai
 	return user.ToDomain(),nil
 }
 
-// func (repo *UserRepository) GetEmail(ctx context.Context,email string)(users.DomainUser,error){
-// 	data := User{}
-
-// 	err := repo.db.Where("email = ?",email).First(&data).Error
-
-// 	if err != nil{
-
-// 	}
-// }
-
 func (repo *UserRepository) Update(userDomain *users.DomainUser, ctx context.Context) (users.DomainUser, error) {
 	rec := FromDomain(*userDomain)
 
@@ -93,6 +83,17 @@ func (repo *UserRepository) Update(userDomain *users.DomainUser, ctx context.Con
 	}
 
 	return record, nil
+}
+
+func (repo *UserRepository) Delete(ctx context.Context, userDomain *users.DomainUser) (users.DomainUser, error) {
+	rec := FromDomain(*userDomain)
+
+	result := repo.db.Delete(&rec)
+	if result.Error != nil {
+		return users.DomainUser{}, result.Error
+	}
+
+	return rec.ToDomain(), nil
 }
 
 func (repo *UserRepository) GetLeaderboard(ctx context.Context)([]users.DomainUser, error){
