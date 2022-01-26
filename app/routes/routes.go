@@ -49,6 +49,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	followUsers.GET("/:id", cl.FollowUsersController.ReadID,middleware.JWTWithConfig(cl.JWTConfig))
 	followUsers.PUT("/:id", cl.FollowUsersController.Update,middleware.JWTWithConfig(cl.JWTConfig))
 	followUsers.DELETE("/:id", cl.FollowUsersController.Delete,middleware.JWTWithConfig(cl.JWTConfig))
+	followUsers.GET("/status/", cl.FollowUsersController.GetStatus,middleware.JWTWithConfig(cl.JWTConfig))
 
 	roles := e.Group("roles")
 	roles.POST("/create", cl.RolesController.Create)

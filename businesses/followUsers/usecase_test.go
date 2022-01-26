@@ -163,3 +163,33 @@ func TestDelete(t *testing.T){
 		assert.Equal(t, businesses.ErrInternalServer, err)
 	})
 }
+
+func TestGetStatus(t *testing.T){
+	t.Run("GetStatus | Valid", func(t *testing.T) {
+		followUsersRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(followUsersDomain, nil).Once()
+
+		ctx := context.Background()
+		result, err := followUsersUsecase.GetStatus(ctx, followUsersDomain.FollowedID, followUsersDomain.FollowerID)
+
+		assert.Nil(t, err)
+		assert.Equal(t, followUsersDomain, result)
+	})
+
+	t.Run("GetStatus | InValid ID <= 0", func(t *testing.T) {
+		ctx := context.Background()
+		_, err := followUsersUsecase.GetStatus(ctx, 0, 0)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrIDResource, err)
+	})
+
+	t.Run("GetStatus | InValid", func(t *testing.T) {
+		followUsersRepository.On("GetDuplicate", mock.Anything, mock.AnythingOfType("int"), mock.AnythingOfType("int")).Return(followUsersDomain, businesses.ErrInternalServer).Once()
+
+		ctx := context.Background()
+		_, err := followUsersUsecase.GetStatus(ctx, followUsersDomain.FollowedID, followUsersDomain.FollowerID)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, businesses.ErrInternalServer, err)
+	})
+}

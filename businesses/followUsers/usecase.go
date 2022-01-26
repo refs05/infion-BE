@@ -81,3 +81,19 @@ func (tu *followUsersUsecase) Delete(ctx context.Context, followUsersDomain *Dom
 
 	return &result, nil
 }
+
+func (tu *followUsersUsecase) GetStatus(ctx context.Context, followedID int, followerID int) (Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, tu.contextTimeout)
+	defer cancel()
+
+	if followedID <= 0 || followerID <= 0 {
+		return Domain{}, businesses.ErrIDResource
+	}
+
+	res, err := tu.followUsersRepository.GetDuplicate(ctx, followedID, followerID)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return res, nil
+}
