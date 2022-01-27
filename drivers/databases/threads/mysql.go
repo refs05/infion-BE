@@ -116,7 +116,7 @@ func (nr *mysqlThreadsRepository) GetThreadsBySortCategory(ctx context.Context, 
 func (nr *mysqlThreadsRepository) GetThreadsByUserID(ctx context.Context, userID int) ([]threads.Domain, error) {
 	var recordThread []Threads
 	
-	result := nr.Conn.Unscoped().Where("threads.user_id = ?", userID).Joins("User").Find(&recordThread)
+	result := nr.Conn.Unscoped().Order("created_at desc").Where("threads.user_id = ?", userID).Joins("User").Find(&recordThread)
 	if result.Error != nil {
 		return []threads.Domain{}, result.Error
 	}

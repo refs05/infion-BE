@@ -72,7 +72,7 @@ func (nr *mysqlAnnouncementsRepository) Delete(ctx context.Context, announcement
 func (nr *mysqlAnnouncementsRepository) GetAnnouncements(ctx context.Context) ([]announcements.Domain, error) {
 	var recordAnnouncement []Announcements
 	
-	result := nr.Conn.Unscoped().Joins("User").Find(&recordAnnouncement)
+	result := nr.Conn.Unscoped().Order("created_at desc").Joins("User").Find(&recordAnnouncement)
 	if result.Error != nil {
 		return []announcements.Domain{}, result.Error
 	}
@@ -83,7 +83,7 @@ func (nr *mysqlAnnouncementsRepository) GetAnnouncements(ctx context.Context) ([
 func (nr *mysqlAnnouncementsRepository) GetAnnouncementsByUserID(ctx context.Context, userID int) ([]announcements.Domain, error) {
 	var recordAnnouncement []Announcements
 	
-	result := nr.Conn.Unscoped().Where("announcements.user_id = ?", userID).Joins("User").Find(&recordAnnouncement)
+	result := nr.Conn.Unscoped().Order("created_at desc").Where("announcements.user_id = ?", userID).Joins("User").Find(&recordAnnouncement)
 	if result.Error != nil {
 		return []announcements.Domain{}, result.Error
 	}
